@@ -5,8 +5,8 @@ This is a currency converter that uses historical rates against a reference curr
 
 Currency sources
 ----------------
-The default source is the European Central Bank. This is the ECB historical rates for 42 currencies against the Euro since 1999.
-It can be downloaded here: `eurofxref-hist.zip <eurofxref-hist.zip>_`.
+The default source is the `European Central Bank <http://www.ecb.int/>`_. This is the ECB historical rates for 42 currencies against the Euro since 1999.
+It can be downloaded here: `eurofxref-hist.zip <http://www.ecb.int/stats/eurofxref/eurofxref-hist.zip>`_.
 The converter can use different sources as long as the format is the same.
 
 Installation
@@ -24,7 +24,7 @@ Command line example
  $ python currency_converter.py 100 EUR --to USD
  "100 EUR" is "137.59 USD" on 2014-03-28.
 
-After installation, you should have `currency_converter` in your `$PATH`:
+After installation, you should have ``currency_converter`` in your ``$PATH``:
 
 .. code-block:: bash
 
