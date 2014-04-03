@@ -1,35 +1,51 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>CurrencyConverter by alexprengere</title>
+    <meta name="viewport" content="width=640" />
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="javascripts/scale.fix.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link rel="stylesheet" href="stylesheets/core.css" media="screen"/>
+    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)"/>
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+
+    <script type="text/javascript" src="javascripts/modernizr.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#main_content').headsmart()
+      })
+    </script>
+    <title>Currency Converter by alexprengere</title>
   </head>
+
   <body>
-    <div class="wrapper">
+    <a id="forkme_banner" href="https://github.com/alexprengere/currencyconverter">View on GitHub</a>
+    <div class="shell">
+
       <header>
-        <h1 class="header">CurrencyConverter</h1>
-        <p class="header">A Python currency converter.</p>
-
-        <ul>
-          <li class="download"><a class="buttons" href="https://github.com/alexprengere/currencyconverter/zipball/master">Download ZIP</a></li>
-          <li class="download"><a class="buttons" href="https://github.com/alexprengere/currencyconverter/tarball/master">Download TAR</a></li>
-          <li><a class="buttons github" href="https://github.com/alexprengere/currencyconverter">View On GitHub</a></li>
-        </ul>
-
-        <p class="header">This project is maintained by <a class="header name" href="https://github.com/alexprengere">alexprengere</a></p>
-
-
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <h1>Currency Converter</h1>
+            <h2>A Python currency converter.</h2>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
       </header>
-      <section>
+
+      <section id="downloads">
+        <span class="inner">
+          <a href="https://github.com/alexprengere/currencyconverter/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/alexprengere/currencyconverter/tarball/master" class="tgz"><em>download</em> .TGZ</a>
+        </span>
+      </section>
+
+
+      <span class="banner-fix"></span>
+
+
+      <section id="main_content">
         <h1>
 <a name="currency-converter" class="anchor" href="#currency-converter"><span class="octicon octicon-link"></span></a>Currency converter</h1>
 
@@ -43,112 +59,122 @@
 <h2>
 <a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
 
-<pre lang="sourceCode"><code>$ python setup install --user
-</code></pre>
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span>python setup install --user
+</pre></div>
 
 <h2>
 <a name="command-line-example" class="anchor" href="#command-line-example"><span class="octicon octicon-link"></span></a>Command line example</h2>
 
-<pre lang="sourceCode"><code>$ python currency_converter.py 100 EUR --to USD
-"100 EUR" is "137.59 USD" on 2014-03-28.
-</code></pre>
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span>python currency_converter.py 100 EUR --to USD
+<span class="s2">"100 EUR"</span> is <span class="s2">"137.59 USD"</span> on 2014-03-28.
+</pre></div>
 
 <p>After installation, you should have <code>currency_converter</code> in your <code>$PATH</code>:</p>
 
-<pre lang="sourceCode"><code>$ currency_converter 100 USD -d 2013-12-12
-</code></pre>
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span>currency_converter 100 USD -d 2013-12-12
+</pre></div>
 
 <h2>
 <a name="python-api-example" class="anchor" href="#python-api-example"><span class="octicon octicon-link"></span></a>Python API example</h2>
 
 <p>Example:</p>
 
-<pre lang="sourceCode"><code>&gt;&gt;&gt; from currency_converter import CurrencyConverter
-&gt;&gt;&gt; c = CurrencyConverter()
-</code></pre>
+<div class="highlight highlight-python"><pre><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">currency_converter</span> <span class="kn">import</span> <span class="n">CurrencyConverter</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span> <span class="o">=</span> <span class="n">CurrencyConverter</span><span class="p">()</span>
+</pre></div>
 
 <p>Convert from EUR to USD:</p>
 
-<pre lang="sourceCode"><code>&gt;&gt;&gt; c.convert(100, 'EUR', 'USD')
-137.5...
-</code></pre>
+<div class="highlight highlight-python"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s">'EUR'</span><span class="p">,</span> <span class="s">'USD'</span><span class="p">)</span>
+<span class="mf">137.5</span><span class="o">...</span>
+</pre></div>
 
 <p>Default target currency is EUR:</p>
 
-<pre lang="sourceCode"><code>&gt;&gt;&gt; c.convert(100, 'EUR')
-100.0
-&gt;&gt;&gt; c.convert(100, 'USD')
-72.67...
-</code></pre>
+<div class="highlight highlight-python"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s">'EUR'</span><span class="p">)</span>
+<span class="mf">100.0</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s">'USD'</span><span class="p">)</span>
+<span class="mf">72.67</span><span class="o">...</span>
+</pre></div>
 
 <p>Change reference date for rate:</p>
 
-<pre lang="sourceCode"><code>&gt;&gt;&gt; from datetime import datetime
-&gt;&gt;&gt; c.convert(100, 'EUR', 'USD', date=datetime(2013, 03, 21))
-129.1...
-</code></pre>
+<div class="highlight highlight-python"><pre><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s">'EUR'</span><span class="p">,</span> <span class="s">'USD'</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mo">03</span><span class="p">,</span> <span class="mi">21</span><span class="p">))</span>
+<span class="mf">129.1</span><span class="o">...</span>
+</pre></div>
 
 <p>Get a rate:</p>
 
-<pre lang="sourceCode"><code>&gt;&gt;&gt; c.get_rate('USD')
-1.375...
-</code></pre>
+<div class="highlight highlight-python"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="o">.</span><span class="n">get_rate</span><span class="p">(</span><span class="s">'USD'</span><span class="p">)</span>
+<span class="mf">1.375</span><span class="o">...</span>
+</pre></div>
 
 <p>Fallback mode on not supported dates:</p>
 
-<pre lang="sourceCode"><code>&gt;&gt;&gt; c = CurrencyConverter(fallback_on_wrong_date=True, verbose=True)
-&gt;&gt;&gt; c.convert(100, 'EUR', 'USD', date=datetime(1986, 02, 02))
-/!\ Invalid date (currency was EUR), fallback to 1999-01-04
-/!\ Invalid date (currency was USD), fallback to 1999-01-04
-117.89...
-</code></pre>
+<div class="highlight highlight-python"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">c</span> <span class="o">=</span> <span class="n">CurrencyConverter</span><span class="p">(</span><span class="n">fallback_on_wrong_date</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s">'EUR'</span><span class="p">,</span> <span class="s">'USD'</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1986</span><span class="p">,</span> <span class="mo">02</span><span class="p">,</span> <span class="mo">02</span><span class="p">))</span>
+<span class="o">/</span><span class="err">!</span>\ <span class="n">Invalid</span> <span class="n">date</span> <span class="p">(</span><span class="n">currency</span> <span class="n">was</span> <span class="n">EUR</span><span class="p">),</span> <span class="n">fallback</span> <span class="n">to</span> <span class="mi">1999</span><span class="o">-</span><span class="mo">01</span><span class="o">-</span><span class="mo">04</span>
+<span class="o">/</span><span class="err">!</span>\ <span class="n">Invalid</span> <span class="n">date</span> <span class="p">(</span><span class="n">currency</span> <span class="n">was</span> <span class="n">USD</span><span class="p">),</span> <span class="n">fallback</span> <span class="n">to</span> <span class="mi">1999</span><span class="o">-</span><span class="mo">01</span><span class="o">-</span><span class="mo">04</span>
+<span class="mf">117.89</span><span class="o">...</span>
+</pre></div>
 
 <p>Sometimes rates are missing:</p>
 
-<pre lang="sourceCode"><code>&gt;&gt;&gt; c.convert(100, 'BGN', date=datetime(1999, 11, 10))
-Traceback (most recent call last):
-RateNotFoundError: Currency BGN has no rate for date 1999-11-10.
-</code></pre>
+<div class="highlight highlight-python"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s">'BGN'</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1999</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+<span class="n">RateNotFoundError</span><span class="p">:</span> <span class="n">Currency</span> <span class="n">BGN</span> <span class="n">has</span> <span class="n">no</span> <span class="n">rate</span> <span class="k">for</span> <span class="n">date</span> <span class="mi">1999</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mf">10.</span>
+</pre></div>
 
 <p>But we also have a fallback mode for those:</p>
 
-<pre lang="sourceCode"><code>&gt;&gt;&gt; c = CurrencyConverter(fallback_on_wrong_date=True,
-...                       fallback_on_missing_rate=True,
-...                       verbose=True)
-&gt;&gt;&gt; c.convert(100, 'BGN', date=datetime(1999, 11, 10))
-/!\ Missing rate for BGN, fallback to 2000-07-19
-51.36...
-&gt;&gt;&gt; c.convert(100, 'BGN', 'EUR', date=datetime(1980, 1, 1))
-/!\ Invalid date (currency was BGN), fallback to 1999-01-04
-/!\ Missing rate for BGN, fallback to 2000-07-19
-/!\ Invalid date (currency was EUR), fallback to 1999-01-04
-51.36...
-</code></pre>
+<div class="highlight highlight-python"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">c</span> <span class="o">=</span> <span class="n">CurrencyConverter</span><span class="p">(</span><span class="n">fallback_on_wrong_date</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+<span class="o">...</span>                       <span class="n">fallback_on_missing_rate</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+<span class="o">...</span>                       <span class="n">verbose</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s">'BGN'</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1999</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="o">/</span><span class="err">!</span>\ <span class="n">Missing</span> <span class="n">rate</span> <span class="k">for</span> <span class="n">BGN</span><span class="p">,</span> <span class="n">fallback</span> <span class="n">to</span> <span class="mi">2000</span><span class="o">-</span><span class="mo">07</span><span class="o">-</span><span class="mi">19</span>
+<span class="mf">51.36</span><span class="o">...</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s">'BGN'</span><span class="p">,</span> <span class="s">'EUR'</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1980</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="o">/</span><span class="err">!</span>\ <span class="n">Invalid</span> <span class="n">date</span> <span class="p">(</span><span class="n">currency</span> <span class="n">was</span> <span class="n">BGN</span><span class="p">),</span> <span class="n">fallback</span> <span class="n">to</span> <span class="mi">1999</span><span class="o">-</span><span class="mo">01</span><span class="o">-</span><span class="mo">04</span>
+<span class="o">/</span><span class="err">!</span>\ <span class="n">Missing</span> <span class="n">rate</span> <span class="k">for</span> <span class="n">BGN</span><span class="p">,</span> <span class="n">fallback</span> <span class="n">to</span> <span class="mi">2000</span><span class="o">-</span><span class="mo">07</span><span class="o">-</span><span class="mi">19</span>
+<span class="o">/</span><span class="err">!</span>\ <span class="n">Invalid</span> <span class="n">date</span> <span class="p">(</span><span class="n">currency</span> <span class="n">was</span> <span class="n">EUR</span><span class="p">),</span> <span class="n">fallback</span> <span class="n">to</span> <span class="mi">1999</span><span class="o">-</span><span class="mo">01</span><span class="o">-</span><span class="mo">04</span>
+<span class="mf">51.36</span><span class="o">...</span>
+</pre></div>
 
 <p>Other public members:</p>
 
-<pre lang="sourceCode"><code>&gt;&gt;&gt; c.last_date
-datetime.datetime(2014, 3, 28, 0, 0)
-&gt;&gt;&gt; min(c.dates)
-datetime.datetime(1999, 1, 4, 0, 0)
-&gt;&gt;&gt; sorted(c.currencies)
-['AUD', 'BGN', 'BRL', 'CAD', 'CHF', 'CNY', 'CYP', 'CZK', 'DKK', ...
-</code></pre>
+<div class="highlight highlight-python"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="o">.</span><span class="n">last_date</span>
+<span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">min</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">dates</span><span class="p">)</span>
+<span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1999</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">currencies</span><span class="p">)</span>
+<span class="p">[</span><span class="s">'AUD'</span><span class="p">,</span> <span class="s">'BGN'</span><span class="p">,</span> <span class="s">'BRL'</span><span class="p">,</span> <span class="s">'CAD'</span><span class="p">,</span> <span class="s">'CHF'</span><span class="p">,</span> <span class="s">'CNY'</span><span class="p">,</span> <span class="s">'CYP'</span><span class="p">,</span> <span class="s">'CZK'</span><span class="p">,</span> <span class="s">'DKK'</span><span class="p">,</span> <span class="o">...</span>
+</pre></div>
 
 <p>Error cases:</p>
 
-<pre lang="sourceCode"><code>&gt;&gt;&gt; c = CurrencyConverter()
-&gt;&gt;&gt; c.get_rate('BGN', date=datetime(1999, 11, 10)) # None, rate is missing
-&gt;&gt;&gt; c.get_rate('AAA')
-Traceback (most recent call last):
-ValueError: Currency AAA not supported.
-</code></pre>
+<div class="highlight highlight-python"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">c</span> <span class="o">=</span> <span class="n">CurrencyConverter</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="o">.</span><span class="n">get_rate</span><span class="p">(</span><span class="s">'BGN'</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1999</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span> <span class="c"># None, rate is missing</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="o">.</span><span class="n">get_rate</span><span class="p">(</span><span class="s">'AAA'</span><span class="p">)</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+<span class="ne">ValueError</span><span class="p">:</span> <span class="n">Currency</span> <span class="n">AAA</span> <span class="ow">not</span> <span class="n">supported</span><span class="o">.</span>
+</pre></div>
       </section>
+
       <footer>
-        <p><small>Hosted on <a href="http://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <p>this project by <a href="https://github.com/alexprengere">alexprengere</a> can be found on <a href="https://github.com/alexprengere/currencyconverter">GitHub</a></p>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+        <p>Generated with <a href="http://pages.github.com">GitHub Pages</a> using Merlot</p>
+        <span class="octocat"></span>
       </footer>
+
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-		
+
+    
   </body>
 </html>
