@@ -44,7 +44,7 @@ Convert from EUR to USD:
 
 .. code-block:: python
 
-    >>> c.convert(100, 'EUR', 'USD')
+    >>> c.convert(100, 'EUR', 'USD') # doctest: +SKIP
     137.5...
 
 Default target currency is EUR:
@@ -53,7 +53,7 @@ Default target currency is EUR:
 
     >>> c.convert(100, 'EUR')
     100.0
-    >>> c.convert(100, 'USD')
+    >>> c.convert(100, 'USD') # doctest: +SKIP
     72.67...
 
 Change reference date for rate:
@@ -68,7 +68,7 @@ Get a rate:
 
 .. code-block:: python
 
-    >>> c.get_rate('USD')
+    >>> c.get_rate('USD') # doctest: +SKIP
     1.375...
 
 Fallback mode on not supported dates:
