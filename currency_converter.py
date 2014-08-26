@@ -143,7 +143,7 @@ class CurrencyConverter(object):
 
         :type date: datetime
 
-        >>> c.get_rate('USD')
+        >>> c.get_rate('USD', date=datetime(2014, 03, 28))
         1.375...
         >>> c.get_rate('AAA')
         Traceback (most recent call last):
@@ -187,9 +187,9 @@ class CurrencyConverter(object):
 
         :type date: datetime
 
-        >>> c.convert(100, 'EUR', 'USD')
+        >>> c.convert(100, 'EUR', 'USD', date=datetime(2014, 03, 28))
         137.5...
-        >>> c.convert(100, 'USD')
+        >>> c.convert(100, 'USD', date=datetime(2014, 03, 28))
         72.67...
         >>> c.convert(100, 'BGN', date=datetime(1999, 11, 10))
         Traceback (most recent call last):
