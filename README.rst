@@ -110,7 +110,7 @@ Other public members:
 .. code-block:: python
 
     >>> c.last_date
-    datetime.datetime(2014, 8, 25, 0, 0)
+    datetime.datetime(2015, 8, 11, 0, 0)
     >>> min(c.dates)
     datetime.datetime(1999, 1, 4, 0, 0)
     >>> sorted(c.currencies)
