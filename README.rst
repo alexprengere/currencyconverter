@@ -14,7 +14,7 @@ Installation
 
 .. code-block:: bash
 
- $ python setup install --user
+ $ python setup.py install --user
 
 Command line example
 --------------------
