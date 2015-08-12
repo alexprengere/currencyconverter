@@ -26,7 +26,7 @@ setup(
     author = 'Alex Prengère',
     author_email = 'alexprengere@gmail.com',
     url = 'https://github.com/alexprengere/currencyconverter',
-    description = 'A currency converter.',
+    description = 'A currency converter using the European Central Bank data.',
     long_description = LONG_DESCRIPTION,
     license = LICENSE,
     py_modules = [
