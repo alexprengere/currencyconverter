@@ -1,1 +1,4 @@
 include *.csv
+include *.rst
+include VERSION
+include LICENSE
