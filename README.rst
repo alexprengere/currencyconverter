@@ -12,9 +12,17 @@ The converter can use different sources as long as the format is the same.
 Installation
 ------------
 
+You can install directly after cloning:
+
 .. code-block:: bash
 
  $ python setup.py install --user
+
+Or use the Python package:
+
+.. code-block:: bash
+
+  $ pip install --user currencyconverter
 
 Command line example
 --------------------
