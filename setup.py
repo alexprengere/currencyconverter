@@ -4,7 +4,8 @@
 from __future__ import with_statement
 
 import os.path as op
-from setuptools import setup
+from setuptools import find_packages, setup
+
 
 def local(rel_path, root_file=__file__):
     return op.join(op.realpath(op.dirname(root_file)), rel_path)
@@ -21,24 +22,22 @@ with open(local('LICENSE')) as fl:
 
 
 setup(
-    name = 'CurrencyConverter',
-    version = VERSION,
-    author = 'Alex Prengère',
-    author_email = 'alexprengere@gmail.com',
-    url = 'https://github.com/alexprengere/currencyconverter',
-    description = 'A currency converter using the European Central Bank data.',
-    long_description = LONG_DESCRIPTION,
-    license = LICENSE,
-    py_modules = [
-        'currency_converter'
-    ],
-    data_files = [
+    name='CurrencyConverter',
+    version=VERSION,
+    author='Alex Prengère',
+    author_email='alexprengere@gmail.com',
+    url='https://github.com/alexprengere/currencyconverter',
+    description='A currency converter using the European Central Bank data.',
+    long_description=LONG_DESCRIPTION,
+    license=LICENSE,
+    packages=find_packages(),
+    data_files=[
         ('.', ['eurofxref-hist.csv'])
     ],
     #
     # Manage standalone scripts
-    entry_points = {
-        'console_scripts' : [
+    entry_points={
+        'console_scripts': [
             'currency_converter = currency_converter:main'
         ]
     },
