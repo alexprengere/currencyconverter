@@ -21,23 +21,23 @@ with open(local('LICENSE')) as fl:
 
 
 setup(
-    name = 'CurrencyConverter',
-    version = VERSION,
-    author = 'Alex Prengère',
-    author_email = 'alexprengere@gmail.com',
-    url = 'https://github.com/alexprengere/currencyconverter',
-    description = 'A currency converter using the European Central Bank data.',
-    long_description = LONG_DESCRIPTION,
-    license = LICENSE,
-    packages = [
+    name='CurrencyConverter',
+    version=VERSION,
+    author='Alex Prengère',
+    author_email='alexprengere@gmail.com',
+    url='https://github.com/alexprengere/currencyconverter',
+    description='A currency converter using the European Central Bank data.',
+    long_description=LONG_DESCRIPTION,
+    license=LICENSE,
+    packages=[
         'currency_converter'
     ],
-    include_package_data = True,
+    include_package_data=True,
     #
     # Manage standalone scripts
-    entry_points = {
+    entry_points={
         'console_scripts' : [
-            'currency_converter = currency_converter:main'
+            'currency_converter=currency_converter:main'
         ]
     },
 )

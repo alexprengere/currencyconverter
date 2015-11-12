@@ -22,8 +22,8 @@ def main():
         'c': cc.CurrencyConverter(),
     }
 
-    opt =  (doctest.ELLIPSIS |
-            doctest.NORMALIZE_WHITESPACE)
+    opt = (doctest.ELLIPSIS |
+           doctest.NORMALIZE_WHITESPACE)
 
     s = unittest.TestSuite()
 

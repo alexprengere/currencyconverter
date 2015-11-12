@@ -157,7 +157,7 @@ class CurrencyConverter(object):
             if self._fallback_on_wrong_date:
                 date = self._get_closest_valid_date(date)
                 if self._verbose:
-                    print '/!\ Invalid date (currency was %s), fallback to %s' % \
+                    print '/!\\ Invalid date (currency was %s), fallback to %s' % \
                             (currency, date.strftime(DATE_FORMAT))
             else:
                 raise ValueError("Date %s not supported." % date.strftime(DATE_FORMAT))
@@ -172,7 +172,7 @@ class CurrencyConverter(object):
             if self._fallback_on_missing_rate:
                 date = self._get_closest_available_date(currency, date)
                 if self._verbose:
-                    print '/!\ Missing rate for %s, fallback to %s' % \
+                    print '/!\\ Missing rate for %s, fallback to %s' % \
                             (currency, date.strftime(DATE_FORMAT))
                 return self._rates[date][currency]
 
@@ -222,10 +222,10 @@ def _test():
         'c': CurrencyConverter(),
     }
 
-    opt =  (doctest.ELLIPSIS |
-            doctest.NORMALIZE_WHITESPACE)
-            #doctest.REPORT_ONLY_FIRST_FAILURE)
-            #doctest.IGNORE_EXCEPTION_DETAIL)
+    opt = (doctest.ELLIPSIS |
+           doctest.NORMALIZE_WHITESPACE)
+           #doctest.REPORT_ONLY_FIRST_FAILURE)
+           #doctest.IGNORE_EXCEPTION_DETAIL)
 
     doctest.testmod(extraglobs=extraglobs, optionflags=opt)
 
