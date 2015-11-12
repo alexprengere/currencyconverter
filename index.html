@@ -38,104 +38,81 @@
           <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
         </div>
 
-        <h1>
-<a id="currency-converter" class="anchor" href="#currency-converter" aria-hidden="true"><span class="octicon octicon-link"></span></a>Currency converter</h1>
-
-<p>This is a currency converter that uses historical rates against a reference currency (Euro).</p>
+        <p>This is a currency converter that uses historical rates against a
+reference currency (Euro).</p>
 
 <h2>
 <a id="currency-sources" class="anchor" href="#currency-sources" aria-hidden="true"><span class="octicon octicon-link"></span></a>Currency sources</h2>
 
-<p>The default source is the <code>European Central Bank &lt;http://www.ecb.int/&gt;</code><em>. This is the ECB historical rates for 42 currencies against the Euro since 1999.
-It can be downloaded here: <code>eurofxref-hist.zip &lt;http://www.ecb.int/stats/eurofxref/eurofxref-hist.zip&gt;</code></em>.
-The converter can use different sources as long as the format is the same.</p>
+<p>The default source is the <a href="http://www.ecb.int/">European Central Bank</a>.
+This is the ECB historical rates for 42 currencies against the Euro
+since 1999. It can be downloaded here:
+<a href="http://www.ecb.int/stats/eurofxref/eurofxref-hist.zip">eurofxref-hist.zip</a>.
+The converter can use different sources as long as the format is the
+same.</p>
 
 <h2>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
 
 <p>You can install directly after cloning:</p>
 
-<p>.. code-block:: bash</p>
-
-<p>$ python setup.py install --user</p>
+<div class="highlight highlight-source-shell"><pre>$ python setup.py install --user</pre></div>
 
 <p>Or use the Python package:</p>
 
-<p>.. code-block:: bash</p>
-
-<p>$ pip install --user currencyconverter</p>
+<div class="highlight highlight-source-shell"><pre>$ pip install --user currencyconverter</pre></div>
 
 <h2>
 <a id="command-line-example" class="anchor" href="#command-line-example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Command line example</h2>
 
-<p>.. code-block:: bash</p>
+<div class="highlight highlight-source-shell"><pre>$ python currency_converter.py 100 EUR --to USD
+<span class="pl-s"><span class="pl-pds">"</span>100 EUR<span class="pl-pds">"</span></span> is <span class="pl-s"><span class="pl-pds">"</span>137.59 USD<span class="pl-pds">"</span></span> on 2014-03-28.</pre></div>
 
-<p>$ python currency_converter.py 100 EUR --to USD
- "100 EUR" is "137.59 USD" on 2014-03-28.</p>
+<p>After installation, you should have <code>currency_converter</code> in your
+<code>$PATH</code>:</p>
 
-<p>After installation, you should have <code>currency_converter</code> in your <code>$PATH</code>:</p>
-
-<p>.. code-block:: bash</p>
-
-<p>$ currency_converter 100 USD -d 2013-12-12</p>
+<div class="highlight highlight-source-shell"><pre>$ currency_converter 100 USD -d 2013-12-12</pre></div>
 
 <h2>
 <a id="python-api-example" class="anchor" href="#python-api-example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Python API example</h2>
 
 <p>Example:</p>
 
-<p>.. code-block:: python</p>
-
-<pre><code>&gt;&gt;&gt; from currency_converter import CurrencyConverter
-&gt;&gt;&gt; c = CurrencyConverter()
-</code></pre>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">&gt;&gt;&gt;</span> <span class="pl-k">from</span> currency_converter <span class="pl-k">import</span> CurrencyConverter
+<span class="pl-k">&gt;&gt;&gt;</span> c <span class="pl-k">=</span> CurrencyConverter()</pre></div>
 
 <p>Convert from EUR to USD:</p>
 
-<p>.. code-block:: python</p>
-
-<pre><code>&gt;&gt;&gt; c.convert(100, 'EUR', 'USD') # doctest: +SKIP
+<pre lang="sourceCode"><code>&gt;&gt;&gt; c.convert(100, 'EUR', 'USD') # doctest: +SKIP
 137.5...
 </code></pre>
 
 <p>Default target currency is EUR:</p>
 
-<p>.. code-block:: python</p>
-
-<pre><code>&gt;&gt;&gt; c.convert(100, 'EUR')
-100.0
-&gt;&gt;&gt; c.convert(100, 'USD') # doctest: +SKIP
-72.67...
-</code></pre>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">&gt;&gt;&gt;</span> c.convert(<span class="pl-c1">100</span>, <span class="pl-s"><span class="pl-pds">'</span>EUR<span class="pl-pds">'</span></span>)
+<span class="pl-c1">100.0</span>
+<span class="pl-k">&gt;&gt;&gt;</span> c.convert(<span class="pl-c1">100</span>, <span class="pl-s"><span class="pl-pds">'</span>USD<span class="pl-pds">'</span></span>) <span class="pl-c"># doctest: +SKIP</span>
+<span class="pl-c1">72.67</span>...</pre></div>
 
 <p>Change reference date for rate:</p>
 
-<p>.. code-block:: python</p>
-
-<pre><code>&gt;&gt;&gt; from datetime import datetime
-&gt;&gt;&gt; c.convert(100, 'EUR', 'USD', date=datetime(2013, 3, 21))
-129.1...
-</code></pre>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">&gt;&gt;&gt;</span> <span class="pl-k">from</span> datetime <span class="pl-k">import</span> datetime
+<span class="pl-k">&gt;&gt;&gt;</span> c.convert(<span class="pl-c1">100</span>, <span class="pl-s"><span class="pl-pds">'</span>EUR<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>USD<span class="pl-pds">'</span></span>, <span class="pl-smi">date</span><span class="pl-k">=</span>datetime(<span class="pl-c1">2013</span>, <span class="pl-c1">3</span>, <span class="pl-c1">21</span>))
+<span class="pl-c1">129.1</span>...</pre></div>
 
 <p>Get a rate:</p>
 
-<p>.. code-block:: python</p>
-
-<pre><code>&gt;&gt;&gt; c.get_rate('USD') # doctest: +SKIP
-1.375...
-</code></pre>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">&gt;&gt;&gt;</span> c.get_rate(<span class="pl-s"><span class="pl-pds">'</span>USD<span class="pl-pds">'</span></span>) <span class="pl-c"># doctest: +SKIP</span>
+<span class="pl-c1">1.375</span>...</pre></div>
 
 <p>Other public members:</p>
 
-<p>.. code-block:: python</p>
-
-<pre><code>&gt;&gt;&gt; c.last_date
-datetime.datetime(2015, 11, 12, 0, 0)
-&gt;&gt;&gt; min(c.dates)
-datetime.datetime(1999, 1, 4, 0, 0)
-&gt;&gt;&gt; sorted(c.currencies)
-['AUD', 'BGN', 'BRL', 'CAD', 'CHF', 'CNY', 'CYP', 'CZK', 'DKK', ...
-</code></pre>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">&gt;&gt;&gt;</span> c.last_date
+datetime.datetime(<span class="pl-c1">2015</span>, <span class="pl-c1">11</span>, <span class="pl-c1">12</span>, <span class="pl-c1">0</span>, <span class="pl-c1">0</span>)
+<span class="pl-k">&gt;&gt;&gt;</span> <span class="pl-c1">min</span>(c.dates)
+datetime.datetime(<span class="pl-c1">1999</span>, <span class="pl-c1">1</span>, <span class="pl-c1">4</span>, <span class="pl-c1">0</span>, <span class="pl-c1">0</span>)
+<span class="pl-k">&gt;&gt;&gt;</span> <span class="pl-c1">sorted</span>(c.currencies)
+[<span class="pl-s"><span class="pl-pds">'</span>AUD<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>BGN<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>BRL<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>CAD<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>CHF<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>CNY<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>CYP<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>CZK<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>DKK<span class="pl-pds">'</span></span>, ...</pre></div>
       </section>
 
     </div>
