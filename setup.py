@@ -29,12 +29,10 @@ setup(
     description = 'A currency converter using the European Central Bank data.',
     long_description = LONG_DESCRIPTION,
     license = LICENSE,
-    py_modules = [
+    packages = [
         'currency_converter'
     ],
-    data_files = [
-        ('.', ['eurofxref-hist.csv'])
-    ],
+    include_package_data = True,
     #
     # Manage standalone scripts
     entry_points = {

@@ -28,7 +28,7 @@ def main():
     s = unittest.TestSuite()
 
     s.addTests(unittest.makeSuite(CurrencyConverterTest))
-    s.addTests(doctest.DocTestSuite(cc, extraglobs=extraglobs, optionflags=opt))
+    s.addTests(doctest.DocTestSuite(cc.currency_converter, extraglobs=extraglobs, optionflags=opt))
     s.addTests(doctest.DocFileSuite('README.rst', optionflags=opt))
 
     return s

@@ -1,4 +1,4 @@
-include *.csv
 include *.rst
 include VERSION
 include LICENSE
+recursive-include currency_converter *.csv
