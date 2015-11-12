@@ -13,7 +13,7 @@ class CurrencyConverterTest(unittest.TestCase):
         self.cc = cc.CurrencyConverter()
 
     def test_convert(self):
-        self.assertEquals(self.cc.convert(100, 'EUR'), 100.)
+        self.assertEqual(self.cc.convert(100, 'EUR'), 100.)
 
 
 def main():
@@ -23,7 +23,8 @@ def main():
     }
 
     opt = (doctest.ELLIPSIS |
-           doctest.NORMALIZE_WHITESPACE)
+           doctest.NORMALIZE_WHITESPACE |
+           doctest.IGNORE_EXCEPTION_DETAIL)
 
     s = unittest.TestSuite()
 

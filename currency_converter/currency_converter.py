@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
+from __future__ import with_statement, print_function, division
 
 from collections import defaultdict
 from datetime import datetime
 import os.path as op
+
+import six
 
 
 DEF_CURRENCY_FILE = op.join(op.realpath(op.dirname(__file__)), 'eurofxref-hist.csv')
@@ -82,7 +84,7 @@ class CurrencyConverter(object):
         self.currencies = set()
 
         with open(currency_file) as file_:
-            header = file_.next()
+            header = next(file_)
             currencies = header.strip().split(DELIMITER)[1:]
 
             for currency in currencies:
@@ -134,7 +136,7 @@ class CurrencyConverter(object):
         # rates for all dates
         # This should not happen, given the data set
         return min((abs(date - d), d)
-                   for d, r in self._rates.iteritems()
+                   for d, r in six.iteritems(self._rates)
                    if r[currency] is not None)[1]
 
 
@@ -143,7 +145,7 @@ class CurrencyConverter(object):
 
         :type date: datetime
 
-        >>> c.get_rate('USD', date=datetime(2014, 03, 28))
+        >>> c.get_rate('USD', date=datetime(2014, 3, 28))
         1.375...
         >>> c.get_rate('AAA')
         Traceback (most recent call last):
@@ -157,23 +159,23 @@ class CurrencyConverter(object):
             if self._fallback_on_wrong_date:
                 date = self._get_closest_valid_date(date)
                 if self._verbose:
-                    print '/!\\ Invalid date (currency was %s), fallback to %s' % \
-                            (currency, date.strftime(DATE_FORMAT))
+                    print('/!\\ Invalid date (currency was {0}), fallback to {1}'.format(
+                            currency, date.strftime(DATE_FORMAT)))
             else:
-                raise ValueError("Date %s not supported." % date.strftime(DATE_FORMAT))
+                raise ValueError("Date {0} not supported.".format(date.strftime(DATE_FORMAT)))
 
         if currency == REF_CURRENCY:
             return 1.0
 
         if currency not in self._rates[date]:
-            raise ValueError("Currency %s not supported." % currency)
+            raise ValueError("Currency {0} not supported.".format(currency))
 
         if self._rates[date][currency] is None:
             if self._fallback_on_missing_rate:
                 date = self._get_closest_available_date(currency, date)
                 if self._verbose:
-                    print '/!\\ Missing rate for %s, fallback to %s' % \
-                            (currency, date.strftime(DATE_FORMAT))
+                    print('/!\\ Missing rate for {0}, fallback to {1}'.format(
+                            currency, date.strftime(DATE_FORMAT)))
                 return self._rates[date][currency]
 
         return self._rates[date][currency]
@@ -187,9 +189,9 @@ class CurrencyConverter(object):
 
         :type date: datetime
 
-        >>> c.convert(100, 'EUR', 'USD', date=datetime(2014, 03, 28))
+        >>> c.convert(100, 'EUR', 'USD', date=datetime(2014, 3, 28))
         137.5...
-        >>> c.convert(100, 'USD', date=datetime(2014, 03, 28))
+        >>> c.convert(100, 'USD', date=datetime(2014, 3, 28))
         72.67...
         >>> c.convert(100, 'BGN', date=datetime(1999, 11, 10))
         Traceback (most recent call last):
@@ -202,12 +204,12 @@ class CurrencyConverter(object):
         rate_1 = self.get_rate(new_currency, date)
 
         if rate_0 is None:
-            raise RateNotFoundError("Currency %s has no rate for date %s." % \
-                                    (currency, date.strftime(DATE_FORMAT)))
+            raise RateNotFoundError("Currency {0} has no rate for date {1}.".format(
+                                    currency, date.strftime(DATE_FORMAT)))
 
         if rate_1 is None:
-            raise RateNotFoundError("Currency %s has no rate for date %s." % \
-                                    (new_currency, date.strftime(DATE_FORMAT)))
+            raise RateNotFoundError("Currency {0} has no rate for date {1}.".format(
+                                    new_currency, date.strftime(DATE_FORMAT)))
 
         return float(amount) / rate_0 * rate_1
 
@@ -223,9 +225,8 @@ def _test():
     }
 
     opt = (doctest.ELLIPSIS |
-           doctest.NORMALIZE_WHITESPACE)
-           #doctest.REPORT_ONLY_FIRST_FAILURE)
-           #doctest.IGNORE_EXCEPTION_DETAIL)
+           doctest.NORMALIZE_WHITESPACE |
+           doctest.IGNORE_EXCEPTION_DETAIL)
 
     doctest.testmod(extraglobs=extraglobs, optionflags=opt)
 
@@ -259,8 +260,8 @@ def main():
 
     parser.add_argument("-d", "--date",
         help="""
-        Date for conversion, with format %s
-        """ % DATE_FORMAT.replace('%', '%%'),
+        Date for conversion, with format {0}
+        """.format(DATE_FORMAT.replace('%', '%%')),
         default=None)
 
     parser.add_argument("-v", "--verbose",
@@ -276,14 +277,14 @@ def main():
                           fallback_on_missing_rate=True,
                           verbose=True)
 
-    print
-    print 'Available currencies [%s]:' % len(c.currencies)
+    print()
+    print('Available currencies [{0}]:'.format(len(c.currencies)))
     for tuple_ in grouper(10, sorted(c.currencies), padvalue=''):
-        print ' '.join(tuple_)
+        print(' '.join(tuple_))
 
-    print
-    print 'First available date: %s' % c.first_date.strftime(DATE_FORMAT)
-    print 'Last available date : %s' % c.last_date.strftime(DATE_FORMAT)
+    print()
+    print('First available date:', c.first_date.strftime(DATE_FORMAT))
+    print('Last available date :', c.last_date.strftime(DATE_FORMAT))
 
     missing_dates = []
     for d in range((c.last_date - c.first_date).days + 1):
@@ -292,12 +293,13 @@ def main():
             missing_dates.append(date_inter.strftime(DATE_FORMAT))
 
     if missing_dates:
-        print 'Missing [%s/%s]:' % (len(missing_dates),
-                                    (c.last_date - c.first_date).days + 1)
+        print('Missing [{0}/{1}]:'.format(
+            len(missing_dates),
+            (c.last_date - c.first_date).days + 1))
 
     if args.verbose:
         for tuple_ in grouper(10, sorted(missing_dates), padvalue=''):
-            print ' '.join(tuple_)
+            print(' '.join(tuple_))
 
     if args.date is not None:
         date = datetime.strptime(args.date, DATE_FORMAT)
@@ -306,12 +308,13 @@ def main():
 
     new_amount = c.convert(args.amount, args.currency, args.to, date)
 
-    print
-    print '"%s %s" is "%s %s" on %s.' % (args.amount,
-                                         args.currency,
-                                         new_amount,
-                                         args.to,
-                                         date.strftime(DATE_FORMAT))
+    print()
+    print('"{0} {1}" is "{2} {3}" on {4}.'.format(
+        args.amount,
+        args.currency,
+        new_amount,
+        args.to,
+        date.strftime(DATE_FORMAT)))
 
 
 if __name__ == '__main__':

@@ -3,21 +3,20 @@
 
 from __future__ import with_statement
 
-import os.path as op
-from setuptools import setup
-
-def local(rel_path, root_file=__file__):
-    return op.join(op.realpath(op.dirname(root_file)), rel_path)
+from setuptools import setup, find_packages
 
 
-with open(local('VERSION')) as fl:
+with open('VERSION') as fl:
     VERSION = fl.read().rstrip()
 
-with open(local('README.rst')) as fl:
+with open('README.rst') as fl:
     LONG_DESCRIPTION = fl.read()
 
-with open(local('LICENSE')) as fl:
+with open('LICENSE') as fl:
     LICENSE = fl.read()
+
+with open('requirements.txt') as fl:
+    REQUIREMENTS = [row.strip() for row in fl]
 
 
 setup(
@@ -29,12 +28,9 @@ setup(
     description='A currency converter using the European Central Bank data.',
     long_description=LONG_DESCRIPTION,
     license=LICENSE,
-    packages=[
-        'currency_converter'
-    ],
+    packages=find_packages(),
     include_package_data=True,
-    #
-    # Manage standalone scripts
+    install_requires=REQUIREMENTS,
     entry_points={
         'console_scripts' : [
             'currency_converter=currency_converter:main'

@@ -69,7 +69,7 @@ Change reference date for rate:
 .. code-block:: python
 
     >>> from datetime import datetime
-    >>> c.convert(100, 'EUR', 'USD', date=datetime(2013, 03, 21))
+    >>> c.convert(100, 'EUR', 'USD', date=datetime(2013, 3, 21))
     129.1...
 
 Get a rate:
@@ -84,7 +84,7 @@ Fallback mode on not supported dates:
 .. code-block:: python
 
     >>> c = CurrencyConverter(fallback_on_wrong_date=True, verbose=True)
-    >>> c.convert(100, 'EUR', 'USD', date=datetime(1986, 02, 02))
+    >>> c.convert(100, 'EUR', 'USD', date=datetime(1986, 2, 2))
     /!\ Invalid date (currency was EUR), fallback to 1999-01-04
     /!\ Invalid date (currency was USD), fallback to 1999-01-04
     117.89...
