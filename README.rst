@@ -24,6 +24,12 @@ Or use the Python package:
 
   $ pip install --user currencyconverter
 
+Launch the tests with `tox`:
+
+.. code-block:: bash
+
+ $ tox
+
 Command line example
 --------------------
 
