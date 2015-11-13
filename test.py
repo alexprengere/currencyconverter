@@ -4,22 +4,35 @@
 import unittest
 import doctest
 
-import currency_converter as cc
+import currency_converter.currency_converter as cc # actual module
+from currency_converter import CurrencyConverter, S3CurrencyConverter
 
 
 class CurrencyConverterTest(unittest.TestCase):
 
     def setUp(self):
-        self.cc = cc.CurrencyConverter()
+        self.c = CurrencyConverter()
 
     def test_convert(self):
-        self.assertEqual(self.cc.convert(100, 'EUR'), 100.)
+        self.assertEqual(self.c.convert(100, 'EUR'), 100.)
+
+
+class S3CurrencyConverterTest(unittest.TestCase):
+
+    def test_currency_file_required(self):
+        with self.assertRaises(TypeError):
+            #pylint: disable=no-value-for-parameter
+            S3CurrencyConverter()
+
+    def test_currency_file_needs_get_contents_as_strings(self):
+        with self.assertRaises(AttributeError):
+            S3CurrencyConverter('simple_string')
 
 
 def main():
 
     extraglobs = {
-        'c': cc.CurrencyConverter(),
+        'c': CurrencyConverter(),
     }
 
     opt = (doctest.ELLIPSIS |
@@ -29,7 +42,8 @@ def main():
     s = unittest.TestSuite()
 
     s.addTests(unittest.makeSuite(CurrencyConverterTest))
-    s.addTests(doctest.DocTestSuite(cc.currency_converter, extraglobs=extraglobs, optionflags=opt))
+    s.addTests(unittest.makeSuite(S3CurrencyConverterTest))
+    s.addTests(doctest.DocTestSuite(cc, extraglobs=extraglobs, optionflags=opt))
     s.addTests(doctest.DocFileSuite('README.rst', optionflags=opt))
 
     return s
