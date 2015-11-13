@@ -249,7 +249,7 @@ def main():
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("amount")
+    parser.add_argument("amount", type=float)
     parser.add_argument("currency")
 
     parser.add_argument("-t", "--to",
@@ -277,29 +277,26 @@ def main():
                           fallback_on_missing_rate=True,
                           verbose=True)
 
-    print()
     print('Available currencies [{0}]:'.format(len(c.currencies)))
     for tuple_ in grouper(10, sorted(c.currencies), padvalue=''):
         print(' '.join(tuple_))
 
-    print()
-    print('First available date:', c.first_date.strftime(DATE_FORMAT))
-    print('Last available date :', c.last_date.strftime(DATE_FORMAT))
-
-    missing_dates = []
-    for d in range((c.last_date - c.first_date).days + 1):
-        date_inter = c.first_date + td(days=d)
-        if date_inter not in c._rates:
-            missing_dates.append(date_inter.strftime(DATE_FORMAT))
-
-    if missing_dates:
-        print('Missing [{0}/{1}]:'.format(
-            len(missing_dates),
-            (c.last_date - c.first_date).days + 1))
+    print('\nAvailable dates: from {0} to {1}'.format(
+        c.first_date.strftime(DATE_FORMAT), c.last_date.strftime(DATE_FORMAT)))
 
     if args.verbose:
-        for tuple_ in grouper(10, sorted(missing_dates), padvalue=''):
-            print(' '.join(tuple_))
+        missing_dates = []
+        for d in range((c.last_date - c.first_date).days + 1):
+            date_inter = c.first_date + td(days=d)
+            if date_inter not in c._rates:
+                missing_dates.append(date_inter.strftime(DATE_FORMAT))
+
+        if missing_dates:
+            print('Missing [{0}/{1}]:'.format(
+                len(missing_dates),
+                (c.last_date - c.first_date).days + 1))
+            for tuple_ in grouper(10, sorted(missing_dates), padvalue=''):
+                print(' '.join(tuple_))
 
     if args.date is not None:
         date = datetime.strptime(args.date, DATE_FORMAT)
@@ -308,8 +305,7 @@ def main():
 
     new_amount = c.convert(args.amount, args.currency, args.to, date)
 
-    print()
-    print('"{0} {1}" is "{2} {3}" on {4}.'.format(
+    print('\n"{0:.2f} {1}" is "{2:.2f} {3}" on {4}.'.format(
         args.amount,
         args.currency,
         new_amount,
