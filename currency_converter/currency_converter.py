@@ -9,6 +9,12 @@ import os.path as op
 
 import six
 
+__all__ = ['CurrencyConverter',
+           'RateNotFoundError',
+           'DATE_FORMAT',
+           'DELIMITER',
+           'NA_VALUES',
+           'REF_CURRENCY',]
 
 DEF_CURRENCY_FILE = op.join(op.realpath(op.dirname(__file__)), 'eurofxref-hist.csv')
 
