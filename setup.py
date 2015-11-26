@@ -15,9 +15,6 @@ with open('README.rst') as fl:
 with open('LICENSE') as fl:
     LICENSE = fl.read()
 
-with open('requirements.txt') as fl:
-    REQUIREMENTS = [row.strip() for row in fl]
-
 
 setup(
     name='CurrencyConverter',
@@ -30,7 +27,9 @@ setup(
     license=LICENSE,
     packages=find_packages(),
     include_package_data=True,
-    install_requires=REQUIREMENTS,
+    install_requires=[
+        'six==1.10',
+    ],
     entry_points={
         'console_scripts' : [
             'currency_converter=currency_converter.currency_converter:main'
