@@ -4,7 +4,7 @@
 from __future__ import with_statement, print_function, division
 
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta
 import os.path as op
 
 import six
@@ -121,16 +121,15 @@ class CurrencyConverter(object):
                     if rate in NA_VALUES:
                         self._rates[date][currency] = None
                     else:
-                        self._rates[date][currency] = float(rate)
-
+                        self._rates[date][currency] = float(rate)  
 
     def _get_closest_valid_date(self, date):
-        """Compute closest valid date of a given date.
-
-        >>> from datetime import datetime
-        >>> c._get_closest_valid_date(datetime(1990, 1, 1))
-        datetime.datetime(1999, 1, 4, 0, 0)
-        """
+        # Optimistically look for a date 4 days on either side
+        for i in [ 1, -1, 2, -2, 3, -3, 4, -4, 5, -5 ]:
+            d = date + timedelta(days=i)
+            if d in self._rates:
+                return d
+        # Fall back on the slow linear scan over all dates
         return min((abs(date - d), d) for d in self._rates)[1]
 
 
@@ -141,10 +140,12 @@ class CurrencyConverter(object):
         >>> c._get_closest_available_date('BGN', datetime(1999, 12, 1))
         datetime.datetime(2000, 7, 19, 0, 0)
         """
-        # Notice that we do not catch the ValueError
-        # occurring if one currency has only None
-        # rates for all dates
-        # This should not happen, given the data set
+        # Optimistically look for a date 4 days on either side
+        for i in [ 1, -1, 2, -2, 3, -3, 4, -4 ]:
+            d = date + timedelta(days=i)
+            if d in self._rates and self._rates[d][currency] is not None:
+                return d
+        # Fall back on the slow linear scan over all dates
         return min((abs(date - d), d)
                    for d, r in six.iteritems(self._rates)
                    if r[currency] is not None)[1]
