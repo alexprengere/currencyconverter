@@ -7,6 +7,7 @@ import doctest
 import currency_converter.currency_converter as cc # actual module
 from currency_converter import CurrencyConverter, S3CurrencyConverter
 
+from datetime import datetime
 
 class CurrencyConverterTest(unittest.TestCase):
 
@@ -16,6 +17,25 @@ class CurrencyConverterTest(unittest.TestCase):
     def test_convert(self):
         self.assertEqual(self.c.convert(100, 'EUR'), 100.)
 
+    def test_closest_valid_date_go_down(self):
+        expected = datetime(2016, 4, 15)
+        actual = self.c._get_closest_valid_date(datetime(2016, 4, 16))
+        self.assertEqual(expected, actual)
+
+    def test_closest_valid_date_go_up(self):
+        expected = datetime(2016, 4, 18)
+        actual = self.c._get_closest_valid_date(datetime(2016, 4, 17))
+        self.assertEqual(expected, actual)
+
+    def test_closest_valid_date_stay(self):
+        expected = datetime(2016, 4, 18)
+        actual = self.c._get_closest_valid_date(datetime(2016, 4, 17))
+        self.assertEqual(expected, actual)
+
+    def test_closest_valid_way_off(self):
+        expected = datetime(1999, 1, 4)
+        actual = self.c._get_closest_valid_date(datetime(1245, 4, 17))
+        self.assertEqual(expected, actual)
 
 class S3CurrencyConverterTest(unittest.TestCase):
 
