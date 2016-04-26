@@ -13,7 +13,6 @@ __all__ = ['CurrencyConverter',
            'S3CurrencyConverter',
            'RateNotFoundError',
            'DATE_FORMAT',
-           'DELIMITER',
            'NA',
            'REF_CURRENCY', ]
 
@@ -25,11 +24,8 @@ REF_CURRENCY = 'EUR'
 # Date format in first column
 DATE_FORMAT = "%Y-%m-%d"
 
-# Field separator
-DELIMITER = ","
-
 # Missing values
-NA_VALUES = set(['', 'N/A'])
+NA = set(['', 'N/A'])
 
 
 class RateNotFoundError(Exception):
@@ -64,60 +60,41 @@ class CurrencyConverter(object):
                  fallback_on_missing_rate=False,
                  verbose=False):
 
-        # Global parameters
+        # Global options
         self._fallback_on_wrong_date = fallback_on_wrong_date
         self._fallback_on_missing_rate = fallback_on_missing_rate
         self._verbose = verbose
 
-        # Main structure
-        self._rates = None
-
         # Public members, which will be filled once the file is loaded
+        self._rates = None
         self.currencies = None
         self.first_date = None
         self.last_date = None
-        self.dates = None
 
         self.load_file(currency_file)
 
-
-        self._rates = defaultdict(dict)
-        self.currencies = set()
 
     def load_file(self, currency_file):
         """Load the currency file in the main structure."""
         with open(currency_file) as fl:
             self._load_file_like(fl)
 
-        # Most recent date for rates
-        self.dates = set(self._rates)
-        self.first_date = min(self.dates)
-        self.last_date = max(self.dates)
-
 
     def _load_file_like(self, fl):
-        header = next(fl)
-        currencies = header.strip().split(DELIMITER)[1:]
+        currency_header = next(fl).strip().split(',')[1:]
 
-        for currency in currencies:
-            if currency:
-                self.currencies.add(currency)
-        self.currencies.add(REF_CURRENCY)
+        self._rates = defaultdict(dict)
+        for row in fl:
+            row = row.strip().split(',')
+            date = datetime.strptime(row[0], DATE_FORMAT)
+            for c, rate in zip(currency_header, row[1:]):
+                if c: # Get rid of empty currency at end of row in BCE data
+                    self._rates[date][c] = None if rate in NA else float(rate)
 
-        for line in fl:
-            line = line.strip().split(DELIMITER)
+        self.currencies = set([REF_CURRENCY] + [c for c in currency_header if c])
+        self.first_date = min(self._rates)
+        self.last_date = max(self._rates)
 
-            # date, USD, JPY, ...
-            date = datetime.strptime(line[0], DATE_FORMAT)
-            rates = line[1:]
-
-            for currency, rate in zip(currencies, rates):
-                # Get rid of empty currency at end of line
-                if currency:
-                    if rate in NA_VALUES:
-                        self._rates[date][currency] = None
-                    else:
-                        self._rates[date][currency] = float(rate)  
 
     def _get_closest_valid_date(self, date):
         # Optimistically look for a date 4 days on either side
@@ -233,16 +210,9 @@ class S3CurrencyConverter(CurrencyConverter):
         super(S3CurrencyConverter, self).__init__(currency_file, **kwargs)
 
 
-        self._rates = defaultdict(dict)
-        self.currencies = set()
-
     def load_file(self, currency_file):
         lines = currency_file.get_contents_as_string().splitlines()
         self._load_file_like(lines)
-
-        self.dates = set(self._rates)
-        self.first_date = min(self.dates)
-        self.last_date = max(self.dates)
 
 
 def _test():
