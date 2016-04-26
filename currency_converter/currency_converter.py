@@ -14,8 +14,8 @@ __all__ = ['CurrencyConverter',
            'RateNotFoundError',
            'DATE_FORMAT',
            'DELIMITER',
-           'NA_VALUES',
-           'REF_CURRENCY',]
+           'NA',
+           'REF_CURRENCY', ]
 
 DEF_CURRENCY_FILE = op.join(op.realpath(op.dirname(__file__)), 'eurofxref-hist.csv')
 
@@ -286,28 +286,25 @@ def main():
     parser.add_argument("amount", type=float)
     parser.add_argument("currency")
 
-    parser.add_argument("-t", "--to",
-        help="""
-        To currency, default %(default)s
-        """,
+    parser.add_argument(
+        "-t", "--to",
+        help="Target currency, default is %(default)s",
         default=REF_CURRENCY)
 
-    parser.add_argument("-d", "--date",
-        help="""
-        Date for conversion, with format {0}
-        """.format(DATE_FORMAT.replace('%', '%%')),
+    parser.add_argument(
+        "-d", "--date",
+        help="Date for conversion, with format {0}".format(
+            DATE_FORMAT.replace('%', '%%')),
         default=None)
 
-    parser.add_argument("-v", "--verbose",
-        help="""
-        Display additional information on data set.
-        """,
+    parser.add_argument(
+        "-v", "--verbose",
+        help="Display additional information on data set.",
         action='store_true')
 
-    parser.add_argument("-f", "--file",
-        help="""
-        Change currency file used, default %(default)s
-        """,
+    parser.add_argument(
+        "-f", "--file",
+        help="Change currency file used, default %(default)s",
         default=DEF_CURRENCY_FILE)
 
     args = parser.parse_args()
@@ -357,4 +354,3 @@ def main():
 if __name__ == '__main__':
 
     main()
-
