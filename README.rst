@@ -123,10 +123,10 @@ Other public members:
 
 .. code-block:: python
 
+    >>> c.first_date
+    datetime.datetime(1999, 1, 4, 0, 0)
     >>> c.last_date # doctest: +SKIP
     datetime.datetime(2016, 4, 14, 0, 0)
-    >>> min(c.dates)
-    datetime.datetime(1999, 1, 4, 0, 0)
     >>> sorted(c.currencies)
     ['AUD', 'BGN', 'BRL', 'CAD', 'CHF', 'CNY', 'CYP', 'CZK', 'DKK', ...
 
