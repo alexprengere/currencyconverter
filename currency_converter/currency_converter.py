@@ -304,10 +304,17 @@ def main():
         """,
         action='store_true')
 
+    parser.add_argument("-f", "--file",
+        help="""
+        Change currency file used, default %(default)s
+        """,
+        default=DEF_CURRENCY_FILE)
+
     args = parser.parse_args()
 
 
-    c = CurrencyConverter(fallback_on_wrong_date=True,
+    c = CurrencyConverter(currency_file=args.file,
+                          fallback_on_wrong_date=True,
                           fallback_on_missing_rate=True,
                           verbose=True)
 
