@@ -59,7 +59,7 @@ class CurrencyConverter(object):
     >>> c = CurrencyConverter()
     """
     def __init__(self,
-                 currency_file=None,
+                 currency_file=DEF_CURRENCY_FILE,
                  fallback_on_wrong_date=False,
                  fallback_on_missing_rate=False,
                  verbose=False):
@@ -78,18 +78,14 @@ class CurrencyConverter(object):
         self.last_date = None
         self.dates = None
 
-        if currency_file is None:
-            self._load_file(DEF_CURRENCY_FILE)
-        else:
-            self._load_file(currency_file)
+        self.load_file(currency_file)
 
 
-    def _load_file(self, currency_file):
-        """Load the currency file in the main structure.
-        """
         self._rates = defaultdict(dict)
         self.currencies = set()
 
+    def load_file(self, currency_file):
+        """Load the currency file in the main structure."""
         with open(currency_file) as fl:
             self._load_file_like(fl)
 
@@ -237,10 +233,10 @@ class S3CurrencyConverter(CurrencyConverter):
         super(S3CurrencyConverter, self).__init__(currency_file, **kwargs)
 
 
-    def _load_file(self, currency_file):
         self._rates = defaultdict(dict)
         self.currencies = set()
 
+    def load_file(self, currency_file):
         lines = currency_file.get_contents_as_string().splitlines()
         self._load_file_like(lines)
 
