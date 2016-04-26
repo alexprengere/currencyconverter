@@ -36,6 +36,12 @@ class RateNotFoundError(Exception):
     pass
 
 
+def dates_between(d0, d1):
+    """Yields all dates from d0 to d1 included."""
+    for n in range(1 + (d1 - d0).days):
+        yield d0 + timedelta(days=n)
+
+
 class CurrencyConverter(object):
     """
     At init, load the historic (since 1999) currencies from the ECB.
@@ -81,17 +87,18 @@ class CurrencyConverter(object):
 
 
     def _load_file_like(self, fl):
-        currency_header = next(fl).strip().split(',')[1:]
-
         self._rates = defaultdict(dict)
+        header = next(fl).strip().split(',')[1:]
+
         for row in fl:
             row = row.strip().split(',')
-            date = datetime.strptime(row[0], DATE_FORMAT)
-            for c, rate in zip(currency_header, row[1:]):
-                if c: # Get rid of empty currency at end of row in BCE data
-                    self._rates[date][c] = None if rate in NA else float(rate)
+            dt = datetime.strptime(row[0], DATE_FORMAT)
 
-        self.currencies = set([REF_CURRENCY] + [c for c in currency_header if c])
+            for currency, rate in zip(header, row[1:]):
+                if currency: # get rid of last empty currency in BCE data
+                    self._rates[dt][currency] = None if rate in NA else float(rate)
+
+        self.currencies = set([REF_CURRENCY] + [c for c in header if c])
         self.first_date = min(self._rates)
         self.last_date = max(self._rates)
 
@@ -290,10 +297,9 @@ def main():
 
     if args.verbose:
         missing_dates = []
-        for d in range((c.last_date - c.first_date).days + 1):
-            date_inter = c.first_date + td(days=d)
-            if date_inter not in c._rates:
-                missing_dates.append(date_inter.strftime(DATE_FORMAT))
+        for dt in dates_between(c.first_date, c.last_date):
+            if dt not in c._rates:
+                missing_dates.append(dt.strftime(DATE_FORMAT))
 
         if missing_dates:
             print('Missing [{0}/{1}]:'.format(
@@ -303,18 +309,18 @@ def main():
                 print(' '.join(tuple_))
 
     if args.date is not None:
-        date = datetime.strptime(args.date, DATE_FORMAT)
+        dt = datetime.strptime(args.date, DATE_FORMAT)
     else:
-        date = c.last_date
+        dt = c.last_date
 
-    new_amount = c.convert(args.amount, args.currency, args.to, date)
+    new_amount = c.convert(args.amount, args.currency, args.to, dt)
 
     print('\n"{0:.2f} {1}" is "{2:.2f} {3}" on {4}.'.format(
         args.amount,
         args.currency,
         new_amount,
         args.to,
-        date.strftime(DATE_FORMAT)))
+        dt.strftime(DATE_FORMAT)))
 
 
 if __name__ == '__main__':
