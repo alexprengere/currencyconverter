@@ -227,27 +227,8 @@ class S3CurrencyConverter(CurrencyConverter):
         self._load_file_like(lines)
 
 
-def _test():
-    """When called directly, launching doctests.
-    """
-    import doctest
-
-    extraglobs = {
-        'c': CurrencyConverter(),
-    }
-
-    opt = (doctest.ELLIPSIS |
-           doctest.NORMALIZE_WHITESPACE |
-           doctest.IGNORE_EXCEPTION_DETAIL)
-
-    doctest.testmod(extraglobs=extraglobs, optionflags=opt)
-
-
 def main():
-    """Main.
-    """
     import argparse
-    from datetime import timedelta as td
     from itertools import izip_longest
 
     def grouper(n, iterable, padvalue=None):
