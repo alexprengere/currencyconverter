@@ -9,6 +9,7 @@ from currency_converter import CurrencyConverter, S3CurrencyConverter
 
 from datetime import datetime
 
+
 class CurrencyConverterTest(unittest.TestCase):
 
     def setUp(self):
@@ -37,6 +38,7 @@ class CurrencyConverterTest(unittest.TestCase):
         actual = self.c._get_closest_valid_date(datetime(1245, 4, 17))
         self.assertEqual(expected, actual)
 
+
 class S3CurrencyConverterTest(unittest.TestCase):
 
     def test_currency_file_required(self):
@@ -50,7 +52,6 @@ class S3CurrencyConverterTest(unittest.TestCase):
 
 
 def main():
-
     extraglobs = {
         'c': CurrencyConverter(),
     }
@@ -70,6 +71,4 @@ def main():
 
 
 if __name__ == '__main__':
-
     unittest.main(defaultTest='main')
-

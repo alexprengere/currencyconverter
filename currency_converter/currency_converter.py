@@ -156,9 +156,9 @@ class CurrencyConverter(object):
                 date = self._get_closest_valid_date(date)
                 if self._verbose:
                     print('/!\\ Invalid date (currency was {0}), fallback to {1}'.format(
-                            currency, date.strftime(DATE_FORMAT)))
+                        currency, date))
             else:
-                raise ValueError("Date {0} not supported.".format(date.strftime(DATE_FORMAT)))
+                raise ValueError("Date {0} not supported.".format(date))
 
         if currency == REF_CURRENCY:
             return 1.0
@@ -201,11 +201,11 @@ class CurrencyConverter(object):
 
         if rate_0 is None:
             raise RateNotFoundError("Currency {0} has no rate for date {1}.".format(
-                                    currency, date.strftime(DATE_FORMAT)))
+                                    currency, date))
 
         if rate_1 is None:
             raise RateNotFoundError("Currency {0} has no rate for date {1}.".format(
-                                    new_currency, date.strftime(DATE_FORMAT)))
+                                    new_currency, date))
 
         return float(amount) / rate_0 * rate_1
 
@@ -329,5 +329,4 @@ def main():
 
 
 if __name__ == '__main__':
-
     main()
