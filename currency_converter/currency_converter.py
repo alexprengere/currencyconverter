@@ -28,18 +28,18 @@ DATE_FORMAT = "%Y-%m-%d"
 NA = set(['', 'N/A'])
 
 
+def dates_between(d0, d1):
+    """Yields all dates from d0 to d1 included."""
+    for n in range(1 + (d1 - d0).days):
+        yield d0 + timedelta(days=n)
+
+
 class RateNotFoundError(Exception):
     """Custom exception when data is missing in the rates file.
 
     With Python 2.6+ there no need to subclass __init__ and __str__.
     """
     pass
-
-
-def dates_between(d0, d1):
-    """Yields all dates from d0 to d1 included."""
-    for n in range(1 + (d1 - d0).days):
-        yield d0 + timedelta(days=n)
 
 
 class CurrencyConverter(object):
