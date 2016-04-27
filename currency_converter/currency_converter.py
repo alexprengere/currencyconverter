@@ -6,8 +6,13 @@ from __future__ import with_statement, print_function, division
 from collections import defaultdict
 from datetime import datetime, timedelta
 import os.path as op
-
+from itertools import izip as zip
+try:
+    range = xrange
+except NameError:
+    pass
 import six
+
 
 __all__ = ['CurrencyConverter',
            'S3CurrencyConverter',
