@@ -25,8 +25,8 @@ Or use the Python package:
 
   $ pip install --user currencyconverter
 
-Command line example
---------------------
+Command line tool
+-----------------
 
 After installation, you should have ``currency_converter`` in your ``$PATH``:
 

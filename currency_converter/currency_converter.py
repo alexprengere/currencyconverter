@@ -154,7 +154,6 @@ class CurrencyConverter(object):
                 print(('{0}: filling {1} missing rate with {2} [dist:{3}] and '
                        '{4} [dist:{5}]').format(currency, date, r0, d0, r1, d1))
 
-
     def _get_rate(self, currency, date):
         """Get a rate for a given currency and date.
 
@@ -187,7 +186,7 @@ class CurrencyConverter(object):
 
         rate = self._rates[currency][date]
         if rate is None:
-            raise RateNotFoundError("{0} has no rate for {1}".format(currency, date))
+            raise RateNotFoundError('{0} has no rate for {1}'.format(currency, date))
         return rate
 
     def convert(self, amount, currency, new_currency='EUR', date=None):
@@ -205,7 +204,7 @@ class CurrencyConverter(object):
         """
         # ref_currency is in self.currencies
         if currency not in self.currencies:
-            raise ValueError("{0} is not a supported currency".format(currency))
+            raise ValueError('{0} is not a supported currency'.format(currency))
 
         if date is None:
             date = self.bounds[currency].last_date
@@ -252,32 +251,32 @@ def main():
         return izip_longest(*[iter(iterable)] * n, fillvalue=padvalue)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("amount", type=float)
-    parser.add_argument("currency")
+    parser.add_argument('amount', type=float)
+    parser.add_argument('currency')
 
     parser.add_argument(
-        "-t", "--to",
-        help="Target currency, default is %(default)s",
+        '-t', '--to',
+        help='Target currency, default is %(default)s',
         default='EUR')
 
     parser.add_argument(
-        "-d", "--date",
-        help="Date for conversion, with format %%Y-%%m-%%d",
+        '-d', '--date',
+        help='Date of rate, with format %%Y-%%m-%%d',
         default=None)
 
     parser.add_argument(
-        "-v", "--verbose",
-        help="Display additional information on data set.",
+        '-v', '--verbose',
+        help='Display additional information on data set.',
         action='store_true')
 
     parser.add_argument(
-        "-vv",
-        help="Display details of missing rates completion.",
+        '-vv',
+        help='Display details of missing rates completion.',
         action='store_true')
 
     parser.add_argument(
-        "-f", "--file",
-        help="Change currency file used, default %(default)s",
+        '-f', '--file',
+        help='Change currency file used, default %(default)s',
         default=CURRENCY_FILE)
 
     args = parser.parse_args()
