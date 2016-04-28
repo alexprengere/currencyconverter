@@ -37,7 +37,7 @@ After installation, you should have ``currency_converter`` in your ``$PATH``:
 
 .. code-block:: bash
 
- $ currency_converter 100 USD -d 2013-12-12
+ $ currency_converter 100 USD --to EUR
  Available currencies [42]:
  AUD BGN BRL CAD CHF CNY CYP CZK DKK EEK
  EUR GBP HKD HRK HUF IDR ILS INR ISK JPY
@@ -45,26 +45,26 @@ After installation, you should have ``currency_converter`` in your ``$PATH``:
  ROL RON RUB SEK SGD SIT SKK THB TRL TRY
  USD ZAR
 
- "100.000 USD" is "72.595 EUR" on 2013-12-12
+ "100.000 USD" is "87.881 EUR" on 2016-04-20
 
 Python API example
 ------------------
 
-Example:
+Create once the currency converter object:
 
 .. code-block:: python
 
     >>> from currency_converter import CurrencyConverter
     >>> c = CurrencyConverter()
 
-Convert from EUR to USD:
+Convert from ``EUR`` to ``USD`` using the last available rate:
 
 .. code-block:: python
 
     >>> c.convert(100, 'EUR', 'USD') # doctest: +SKIP
     137.5...
 
-Default target currency is EUR:
+Default target currency is ``EUR``:
 
 .. code-block:: python
 
@@ -73,25 +73,15 @@ Default target currency is EUR:
     >>> c.convert(100, 'USD') # doctest: +SKIP
     72.67...
 
-Change reference date for rate:
+You can change the date of the rate:
 
 .. code-block:: python
 
-    >>> from datetime import date
+    >>> from datetime import date # datetime works too
     >>> c.convert(100, 'EUR', 'USD', date=date(2013, 3, 21))
     129.1...
-    >>> from datetime import datetime # works too ;)
-    >>> c.convert(100, 'EUR', 'USD', date=datetime(2013, 3, 21))
-    129.1...
 
-Get a rate:
-
-.. code-block:: python
-
-    >>> c.get_rate('USD', date=date(2013, 3, 21))
-    1.291
-
-Sometimes rates are missing:
+Some rates are missing:
 
 .. code-block:: python
 
@@ -108,7 +98,7 @@ closest known rates, as long as you ask for a date within the currency date boun
     >>> c.convert(100, 'BGN', date=date(2010, 11, 21))
     51.12...
 
-We also have a fallback mode when asking dates outside of the currency bounds:
+We also have a fallback mode for dates outside the currency bounds:
 
 .. code-block:: python
 
@@ -117,19 +107,19 @@ We also have a fallback mode when asking dates outside of the currency bounds:
     Traceback (most recent call last):
     ValueError: 1986-02-02 not in USD bounds 1999-01-04/2016-04-20
     >>> 
-    >>> c = CurrencyConverter(fallback_on_wrong_date=True, verbose=True)
-    AUD: 1888 missing rates from 1999-01-04 to ...
-    >>> c.convert(100, 'EUR', 'USD', date=date(1986, 2, 2))
-    1986-02-02 not in USD bounds 1999-01-04/2016-04-20, falling back to closest one
+    >>> c = CurrencyConverter(fallback_on_wrong_date=True)
+    >>> c.convert(100, 'EUR', 'USD', date=date(1986, 2, 2)) # fallback to 1999-01-04
     117.89...
 
-Use your own currency file with the same format:
+You can use your own currency file, as long as it has the same format (ECB):
 
 .. code-block:: python
 
     >>> c = CurrencyConverter('./path/to/currency/file.csv') # doctest: +SKIP
 
-Other public members:
+Other attributes
+
++ ``bounds`` let you know the first and last available date for each currency
 
 .. code-block:: python
 
@@ -138,15 +128,15 @@ Other public members:
     datetime.date(1999, 1, 4)
     >>> last_date
     datetime.date(2016, 4, 20)
-    >>> sorted(c.currencies)
-    ['AUD', 'BGN', 'BRL', 'CAD', 'CHF', 'CNY', 'CYP', 'CZK', 'DKK', ...
 
-Error cases:
++ ``currencies`` is a set containing all available currency
 
 .. code-block:: python
 
-    >>> c = CurrencyConverter()
+    >>> c.currencies # doctest: +SKIP
+    set(['SGD', 'CAD', 'SEK', 'GBP', ...
+    >>> 'AAA' in c.currencies
+    False
     >>> c.convert(100, 'AAA')
     Traceback (most recent call last):
     ValueError: AAA is not a supported currency
-

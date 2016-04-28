@@ -38,20 +38,18 @@ class RateNotFoundError(Exception):
 
 class CurrencyConverter(object):
     """
-    At init, load the historic (since 1999) currencies from the ECB.
+    At init, load the historic currencies (since 1999) from the ECB.
+    The rates are EUR foreign exchange reference rates:
 
-    Example:
     Date,USD,JPY,BGN,CYP,CZK,...
     2014-03-28,1.3759,140.9,1.9558,N/A,27.423,...
     2014-03-27,1.3758,...
 
-    The main _rates structure is a dictionary with:
+    The _rates attribute is a dictionary with:
     + currencies as keys
     + {date: rate, ...} as values.
 
     bounds is a dict if first and last date available per currency.
-
-    The rates are EUR foreign exchange reference rates.
 
     >>> from currency_converter import CurrencyConverter
     >>> c = CurrencyConverter()
@@ -76,9 +74,9 @@ class CurrencyConverter(object):
         self.bounds = None
         self.currencies = None
 
-        self.load_file(currency_file)
+        self._load_file(currency_file)
 
-    def load_file(self, currency_file):
+    def _load_file(self, currency_file):
         """Load the currency file in the main structure."""
         with open(currency_file) as lines:
             self._load_lines(lines)
@@ -157,32 +155,19 @@ class CurrencyConverter(object):
                        '{4} [dist:{5}]').format(currency, date, r0, d0, r1, d1))
 
 
-    def get_rate(self, currency='EUR', date=None):
+    def _get_rate(self, currency, date):
         """Get a rate for a given currency and date.
 
         :type date: datetime.date
 
-        >>> c.get_rate('USD', date=date(2014, 3, 28))
+        >>> c._get_rate('USD', date=date(2014, 3, 28))
         1.375...
-        >>> c.get_rate('AAA')
+        >>> c._get_rate('BGN', date=date(2010, 11, 21))
         Traceback (most recent call last):
-        ValueError: AAA is not a supported currency
-        >>> c.get_rate('BGN', date=date(2010, 11, 21)) # None, rate is missing
+        RateNotFoundError: BGN has no rate for 2010-11-21
         """
         if currency == self.ref_currency:
             return 1.0
-
-        if currency not in self._rates:
-            raise ValueError("{0} is not a supported currency".format(currency))
-
-        if date is None:
-            date = self.bounds[currency].last_date
-
-        try:
-            date = date.date()
-        except AttributeError:
-            # This is just in case the input was a datetime and not a date
-            pass
 
         if date not in self._rates[currency]:
             first_date, last_date = self.bounds[currency]
@@ -200,13 +185,13 @@ class CurrencyConverter(object):
                 raise ValueError('{0} not in {1} bounds {2}/{3}'.format(
                     date, currency, first_date, last_date))
 
-        return self._rates[currency][date]
+        rate = self._rates[currency][date]
+        if rate is None:
+            raise RateNotFoundError("{0} has no rate for {1}".format(currency, date))
+        return rate
 
     def convert(self, amount, currency, new_currency='EUR', date=None):
-        """
-        Return amount converted to a target currency.
-        Target currency is EUR as default.
-        Default date is most recent as default
+        """Convert amount from a currency to another one.
 
         :type date: datetime.date
 
@@ -224,15 +209,15 @@ class CurrencyConverter(object):
 
         if date is None:
             date = self.bounds[currency].last_date
+        else:
+            # in case the input was a datetime and not a date
+            try:
+                date = date.date()
+            except AttributeError:
+                pass
 
-        r0 = self.get_rate(currency, date)
-        r1 = self.get_rate(new_currency, date)
-
-        if r0 is None:
-            raise RateNotFoundError("{0} has no rate for {1}".format(currency, date))
-
-        if r1 is None:
-            raise RateNotFoundError("{0} has no rate for {1}".format(new_currency, date))
+        r0 = self._get_rate(currency, date)
+        r1 = self._get_rate(new_currency, date)
 
         return float(amount) / r0 * r1
 
@@ -249,7 +234,7 @@ class S3CurrencyConverter(CurrencyConverter):
         super(S3CurrencyConverter, self).__init__(currency_file, **kwargs)
 
 
-    def load_file(self, currency_file):
+    def _load_file(self, currency_file):
         lines = currency_file.get_contents_as_string().splitlines()
         self._load_lines(lines)
 
