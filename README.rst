@@ -135,7 +135,7 @@ Other public members:
     datetime.date(1999, 1, 4)
     >>> last_date
     datetime.date(2016, 4, 20)
-    >>> c.currencies
+    >>> sorted(c.currencies)
     ['AUD', 'BGN', 'BRL', 'CAD', 'CHF', 'CNY', 'CYP', 'CZK', 'DKK', ...
 
 Error cases:

@@ -74,11 +74,9 @@ class CurrencyConverter(object):
         # Will be filled once the file is loaded
         self._rates = None
         self.bounds = None
-        self.load_file(currency_file)
+        self.currencies = None
 
-    @property
-    def currencies(self):
-        return sorted(list(self._rates) + [self.ref_currency])
+        self.load_file(currency_file)
 
     def load_file(self, currency_file):
         """Load the currency file in the main structure."""
@@ -111,6 +109,8 @@ class CurrencyConverter(object):
             self._set_missing_to_none(currency)
             if self.fallback_on_missing_rate:
                 self._compute_missing_rates(currency)
+
+        self.currencies = set(self._rates) | set([self.ref_currency])
 
     def _set_missing_to_none(self, currency):
         """Replace missing dates/rates with None inside date bounds for currency."""
@@ -218,7 +218,8 @@ class CurrencyConverter(object):
         Traceback (most recent call last):
         RateNotFoundError: BGN has no rate for 2010-11-21
         """
-        if currency != self.ref_currency and currency not in self._rates:
+        # ref_currency is in self.currencies
+        if currency not in self.currencies:
             raise ValueError("{0} is not a supported currency".format(currency))
 
         if date is None:
@@ -302,12 +303,12 @@ def main():
                           verbose=args.vv)
 
     print('\nAvailable currencies [{0}]:'.format(len(c.currencies)))
-    for tuple_ in grouper(10, c.currencies, padvalue=''):
+    for tuple_ in grouper(10, sorted(c.currencies), padvalue=''):
         print(' '.join(tuple_))
 
     if args.verbose:
         print('\nCurrencies bounds:')
-        for currency in c.currencies:
+        for currency in sorted(c.currencies):
             if currency != c.ref_currency:
                 print('{0}: from {1.first_date} to {1.last_date}'.format(
                     currency, c.bounds[currency]))
