@@ -74,7 +74,10 @@ Change reference date for rate:
 
 .. code-block:: python
 
-    >>> from datetime import datetime
+    >>> from datetime import date
+    >>> c.convert(100, 'EUR', 'USD', date=date(2013, 3, 21))
+    129.1...
+    >>> from datetime import datetime # works too ;)
     >>> c.convert(100, 'EUR', 'USD', date=datetime(2013, 3, 21))
     129.1...
 
@@ -82,52 +85,57 @@ Get a rate:
 
 .. code-block:: python
 
-    >>> c.get_rate('USD') # doctest: +SKIP
-    1.375...
-
-Fallback mode on not supported dates:
-
-.. code-block:: python
-
-    >>> c = CurrencyConverter(fallback_on_wrong_date=True, verbose=True)
-    >>> c.convert(100, 'EUR', 'USD', date=datetime(1986, 2, 2))
-    /!\ Invalid date (currency was EUR), fallback to 1999-01-04
-    /!\ Invalid date (currency was USD), fallback to 1999-01-04
-    117.89...
+    >>> c.get_rate('USD', date=date(2013, 3, 21))
+    1.291
 
 Sometimes rates are missing:
 
 .. code-block:: python
 
-    >>> c.convert(100, 'BGN', date=datetime(1999, 11, 10))
+    >>> c.convert(100, 'BGN', date=date(2010, 11, 21))
     Traceback (most recent call last):
-    RateNotFoundError: Currency BGN has no rate for date 1999-11-10.
+    RateNotFoundError: BGN has no rate for 2010-11-21
 
-But we also have a fallback mode for those:
+But we have a fallback mode for those, using a linear interpolation of the
+closest known rates, as long as you ask for a date within the currency date limits:
 
 .. code-block:: python
 
-    >>> c = CurrencyConverter(fallback_on_wrong_date=True,
-    ...                       fallback_on_missing_rate=True,
-    ...                       verbose=True)
-    >>> c.convert(100, 'BGN', date=datetime(1999, 11, 10))
-    /!\ Missing rate for BGN, fallback to 2000-07-19
-    51.36...
-    >>> c.convert(100, 'BGN', 'EUR', date=datetime(1980, 1, 1))
-    /!\ Invalid date (currency was BGN), fallback to 1999-01-04
-    /!\ Missing rate for BGN, fallback to 2000-07-19
-    /!\ Invalid date (currency was EUR), fallback to 1999-01-04
-    51.36...
+    >>> c = CurrencyConverter(fallback_on_missing_rate=True)
+    >>> c.convert(100, 'BGN', date=date(2010, 11, 21))
+    51.12...
+
+We also have a fallback mode when asking dates outside of the currency bounds:
+
+.. code-block:: python
+
+    >>> c = CurrencyConverter()
+    >>> c.convert(100, 'EUR', 'USD', date=date(1986, 2, 2))
+    Traceback (most recent call last):
+    ValueError: 1986-02-02 not in USD bounds 1999-01-04/2016-04-20
+    >>> 
+    >>> c = CurrencyConverter(fallback_on_wrong_date=True, verbose=True)
+    AUD: 1888 missing rates from 1999-01-04 to ...
+    >>> c.convert(100, 'EUR', 'USD', date=date(1986, 2, 2))
+    1986-02-02 not in USD bounds 1999-01-04/2016-04-20, falling back to closest one
+    117.89...
+
+Use your own currency file with the same format:
+
+.. code-block:: python
+
+    >>> c = CurrencyConverter('./path/to/currency/file.csv') # doctest: +SKIP
 
 Other public members:
 
 .. code-block:: python
 
-    >>> c.first_date
-    datetime.datetime(1999, 1, 4, 0, 0)
-    >>> c.last_date # doctest: +SKIP
-    datetime.datetime(2016, 4, 14, 0, 0)
-    >>> sorted(c.currencies)
+    >>> first_date, last_date = c.bounds['USD']
+    >>> first_date
+    datetime.date(1999, 1, 4)
+    >>> last_date
+    datetime.date(2016, 4, 20)
+    >>> c.currencies
     ['AUD', 'BGN', 'BRL', 'CAD', 'CHF', 'CNY', 'CYP', 'CZK', 'DKK', ...
 
 Error cases:
@@ -135,8 +143,7 @@ Error cases:
 .. code-block:: python
 
     >>> c = CurrencyConverter()
-    >>> c.get_rate('BGN', date=datetime(1999, 11, 10)) # None, rate is missing
-    >>> c.get_rate('AAA')
+    >>> c.convert(100, 'AAA')
     Traceback (most recent call last):
-    ValueError: Currency AAA not supported.
+    ValueError: AAA is not a supported currency
 
