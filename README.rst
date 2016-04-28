@@ -3,8 +3,9 @@ Currency converter
 
 This is a currency converter that uses historical rates against a reference currency (Euro).
 
-Currency sources
-----------------
+Currency data sources
+---------------------
+
 The default source is the `European Central Bank <http://www.ecb.int/>`_. This is the ECB historical rates for 42 currencies against the Euro since 1999.
 It can be downloaded here: `eurofxref-hist.zip <http://www.ecb.int/stats/eurofxref/eurofxref-hist.zip>`_.
 The converter can use different sources as long as the format is the same.
@@ -24,12 +25,6 @@ Or use the Python package:
 
   $ pip install --user currencyconverter
 
-Launch the tests with `tox`:
-
-.. code-block:: bash
-
- $ tox
-
 Command line example
 --------------------
 
@@ -47,8 +42,8 @@ After installation, you should have ``currency_converter`` in your ``$PATH``:
 
  "100.000 USD" is "87.881 EUR" on 2016-04-20
 
-Python API example
-------------------
+Python API
+----------
 
 Create once the currency converter object:
 
@@ -81,6 +76,9 @@ You can change the date of the rate:
     >>> c.convert(100, 'EUR', 'USD', date=date(2013, 3, 21))
     129.1...
 
+Fallbacks
+~~~~~~~~~
+
 Some rates are missing:
 
 .. code-block:: python
@@ -111,15 +109,10 @@ We also have a fallback mode for dates outside the currency bounds:
     >>> c.convert(100, 'EUR', 'USD', date=date(1986, 2, 2)) # fallback to 1999-01-04
     117.89...
 
-You can use your own currency file, as long as it has the same format (ECB):
-
-.. code-block:: python
-
-    >>> c = CurrencyConverter('./path/to/currency/file.csv') # doctest: +SKIP
-
 Other attributes
+~~~~~~~~~~~~~~~~
 
-+ ``bounds`` let you know the first and last available date for each currency
++ ``bounds`` lets you know the first and last available date for each currency
 
 .. code-block:: python
 
@@ -129,7 +122,7 @@ Other attributes
     >>> last_date
     datetime.date(2016, 4, 20)
 
-+ ``currencies`` is a set containing all available currency
++ ``currencies`` is a set containing all available currencies
 
 .. code-block:: python
 
@@ -140,3 +133,10 @@ Other attributes
     >>> c.convert(100, 'AAA')
     Traceback (most recent call last):
     ValueError: AAA is not a supported currency
+
+Finally, you can use your own currency file, as long as it has the same format (ECB):
+
+.. code-block:: python
+
+    >>> c = CurrencyConverter('./path/to/currency/file.csv') # doctest: +SKIP
+
