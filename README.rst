@@ -33,16 +33,19 @@ Launch the tests with `tox`:
 Command line example
 --------------------
 
-.. code-block:: bash
-
- $ python currency_converter.py 100 EUR --to USD
- "100 EUR" is "137.59 USD" on 2014-03-28.
-
 After installation, you should have ``currency_converter`` in your ``$PATH``:
 
 .. code-block:: bash
 
  $ currency_converter 100 USD -d 2013-12-12
+ Available currencies [42]:
+ AUD BGN BRL CAD CHF CNY CYP CZK DKK EEK
+ EUR GBP HKD HRK HUF IDR ILS INR ISK JPY
+ KRW LTL LVL MTL MXN MYR NOK NZD PHP PLN
+ ROL RON RUB SEK SGD SIT SKK THB TRL TRY
+ USD ZAR
+
+ "100.000 USD" is "72.595 EUR" on 2013-12-12
 
 Python API example
 ------------------
