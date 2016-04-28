@@ -91,12 +91,12 @@ class CurrencyConverter(object):
 
         header = next(lines).strip().split(',')[1:]
 
-        for l in lines:
-            l = l.strip().split(',')
+        for line in lines:
+            line = line.strip().split(',')
             # Fast parsing %Y-%m-%d format
-            date = date_(int(l[0][:4]), int(l[0][5:7]), int(l[0][8:10]))
+            date = date_(int(line[0][:4]), int(line[0][5:7]), int(line[0][8:10]))
 
-            for currency, rate in zip(header, l[1:]):
+            for currency, rate in zip(header, line[1:]):
                 if rate not in na_values and currency: # skip empty currency
                     _rates[currency][date] = float(rate)
 

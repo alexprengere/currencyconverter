@@ -97,7 +97,7 @@ Sometimes rates are missing:
     RateNotFoundError: BGN has no rate for 2010-11-21
 
 But we have a fallback mode for those, using a linear interpolation of the
-closest known rates, as long as you ask for a date within the currency date limits:
+closest known rates, as long as you ask for a date within the currency date bounds:
 
 .. code-block:: python
 
