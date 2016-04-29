@@ -7,7 +7,10 @@ import sys
 import os.path as op
 from collections import defaultdict, namedtuple
 from datetime import datetime, timedelta, date as date_
-from itertools import izip as zip
+try:
+    from itertools import izip as zip
+except ImportError:
+    pass
 try:
     range = xrange
 except NameError:
@@ -70,9 +73,6 @@ class CurrencyConverter(object):
 
     ``currencies`` is a set of all available currencies.
     ``bounds`` is a dict if first and last date available per currency.
-
-    >>> from currency_converter import CurrencyConverter
-    >>> c = CurrencyConverter()
     """
     def __init__(self,
                  currency_file=CURRENCY_FILE,
@@ -184,6 +184,8 @@ class CurrencyConverter(object):
 
         :type date: datetime.date
 
+        >>> from datetime import date
+        >>> c = CurrencyConverter()
         >>> c._get_rate('USD', date=date(2014, 3, 28))
         1.375...
         >>> c._get_rate('BGN', date=date(2010, 11, 21))
@@ -223,6 +225,8 @@ class CurrencyConverter(object):
 
         :type date: datetime.date
 
+        >>> from datetime import date
+        >>> c = CurrencyConverter()
         >>> c.convert(100, 'EUR', 'USD', date=date(2014, 3, 28))
         137.5...
         >>> c.convert(100, 'USD', date=date(2014, 3, 28))

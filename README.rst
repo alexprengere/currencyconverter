@@ -74,7 +74,7 @@ You can change the date of the rate:
 
     >>> from datetime import date # datetime works too
     >>> c.convert(100, 'EUR', 'USD', date=date(2013, 3, 21))
-    129.1...
+    129...
 
 Fallbacks
 ~~~~~~~~~
