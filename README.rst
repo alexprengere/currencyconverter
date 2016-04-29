@@ -103,7 +103,7 @@ We also have a fallback mode for dates outside the currency bounds:
     >>> c = CurrencyConverter()
     >>> c.convert(100, 'EUR', 'USD', date=date(1986, 2, 2))
     Traceback (most recent call last):
-    ValueError: 1986-02-02 not in USD bounds 1999-01-04/2016-04-20
+    RateNotFoundError: 1986-02-02 not in USD bounds 1999-01-04/2016-04-20
     >>> 
     >>> c = CurrencyConverter(fallback_on_wrong_date=True)
     >>> c.convert(100, 'EUR', 'USD', date=date(1986, 2, 2)) # fallback to 1999-01-04

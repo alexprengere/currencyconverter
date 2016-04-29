@@ -197,7 +197,7 @@ class CurrencyConverter(object):
             first_date, last_date = self.bounds[currency]
 
             if not self.fallback_on_wrong_date:
-                raise ValueError('{0} not in {1} bounds {2}/{3}'.format(
+                raise RateNotFoundError('{0} not in {1} bounds {2}/{3}'.format(
                     date, currency, first_date, last_date))
 
             if date < first_date:
