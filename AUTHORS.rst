@@ -1,3 +1,4 @@
 
 + Alex Prengère (original author)
-+ Jochem Oosterveen jochem (S3 support)
++ Jochem Oosterveen (S3 support)
++ Greg Pascale (missing rate fallback)
