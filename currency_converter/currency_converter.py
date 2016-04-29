@@ -3,36 +3,55 @@
 
 from __future__ import with_statement, print_function, division
 
+import sys
+import os.path as op
 from collections import defaultdict, namedtuple
 from datetime import datetime, timedelta, date as date_
-import os.path as op
-_DIRNAME = op.realpath(op.dirname(__file__))
 from itertools import izip as zip
 try:
     range = xrange
 except NameError:
     pass
-import six
+
+# We could have used "six", but like this we have no dependency
+if sys.version_info[0] < 3:
+    def iteritems(d):
+        return d.iteritems()
+    def itervalues(d):
+        return d.itervalues()
+else:
+    def iteritems(d):
+        return d.items()
+    def itervalues(d):
+        return d.values()
+
+_DIRNAME = op.realpath(op.dirname(__file__))
+CURRENCY_FILE = op.join(_DIRNAME, 'eurofxref-hist.csv')
 
 Bounds = namedtuple('Bounds', 'first_date last_date')
-CURRENCY_FILE = op.join(_DIRNAME, 'eurofxref-hist.csv')
 
 __all__ = ['CurrencyConverter',
            'S3CurrencyConverter',
            'RateNotFoundError', ]
 
 
-def _dates_between(first_date, last_date):
-    """Yields all dates from first to last included."""
-    for n in range(1 + (last_date - first_date).days):
-        yield first_date + timedelta(days=n)
+def memoize(function):
+    memo = {}
+    def wrapper(*args):
+        if args not in memo:
+            memo[args] = function(*args)
+        return memo[args]
+    return wrapper
+
+
+@memoize
+def list_dates_between(first, last):
+    """Returns all dates from first to last included."""
+    return [first + timedelta(days=n) for n in range(1 + (last - first).days)]
 
 
 class RateNotFoundError(Exception):
-    """Custom exception when data is missing in the rates file.
-
-    With Python 2.6+ there no need to subclass __init__ and __str__.
-    """
+    """Custom exception when data is missing in the rates file."""
     pass
 
 
@@ -45,11 +64,12 @@ class CurrencyConverter(object):
     2014-03-28,1.3759,140.9,1.9558,N/A,27.423,...
     2014-03-27,1.3758,...
 
-    The _rates attribute is a dictionary with:
+    ``_rates`` is a dictionary with:
     + currencies as keys
     + {date: rate, ...} as values.
 
-    bounds is a dict if first and last date available per currency.
+    ``currencies`` is a set of all available currencies.
+    ``bounds`` is a dict if first and last date available per currency.
 
     >>> from currency_converter import CurrencyConverter
     >>> c = CurrencyConverter()
@@ -77,53 +97,55 @@ class CurrencyConverter(object):
         self._load_file(currency_file)
 
     def _load_file(self, currency_file):
-        """Load the currency file in the main structure."""
+        """To be subclassed if alternate methods of loading data."""
         with open(currency_file) as lines:
             self._load_lines(lines)
 
     def _load_lines(self, lines):
-        self._rates = _rates = defaultdict(dict)
+        _rates = self._rates = defaultdict(dict)
         na_values = self.na_values
 
         header = next(lines).strip().split(',')[1:]
 
         for line in lines:
             line = line.strip().split(',')
-            # Fast parsing %Y-%m-%d format
+            # Fast %Y-%m-%d parsing
             date = date_(int(line[0][:4]), int(line[0][5:7]), int(line[0][8:10]))
 
             for currency, rate in zip(header, line[1:]):
                 if rate not in na_values and currency: # skip empty currency
                     _rates[currency][date] = float(rate)
 
-        self.bounds = dict((currency, Bounds(min(r), max(r)))
-                           for currency, r in six.iteritems(_rates))
-
-        self.bounds[self.ref_currency] = Bounds(
-            min(b.first_date for b in six.itervalues(self.bounds)),
-            max(b.last_date for b in six.itervalues(self.bounds)))
+        self.currencies = set(self._rates) | set([self.ref_currency])
+        self._compute_bounds()
 
         for currency in sorted(self._rates):
             self._set_missing_to_none(currency)
             if self.fallback_on_missing_rate:
                 self._compute_missing_rates(currency)
 
-        self.currencies = set(self._rates) | set([self.ref_currency])
+    def _compute_bounds(self):
+        self.bounds = dict((currency, Bounds(min(r), max(r)))
+                           for currency, r in iteritems(self._rates))
+
+        self.bounds[self.ref_currency] = Bounds(
+            min(b.first_date for b in itervalues(self.bounds)),
+            max(b.last_date for b in itervalues(self.bounds)))
 
     def _set_missing_to_none(self, currency):
-        """Replace missing dates/rates with None inside date bounds for currency."""
+        """Fill missing rates of a currency with the closest available ones."""
         rates = self._rates[currency]
         first_date, last_date = self.bounds[currency]
 
-        missing = 0
-        for date in _dates_between(first_date, last_date):
+        for date in list_dates_between(first_date, last_date):
             if date not in rates:
                 rates[date] = None
-                missing += 1
 
-        if missing and self.verbose:
-            print('{0}: {1} missing rates from {2} to {3}'.format(
-                currency, missing, first_date, last_date))
+        if self.verbose:
+            missing = len([r for r in itervalues(rates) if r is None])
+            if missing:
+                print('{0}: {1} missing rates from {2} to {3}'.format(
+                    currency, missing, first_date, last_date))
 
     def _compute_missing_rates(self, currency):
         """Fill missing rates of a currency with the closest available ones."""
@@ -131,7 +153,9 @@ class CurrencyConverter(object):
 
         # tmp will store the closest rates forward and backward
         tmp = defaultdict(lambda: [None, None])
-        for date, rate in sorted(six.iteritems(rates)):
+
+        for date in sorted(rates):
+            rate = rates[date]
             if rate is not None:
                 closest_rate = rate
                 dist = 0
@@ -139,7 +163,8 @@ class CurrencyConverter(object):
                 dist += 1
                 tmp[date][0] = closest_rate, dist
 
-        for date, rate in sorted(six.iteritems(rates), reverse=True):
+        for date in sorted(rates, reverse=True):
+            rate = rates[date]
             if rate is not None:
                 closest_rate = rate
                 dist = 0
@@ -209,9 +234,8 @@ class CurrencyConverter(object):
         if date is None:
             date = self.bounds[currency].last_date
         else:
-            # in case the input was a datetime and not a date
             try:
-                date = date.date()
+                date = date.date() # Fallback if input was a datetime object
             except AttributeError:
                 pass
 
