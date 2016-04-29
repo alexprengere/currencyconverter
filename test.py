@@ -7,7 +7,7 @@ import doctest
 import currency_converter.currency_converter as cc # actual module
 from currency_converter import CurrencyConverter, S3CurrencyConverter
 
-from datetime import datetime, date
+from datetime import date
 
 
 class CurrencyConverterTest(unittest.TestCase):
@@ -34,7 +34,6 @@ def main():
     extraglobs = {
         'c': CurrencyConverter(),
         'date': date,
-        'datetime': datetime,
     }
 
     opt = (doctest.ELLIPSIS |

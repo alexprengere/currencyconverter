@@ -176,8 +176,8 @@ class CurrencyConverter(object):
             (r0, d0), (r1, d1) = tmp[date]
             rates[date] = (r0 * d1 + r1 * d0) / (d0 + d1)
             if self.verbose:
-                print(('{0}: filling {1} missing rate with {2} [dist:{3}] and '
-                       '{4} [dist:{5}]').format(currency, date, r0, d0, r1, d1))
+                print(('{0}: filling {1} missing rate using {2} ({3}d old) and '
+                       '{4} ({5}d later)').format(currency, date, r0, d0, r1, d1))
 
     def _get_rate(self, currency, date):
         """Get a rate for a given currency and date.
@@ -196,15 +196,18 @@ class CurrencyConverter(object):
         if date not in self._rates[currency]:
             first_date, last_date = self.bounds[currency]
             if self.fallback_on_wrong_date:
-                if self.verbose:
-                    print(('{0} not in {1} bounds {2}/{3}, falling back to closest '
-                           'one').format(date, currency, first_date, last_date))
                 if date < first_date:
+                    if self.verbose:
+                        print('{0} not in {1} bounds {2}/{3}, falling back to {4}'.format(
+                            date, currency, first_date, last_date, first_date))
                     date = first_date
                 elif date > last_date:
+                    if self.verbose:
+                        print('{0} not in {1} bounds {2}/{3}, falling back to {4}'.format(
+                            date, currency, first_date, last_date, last_date))
                     date = last_date
                 else:
-                    raise ValueError('Should never happen, bug in the code!')
+                    raise AssertionError('Should never happen, bug in the code!')
             else:
                 raise ValueError('{0} not in {1} bounds {2}/{3}'.format(
                     date, currency, first_date, last_date))
