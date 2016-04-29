@@ -28,9 +28,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
-    install_requires=[
-        'six==1.10',
-    ],
+    install_requires=[],
     entry_points={
         'console_scripts' : [
             'currency_converter=currency_converter.currency_converter:main'
