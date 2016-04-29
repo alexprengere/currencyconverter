@@ -69,13 +69,6 @@ same.</p>
 <code>$PATH</code>:</p>
 
 <div class="highlight highlight-source-shell"><pre>$ currency_converter 100 USD --to EUR
-Available currencies [42]:
-AUD BGN BRL CAD CHF CNY CYP CZK DKK EEK
-EUR GBP HKD HRK HUF IDR ILS INR ISK JPY
-KRW LTL LVL MTL MXN MYR NOK NZD PHP PLN
-ROL RON RUB SEK SGD SIT SKK THB TRL TRY
-USD ZAR
-
 <span class="pl-s"><span class="pl-pds">"</span>100.000 USD<span class="pl-pds">"</span></span> is <span class="pl-s"><span class="pl-pds">"</span>87.881 EUR<span class="pl-pds">"</span></span> on 2016-04-20</pre></div>
 
 <h2>
@@ -88,14 +81,14 @@ USD ZAR
 
 <p>Convert from <code>EUR</code> to <code>USD</code> using the last available rate:</p>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> c.convert(<span class="pl-c1">100</span>, <span class="pl-s"><span class="pl-pds">'</span>EUR<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>USD<span class="pl-pds">'</span></span>) <span class="pl-c"># doctest: +SKIP</span>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> c.convert(<span class="pl-c1">100</span>, <span class="pl-s"><span class="pl-pds">'</span>EUR<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>USD<span class="pl-pds">'</span></span>)
 <span class="pl-c1">137.5</span><span class="pl-c1">...</span></pre></div>
 
 <p>Default target currency is <code>EUR</code>:</p>
 
 <div class="highlight highlight-source-python"><pre><span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> c.convert(<span class="pl-c1">100</span>, <span class="pl-s"><span class="pl-pds">'</span>EUR<span class="pl-pds">'</span></span>)
 <span class="pl-c1">100.0</span>
-<span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> c.convert(<span class="pl-c1">100</span>, <span class="pl-s"><span class="pl-pds">'</span>USD<span class="pl-pds">'</span></span>) <span class="pl-c"># doctest: +SKIP</span>
+<span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> c.convert(<span class="pl-c1">100</span>, <span class="pl-s"><span class="pl-pds">'</span>USD<span class="pl-pds">'</span></span>)
 <span class="pl-c1">72.67</span><span class="pl-c1">...</span></pre></div>
 
 <p>You can change the date of the rate:</p>
@@ -126,7 +119,7 @@ currency date bounds:</p>
 <div class="highlight highlight-source-python"><pre><span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> c <span class="pl-k">=</span> CurrencyConverter()
 <span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> c.convert(<span class="pl-c1">100</span>, <span class="pl-s"><span class="pl-pds">'</span>EUR<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>USD<span class="pl-pds">'</span></span>, <span class="pl-v">date</span><span class="pl-k">=</span>date(<span class="pl-c1">1986</span>, <span class="pl-c1">2</span>, <span class="pl-c1">2</span>))
 Traceback (most recent call last):
-<span class="pl-c1">ValueError</span>: <span class="pl-s"><span class="pl-pds">'</span>1986-02-02<span class="pl-pds">'</span></span> <span class="pl-k">not</span> <span class="pl-k">in</span> <span class="pl-c1">USD</span> bounds <span class="pl-s"><span class="pl-pds">'</span>1999-01-04/2016-04-20<span class="pl-pds">'</span></span>
+RateNotFoundError: <span class="pl-s"><span class="pl-pds">'</span>1986-02-02<span class="pl-pds">'</span></span> <span class="pl-k">not</span> <span class="pl-k">in</span> <span class="pl-c1">USD</span> bounds <span class="pl-s"><span class="pl-pds">'</span>1999-01-04/2016-04-20<span class="pl-pds">'</span></span>
 <span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> 
 <span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> c <span class="pl-k">=</span> CurrencyConverter(<span class="pl-v">fallback_on_wrong_date</span><span class="pl-k">=</span><span class="pl-c1">True</span>)
 <span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> c.convert(<span class="pl-c1">100</span>, <span class="pl-s"><span class="pl-pds">'</span>EUR<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>USD<span class="pl-pds">'</span></span>, <span class="pl-v">date</span><span class="pl-k">=</span>date(<span class="pl-c1">1986</span>, <span class="pl-c1">2</span>, <span class="pl-c1">2</span>)) <span class="pl-c"># fallback to 1999-01-04</span>
@@ -161,7 +154,7 @@ Traceback (most recent call last):
 <p>Finally, you can use your own currency file, as long as it has the same
 format (ECB):</p>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> c <span class="pl-k">=</span> CurrencyConverter(<span class="pl-s"><span class="pl-pds">'</span>./path/to/currency/file.csv<span class="pl-pds">'</span></span>) <span class="pl-c"># doctest: +SKIP</span></pre></div>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> c <span class="pl-k">=</span> CurrencyConverter(<span class="pl-s"><span class="pl-pds">'</span>./path/to/currency/file.csv<span class="pl-pds">'</span></span>)</pre></div>
       </section>
 
     </div>
