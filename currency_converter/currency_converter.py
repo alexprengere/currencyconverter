@@ -100,7 +100,8 @@ class CurrencyConverter(object):
         self.bounds = None
         self.currencies = None
 
-        self._load_file(currency_file)
+        if currency_file is not None:
+            self._load_file(currency_file)
 
     def _load_file(self, currency_file):
         """To be subclassed if alternate methods of loading data."""
