@@ -96,6 +96,28 @@ class TestAttributes(object):
         assert 'EUR' in c.currencies
 
 
+class TestCustomObject(object):
+
+    def test_custom_load(self):
+        c = CurrencyConverter(currency_file=None, fallback_on_missing_rate=True)
+        c._load_lines(StringIO('''\
+        Date,USD
+        2014-03-29,2
+        2014-03-27,6
+        2014-03-23,18'''))
+
+        assert equals(c.convert(10, 'EUR', 'USD'), 20)
+        assert equals(c.convert(10, 'USD', 'EUR'), 5)
+
+        # Fallback rate is the average between 2 and 6, so 4
+        assert equals(c.convert(10, 'EUR', 'USD', date=date(2014, 3, 28)), 40)
+        assert equals(c.convert(10, 'USD', 'EUR', date=date(2014, 3, 28)), 2.5)
+
+        # Fallback rate is the weighted mean between 6 (d:1) and 18 (d:3), so 9
+        assert equals(c.convert(10, 'EUR', 'USD', date=date(2014, 3, 26)), 90)
+        assert equals(c.convert(10, 'USD', 'EUR', date=date(2014, 3, 26)), 1.11111)
+
+
 class TestS3(object):
 
     def test_S3_currency_file_required(self):
