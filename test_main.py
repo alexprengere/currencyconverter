@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime, date
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 import pytest
 from currency_converter import (CurrencyConverter, S3CurrencyConverter,
@@ -10,12 +14,14 @@ from currency_converter import (CurrencyConverter, S3CurrencyConverter,
 c0 = CurrencyConverter()
 c1 = CurrencyConverter(fallback_on_missing_rate=True)
 c2 = CurrencyConverter(fallback_on_wrong_date=True)
+c3 = CurrencyConverter(fallback_on_missing_rate=True, fallback_on_wrong_date=True)
+c4 = CurrencyConverter('./currency_converter/eurofxref-hist.csv')
 
-converters = [c0, c1, c2]
-converters_with_missing_rate_fallback = [c1]
-converters_with_wrong_date_fallback = [c2]
-converters_without_missing_rate_fallback = [c0, c2]
-converters_without_wrong_date_fallback = [c0, c1]
+converters = [c0, c1, c2, c3, c4]
+converters_with_missing_rate_fallback = [c1, c3]
+converters_with_wrong_date_fallback = [c2, c3]
+converters_without_missing_rate_fallback = [c0, c2, c4]
+converters_without_wrong_date_fallback = [c0, c1, c4]
 
 
 def equals(a, b):
