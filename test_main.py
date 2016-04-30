@@ -98,24 +98,47 @@ class TestAttributes(object):
 
 class TestCustomObject(object):
 
-    def test_custom_load(self):
-        c = CurrencyConverter(currency_file=None, fallback_on_missing_rate=True)
-        c._load_lines(StringIO('''\
-        Date,USD
-        2014-03-29,2
-        2014-03-27,6
-        2014-03-23,18'''))
+    c = CurrencyConverter(currency_file=None,
+                          fallback_on_wrong_date=True,
+                          fallback_on_missing_rate=True)
 
-        assert equals(c.convert(10, 'EUR', 'USD'), 20)
-        assert equals(c.convert(10, 'USD', 'EUR'), 5)
+    c._load_lines(StringIO('''\
+    Date,USD,AAA,
+    2014-03-29,2,N/A
+    2014-03-27,6,0
+    2014-03-23,18,N/A
+    2014-03-22,N/A,0'''))
 
+    def test_convert(self):
+        assert equals(self.c.convert(10, 'EUR', 'USD'), 20)
+        assert equals(self.c.convert(10, 'USD', 'EUR'), 5)
+
+    def test_fallback_date(self):
+        # Fallback to 2014-03-29 rate of 2
+        assert equals(self.c.convert(10, 'EUR', 'USD', date=date(2015, 1, 1)), 20)
+        assert equals(self.c.convert(10, 'USD', 'EUR', date=date(2015, 1, 1)), 5)
+
+        # Fallback to 2014-03-23 rate of 18
+        assert equals(self.c.convert(10, 'EUR', 'USD', date=date(2012, 1, 1)), 180)
+        assert equals(self.c.convert(10, 'USD', 'EUR', date=date(2012, 1, 1)), 0.555555)
+
+    def test_fallback_rate(self):
         # Fallback rate is the average between 2 and 6, so 4
-        assert equals(c.convert(10, 'EUR', 'USD', date=date(2014, 3, 28)), 40)
-        assert equals(c.convert(10, 'USD', 'EUR', date=date(2014, 3, 28)), 2.5)
+        assert equals(self.c.convert(10, 'EUR', 'USD', date=date(2014, 3, 28)), 40)
+        assert equals(self.c.convert(10, 'USD', 'EUR', date=date(2014, 3, 28)), 2.5)
 
         # Fallback rate is the weighted mean between 6 (d:1) and 18 (d:3), so 9
-        assert equals(c.convert(10, 'EUR', 'USD', date=date(2014, 3, 26)), 90)
-        assert equals(c.convert(10, 'USD', 'EUR', date=date(2014, 3, 26)), 1.11111)
+        assert equals(self.c.convert(10, 'EUR', 'USD', date=date(2014, 3, 26)), 90)
+        assert equals(self.c.convert(10, 'USD', 'EUR', date=date(2014, 3, 26)), 1.11111)
+
+    def test_attributes(self):
+        assert self.c.currencies == set(['EUR', 'USD', 'AAA'])
+        assert self.c.bounds == {
+            'USD': (date(2014, 3, 23), date(2014, 3, 29)),
+            'AAA': (date(2014, 3, 22), date(2014, 3, 27)),
+            # Max of previous ranges
+            'EUR': (date(2014, 3, 22), date(2014, 3, 29))
+        }
 
 
 class TestS3(object):
