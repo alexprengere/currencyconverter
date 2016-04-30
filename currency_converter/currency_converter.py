@@ -6,7 +6,7 @@ from __future__ import with_statement, print_function, division
 import sys
 import os.path as op
 from collections import defaultdict, namedtuple
-from datetime import datetime, timedelta, date as date_
+from datetime import timedelta, date as date_
 try:
     from itertools import izip as zip
 except ImportError:
@@ -51,6 +51,12 @@ def memoize(function):
 def list_dates_between(first, last):
     """Returns all dates from first to last included."""
     return [first + timedelta(days=n) for n in range(1 + (last - first).days)]
+
+
+@memoize
+def parse_date(s):
+    """Fast %Y-%m-%d parsing."""
+    return date_(int(s[:4]), int(s[5:7]), int(s[8:10]))
 
 
 class RateNotFoundError(Exception):
@@ -109,9 +115,7 @@ class CurrencyConverter(object):
 
         for line in lines:
             line = line.strip().split(',')
-            # Fast %Y-%m-%d parsing
-            date = date_(int(line[0][:4]), int(line[0][5:7]), int(line[0][8:10]))
-
+            date = parse_date(line[0])
             for currency, rate in zip(header, line[1:]):
                 if rate not in na_values and currency: # skip empty currency
                     _rates[currency][date] = float(rate)
@@ -330,7 +334,7 @@ def main():
                     currency, c.bounds[currency]))
 
     if args.date is not None:
-        date = datetime.strptime(args.date, '%Y-%m-%d').date()
+        date = parse_date(args.date)
     else:
         date = c.bounds[args.currency].last_date
 
