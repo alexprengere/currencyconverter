@@ -269,7 +269,6 @@ class S3CurrencyConverter(CurrencyConverter):
         """Make currency_file a required attribute"""
         super(S3CurrencyConverter, self).__init__(currency_file, **kwargs)
 
-
     def _load_file(self, currency_file):
         lines = currency_file.get_contents_as_string().splitlines()
         self._load_lines(lines)
