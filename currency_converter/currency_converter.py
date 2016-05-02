@@ -302,13 +302,10 @@ def main():
 
     parser.add_argument(
         '-v', '--verbose',
-        help='Display additional information on data set.',
-        action='store_true')
-
-    parser.add_argument(
-        '-vv',
-        help='Display details of missing rates completion.',
-        action='store_true')
+        help='''Display additional information on data set.
+        Use twice (-vv) to also display details of missing
+        rates completion.''',
+        action='count')
 
     parser.add_argument(
         '-f', '--file',
@@ -320,13 +317,13 @@ def main():
     c = CurrencyConverter(currency_file=args.file,
                           fallback_on_wrong_date=True,
                           fallback_on_missing_rate=True,
-                          verbose=args.vv)
+                          verbose=args.verbose > 1)
 
     print('\nAvailable currencies [{0}]:'.format(len(c.currencies)))
     for tuple_ in grouper(10, sorted(c.currencies), padvalue=''):
         print(' '.join(tuple_))
 
-    if args.verbose:
+    if args.verbose > 0:
         print('\nCurrencies bounds:')
         for currency in sorted(c.currencies):
             if currency != c.ref_currency:
