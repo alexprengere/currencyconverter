@@ -112,7 +112,7 @@ currency date bounds:</p>
 
 <div class="highlight highlight-source-python"><pre><span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> c <span class="pl-k">=</span> CurrencyConverter(<span class="pl-v">fallback_on_missing_rate</span><span class="pl-k">=</span><span class="pl-c1">True</span>)
 <span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> c.convert(<span class="pl-c1">100</span>, <span class="pl-s"><span class="pl-pds">'</span>BGN<span class="pl-pds">'</span></span>, <span class="pl-v">date</span><span class="pl-k">=</span>date(<span class="pl-c1">2010</span>, <span class="pl-c1">11</span>, <span class="pl-c1">21</span>))
-<span class="pl-c1">51.12</span><span class="pl-c1">...</span></pre></div>
+<span class="pl-c1">51.12</span></pre></div>
 
 <p>We also have a fallback mode for dates outside the currency bounds:</p>
 
@@ -123,7 +123,7 @@ RateNotFoundError: <span class="pl-s"><span class="pl-pds">'</span>1986-02-02<sp
 <span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> 
 <span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> c <span class="pl-k">=</span> CurrencyConverter(<span class="pl-v">fallback_on_wrong_date</span><span class="pl-k">=</span><span class="pl-c1">True</span>)
 <span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> c.convert(<span class="pl-c1">100</span>, <span class="pl-s"><span class="pl-pds">'</span>EUR<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>USD<span class="pl-pds">'</span></span>, <span class="pl-v">date</span><span class="pl-k">=</span>date(<span class="pl-c1">1986</span>, <span class="pl-c1">2</span>, <span class="pl-c1">2</span>)) <span class="pl-c"># fallback to 1999-01-04</span>
-<span class="pl-c1">117.89</span><span class="pl-c1">...</span></pre></div>
+<span class="pl-c1">117.89</span></pre></div>
 
 <h3>
 <a id="other-attributes" class="anchor" href="#other-attributes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Other attributes</h3>
