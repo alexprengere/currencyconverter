@@ -82,20 +82,20 @@ same.</p>
 <p>Convert from <code>EUR</code> to <code>USD</code> using the last available rate:</p>
 
 <div class="highlight highlight-source-python"><pre><span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> c.convert(<span class="pl-c1">100</span>, <span class="pl-s"><span class="pl-pds">'</span>EUR<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>USD<span class="pl-pds">'</span></span>)
-<span class="pl-c1">137.5</span><span class="pl-c1">...</span></pre></div>
+<span class="pl-c1">137.5</span></pre></div>
 
 <p>Default target currency is <code>EUR</code>:</p>
 
 <div class="highlight highlight-source-python"><pre><span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> c.convert(<span class="pl-c1">100</span>, <span class="pl-s"><span class="pl-pds">'</span>EUR<span class="pl-pds">'</span></span>)
 <span class="pl-c1">100.0</span>
 <span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> c.convert(<span class="pl-c1">100</span>, <span class="pl-s"><span class="pl-pds">'</span>USD<span class="pl-pds">'</span></span>)
-<span class="pl-c1">72.67</span><span class="pl-c1">...</span></pre></div>
+<span class="pl-c1">72.67</span></pre></div>
 
 <p>You can change the date of the rate:</p>
 
 <div class="highlight highlight-source-python"><pre><span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> <span class="pl-k">from</span> datetime <span class="pl-k">import</span> date <span class="pl-c"># datetime works too</span>
 <span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> c.convert(<span class="pl-c1">100</span>, <span class="pl-s"><span class="pl-pds">'</span>EUR<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>USD<span class="pl-pds">'</span></span>, <span class="pl-v">date</span><span class="pl-k">=</span>date(<span class="pl-c1">2013</span>, <span class="pl-c1">3</span>, <span class="pl-c1">21</span>))
-<span class="pl-c1">129.1</span><span class="pl-c1">...</span></pre></div>
+<span class="pl-c1">129.1</span></pre></div>
 
 <h3>
 <a id="fallbacks" class="anchor" href="#fallbacks" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Fallbacks</h3>
@@ -143,7 +143,7 @@ datetime.date(<span class="pl-c1">2016</span>, <span class="pl-c1">4</span>, <sp
 <li>  <code>currencies</code> is a set containing all available currencies</li>
 </ul>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> c.currencies <span class="pl-c"># doctest: +SKIP</span>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> c.currencies
 <span class="pl-c1">set</span>([<span class="pl-s"><span class="pl-pds">'</span>SGD<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>CAD<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>SEK<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>GBP<span class="pl-pds">'</span></span>, <span class="pl-c1">...</span>
 <span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>AAA<span class="pl-pds">'</span></span> <span class="pl-k">in</span> c.currencies
 <span class="pl-c1">False</span>
