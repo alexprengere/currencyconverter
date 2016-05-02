@@ -150,7 +150,8 @@ class CurrencyConverter(object):
             missing = len([r for r in itervalues(rates) if r is None])
             if missing:
                 print('{0}: {1} missing rates from {2} to {3} ({4} days)'.format(
-                    currency, missing, first_date, last_date, 1 + (last_date - first_date).days))
+                    currency, missing, first_date, last_date,
+                    1 + (last_date - first_date).days))
 
     def _compute_missing_rates(self, currency):
         """Fill missing rates of a currency with the closest available ones."""
@@ -328,7 +329,8 @@ def main():
         for currency in sorted(c.currencies):
             first_date, last_date = c.bounds[currency]
             print('{0}: from {1} to {2} ({3} days)'.format(
-                currency, first_date, last_date, 1 + (last_date - first_date).days))
+                currency, first_date, last_date,
+                1 + (last_date - first_date).days))
 
     if args.date is not None:
         date = parse_date(args.date)
