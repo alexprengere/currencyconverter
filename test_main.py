@@ -78,17 +78,9 @@ class TestAttributes(object):
 
     @pytest.mark.parametrize("c", converters)
     def test_bounds(self, c):
-        first_date, last_date = c.bounds['USD']
-        assert first_date == date(1999, 1, 4)
-        assert last_date == date(2016, 4, 29)
-
-        first_date, last_date = c.bounds['BGN']
-        assert first_date == date(2000, 7, 19)
-        assert last_date == date(2016, 4, 29)
-
-        first_date, last_date = c.bounds['EUR']
-        assert first_date == date(1999, 1, 4)
-        assert last_date == date(2016, 4, 29)
+        assert c.bounds['USD'] == (date(1999, 1, 4), date(2016, 5, 3))
+        assert c.bounds['BGN'] == (date(2000, 7, 19), date(2016, 5, 3))
+        assert c.bounds['EUR'] == (date(1999, 1, 4), date(2016, 5, 3))
 
     @pytest.mark.parametrize("c", converters)
     def test_currencies(self, c):
