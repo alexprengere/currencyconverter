@@ -275,13 +275,13 @@ class S3CurrencyConverter(CurrencyConverter):
         self._load_lines(lines)
 
 
-def grouper(n, iterable, padvalue=None):
-    """Grouper.
+def grouper(iterable, n, fillvalue=None):
+    """Group iterable by n elements.
 
-    >>> list(grouper(3, 'abcdefg', 'x'))
+    >>> grouper('abcdefg', 3, fillvalue='x')
     [('a', 'b', 'c'), ('d', 'e', 'f'), ('g', 'x', 'x')]
     """
-    return zip_longest(*[iter(iterable)] * n, fillvalue=padvalue)
+    return list(zip_longest(*[iter(iterable)] * n, fillvalue=fillvalue))
 
 
 def main():
@@ -322,8 +322,8 @@ def main():
 
     print('\n{0} available currencies (-v/-vv for details):'.format(len(c.currencies)))
     if not args.verbose:
-        for tuple_ in grouper(10, sorted(c.currencies), padvalue=''):
-            print(' '.join(tuple_))
+        for group in grouper(sorted(c.currencies), 10, fillvalue=''):
+            print(' '.join(group))
 
     else:
         currencies = sorted(c.currencies)
