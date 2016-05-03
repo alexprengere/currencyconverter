@@ -5,8 +5,9 @@ from __future__ import with_statement, print_function, division
 
 import sys
 import os.path as op
+import datetime
+from datetime import timedelta
 from collections import defaultdict, namedtuple
-from datetime import timedelta, date as date_
 try:
     from itertools import izip as zip
 except ImportError:
@@ -57,7 +58,7 @@ def list_dates_between(first_date, last_date):
 @memoize
 def parse_date(s):
     """Fast %Y-%m-%d parsing."""
-    return date_(int(s[:4]), int(s[5:7]), int(s[8:10]))
+    return datetime.date(int(s[:4]), int(s[5:7]), int(s[8:10]))
 
 
 class RateNotFoundError(Exception):
