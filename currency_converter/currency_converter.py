@@ -320,13 +320,16 @@ def main():
                           fallback_on_missing_rate=True,
                           verbose=args.verbose > 1)
 
-    print('\nAvailable currencies [{0}]:'.format(len(c.currencies)))
+    print('\n{0} available currencies (-v/-vv for details):'.format(len(c.currencies)))
     if not args.verbose:
         for tuple_ in grouper(10, sorted(c.currencies), padvalue=''):
             print(' '.join(tuple_))
 
     else:
-        for currency in sorted(c.currencies):
+        currencies = sorted(c.currencies)
+        currencies.sort(key=lambda u: c.bounds[u].last_date, reverse=True)
+        currencies.sort(key=lambda u: c.bounds[u].first_date)
+        for currency in currencies:
             first_date, last_date = c.bounds[currency]
             print('{0}: from {1} to {2} ({3} days)'.format(
                 currency, first_date, last_date,
