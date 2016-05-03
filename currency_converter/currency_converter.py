@@ -216,7 +216,7 @@ class CurrencyConverter(object):
                 raise AssertionError('Should never happen, bug in the code!')
 
             if self.verbose:
-                print('{0} not in {1} bounds {2}/{3}, falling back to {4}'.format(
+                print(r'/!\ {0} not in {1} bounds {2}/{3}, falling back to {4}'.format(
                     date, currency, first_date, last_date, fallback_date))
 
             date = fallback_date
@@ -340,13 +340,12 @@ def main():
     else:
         date = c.bounds[args.currency].last_date
 
-    print()
     new_amount = c.convert(amount=args.amount,
                            currency=args.currency,
                            new_currency=args.to,
                            date=date)
 
-    print('"{0:.3f} {1}" is "{2:.3f} {3}" on {4}'.format(
+    print('\n"{0:.3f} {1}" is "{2:.3f} {3}" on {4}'.format(
         args.amount,
         args.currency,
         new_amount,
