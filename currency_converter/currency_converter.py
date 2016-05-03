@@ -302,9 +302,8 @@ def main():
 
     parser.add_argument(
         '-v', '--verbose',
-        help='''display currency bounds,
-        use twice (-vv) to also display details of missing
-        rates completion''',
+        help='''display currency bounds, use twice (-vv) to also
+        display details of missing rates completion''',
         action='count',
         default=0)
 
