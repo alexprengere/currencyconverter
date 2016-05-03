@@ -308,7 +308,8 @@ def main():
         help='''Display additional information on data set.
         Use twice (-vv) to also display details of missing
         rates completion.''',
-        action='count')
+        action='count',
+        default=0)
 
     parser.add_argument(
         '-f', '--file',
