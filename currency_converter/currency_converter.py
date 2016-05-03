@@ -48,9 +48,10 @@ def memoize(function):
 
 
 @memoize
-def list_dates_between(first, last):
+def list_dates_between(first_date, last_date):
     """Returns all dates from first to last included."""
-    return [first + timedelta(days=n) for n in range(1 + (last - first).days)]
+    return [first_date + timedelta(days=n)
+            for n in range(1 + (last_date - first_date).days)]
 
 
 @memoize
