@@ -292,25 +292,25 @@ def main():
 
     parser.add_argument(
         '-t', '--to',
-        help='Target currency, default is %(default)s',
+        help='target currency, default is %(default)s',
         default='EUR')
 
     parser.add_argument(
         '-d', '--date',
-        help='Date of rate, with format %%Y-%%m-%%d',
+        help='date of rate, with format %%Y-%%m-%%d',
         default=None)
 
     parser.add_argument(
         '-v', '--verbose',
-        help='''Display additional information on data set.
-        Use twice (-vv) to also display details of missing
-        rates completion.''',
+        help='''display currency bounds,
+        use twice (-vv) to also display details of missing
+        rates completion''',
         action='count',
         default=0)
 
     parser.add_argument(
         '-f', '--file',
-        help='Change currency file used, default %(default)s',
+        help='change currency file used, default is %(default)s',
         default=CURRENCY_FILE)
 
     args = parser.parse_args()
