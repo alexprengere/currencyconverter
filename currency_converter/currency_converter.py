@@ -8,26 +8,24 @@ import os.path as op
 import datetime
 from datetime import timedelta
 from collections import defaultdict, namedtuple
-try:
-    from itertools import izip as zip
-except ImportError:
-    pass
-try:
-    range = xrange
-except NameError:
-    pass
 
 # We could have used "six", but like this we have no dependency
 if sys.version_info[0] < 3:
+    range = xrange
+    from itertools import izip as zip, izip_longest as zip_longest
+
     def iteritems(d):
         return d.iteritems()
     def itervalues(d):
         return d.itervalues()
 else:
+    from itertools import zip_longest
+
     def iteritems(d):
         return d.items()
     def itervalues(d):
         return d.values()
+
 
 _DIRNAME = op.realpath(op.dirname(__file__))
 CURRENCY_FILE = op.join(_DIRNAME, 'eurofxref-hist.csv')
@@ -277,18 +275,17 @@ class S3CurrencyConverter(CurrencyConverter):
         self._load_lines(lines)
 
 
+def grouper(n, iterable, padvalue=None):
+    """Grouper.
+
+    >>> grouper(3, 'abcdefg', 'x')
+    ('a','b','c'), ('d','e','f'), ('g','x','x')
+    """
+    return zip_longest(*[iter(iterable)] * n, fillvalue=padvalue)
+
+
 def main():
     import argparse
-    from itertools import izip_longest
-
-    def grouper(n, iterable, padvalue=None):
-        """Grouper.
-
-        >>> grouper(3, 'abcdefg', 'x')
-        ('a','b','c'), ('d','e','f'), ('g','x','x')
-        """
-        return izip_longest(*[iter(iterable)] * n, fillvalue=padvalue)
-
     parser = argparse.ArgumentParser()
     parser.add_argument('amount', type=float)
     parser.add_argument('currency')
