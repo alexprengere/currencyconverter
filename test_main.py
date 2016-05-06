@@ -30,19 +30,19 @@ def equals(a, b):
 
 class TestRates(object):
 
-    @pytest.mark.parametrize("c", converters)
+    @pytest.mark.parametrize('c', converters)
     def test_convert(self, c):
-        assert equals(c.convert(10, 'EUR', 'USD', date=date(2013, 3, 21)), 12.91)
-        assert equals(c.convert(10, 'EUR', 'USD', date=date(2014, 3, 28)), 13.758999)
-        assert equals(c.convert(10, 'USD', 'EUR', date=date(2014, 3, 28)), 7.26797)
+        assert equals(c.convert(10, 'EUR', 'USD', date(2013, 3, 21)), 12.91)
+        assert equals(c.convert(10, 'EUR', 'USD', date(2014, 3, 28)), 13.758999)
+        assert equals(c.convert(10, 'USD', 'EUR', date(2014, 3, 28)), 7.26797)
 
-    @pytest.mark.parametrize("c", converters)
+    @pytest.mark.parametrize('c', converters)
     def test_convert_with_datetime(self, c):
-        assert equals(c.convert(10, 'EUR', 'USD', date=datetime(2013, 3, 21)), 12.91)
-        assert equals(c.convert(10, 'EUR', 'USD', date=datetime(2014, 3, 28)), 13.758999)
-        assert equals(c.convert(10, 'USD', 'EUR', date=datetime(2014, 3, 28)), 7.26797)
+        assert equals(c.convert(10, 'EUR', 'USD', datetime(2013, 3, 21)), 12.91)
+        assert equals(c.convert(10, 'EUR', 'USD', datetime(2014, 3, 28)), 13.758999)
+        assert equals(c.convert(10, 'USD', 'EUR', datetime(2014, 3, 28)), 7.26797)
 
-    @pytest.mark.parametrize("c", converters)
+    @pytest.mark.parametrize('c', converters)
     def test_convert_to_ref_currency(self, c):
         assert c.convert(10, 'EUR') == 10.
         assert c.convert(10, 'EUR', 'EUR') == 10.
@@ -50,39 +50,39 @@ class TestRates(object):
 
 class TestErrorCases(object):
 
-    @pytest.mark.parametrize("c", converters)
+    @pytest.mark.parametrize('c', converters)
     def test_wrong_currency(self, c):
         with pytest.raises(ValueError):
             c.convert(1, 'AAA')
 
-    @pytest.mark.parametrize("c", converters_without_missing_rate_fallback)
+    @pytest.mark.parametrize('c', converters_without_missing_rate_fallback)
     def test_convert_with_missing_rate(self, c):
         with pytest.raises(RateNotFoundError):
             c.convert(10, 'BGN', date=date(2010, 11, 21))
 
-    @pytest.mark.parametrize("c", converters_with_missing_rate_fallback)
+    @pytest.mark.parametrize('c', converters_with_missing_rate_fallback)
     def test_convert_fallback_on_missing_rate(self, c):
         assert equals(c1.convert(10, 'BGN', date=date(2010, 11, 21)), 5.11299)
 
-    @pytest.mark.parametrize("c", converters_without_wrong_date_fallback)
+    @pytest.mark.parametrize('c', converters_without_wrong_date_fallback)
     def test_convert_with_wrong_date(self, c):
         with pytest.raises(RateNotFoundError):
             c.convert(10, 'EUR', 'USD', date=date(1986, 2, 2))
 
-    @pytest.mark.parametrize("c", converters_with_wrong_date_fallback)
+    @pytest.mark.parametrize('c', converters_with_wrong_date_fallback)
     def test_convert_fallback_on_wrong_date(self, c):
         assert equals(c.convert(10, 'EUR', 'USD', date=date(1986, 2, 2)), 11.789)
 
 
 class TestAttributes(object):
 
-    @pytest.mark.parametrize("c", converters)
+    @pytest.mark.parametrize('c', converters)
     def test_bounds(self, c):
-        assert c.bounds['USD'] == (date(1999, 1, 4), date(2016, 5, 3))
-        assert c.bounds['BGN'] == (date(2000, 7, 19), date(2016, 5, 3))
-        assert c.bounds['EUR'] == (date(1999, 1, 4), date(2016, 5, 3))
+        assert c.bounds['USD'] == (date(1999, 1, 4), date(2016, 5, 6))
+        assert c.bounds['BGN'] == (date(2000, 7, 19), date(2016, 5, 6))
+        assert c.bounds['EUR'] == (date(1999, 1, 4), date(2016, 5, 6))
 
-    @pytest.mark.parametrize("c", converters)
+    @pytest.mark.parametrize('c', converters)
     def test_currencies(self, c):
         assert len(c.currencies) == 42
         assert 'EUR' in c.currencies
@@ -107,21 +107,21 @@ class TestCustomObject(object):
 
     def test_fallback_date(self):
         # Fallback to 2014-03-29 rate of 2
-        assert equals(self.c.convert(10, 'EUR', 'USD', date=date(2015, 1, 1)), 20)
-        assert equals(self.c.convert(10, 'USD', 'EUR', date=date(2015, 1, 1)), 5)
+        assert equals(self.c.convert(10, 'EUR', 'USD', date(2015, 1, 1)), 20)
+        assert equals(self.c.convert(10, 'USD', 'EUR', date(2015, 1, 1)), 5)
 
         # Fallback to 2014-03-23 rate of 18
-        assert equals(self.c.convert(10, 'EUR', 'USD', date=date(2012, 1, 1)), 180)
-        assert equals(self.c.convert(10, 'USD', 'EUR', date=date(2012, 1, 1)), 0.555555)
+        assert equals(self.c.convert(10, 'EUR', 'USD', date(2012, 1, 1)), 180)
+        assert equals(self.c.convert(10, 'USD', 'EUR', date(2012, 1, 1)), 0.555555)
 
     def test_fallback_rate(self):
         # Fallback rate is the average between 2 and 6, so 4
-        assert equals(self.c.convert(10, 'EUR', 'USD', date=date(2014, 3, 28)), 40)
-        assert equals(self.c.convert(10, 'USD', 'EUR', date=date(2014, 3, 28)), 2.5)
+        assert equals(self.c.convert(10, 'EUR', 'USD', date(2014, 3, 28)), 40)
+        assert equals(self.c.convert(10, 'USD', 'EUR', date(2014, 3, 28)), 2.5)
 
         # Fallback rate is the weighted mean between 6 (d:1) and 18 (d:3), so 9
-        assert equals(self.c.convert(10, 'EUR', 'USD', date=date(2014, 3, 26)), 90)
-        assert equals(self.c.convert(10, 'USD', 'EUR', date=date(2014, 3, 26)), 1.11111)
+        assert equals(self.c.convert(10, 'EUR', 'USD', date(2014, 3, 26)), 90)
+        assert equals(self.c.convert(10, 'USD', 'EUR', date(2014, 3, 26)), 1.11111)
 
     def test_attributes(self):
         assert self.c.currencies == set(['EUR', 'USD', 'AAA'])
