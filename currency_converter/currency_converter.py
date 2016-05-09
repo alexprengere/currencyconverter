@@ -304,8 +304,8 @@ def main():
 
     parser.add_argument(
         '-v', '--verbose',
-        help=('display currency bounds, use twice (-vv) to also '
-              'display details of missing rates completion'),
+        help=('display available currencies, use twice (-vv) to '
+              'also display details of missing rates completion'),
         action='count',
         default=0)
 
@@ -320,14 +320,14 @@ def main():
                           fallback_on_wrong_date=True,
                           fallback_on_missing_rate=True,
                           verbose=args.verbose > 1)
+    currencies = sorted(c.currencies)
 
-    print('\n{0} available currencies (-v/-vv for details):'.format(len(c.currencies)))
-    if not args.verbose:
-        for group in grouper(sorted(c.currencies), 10, fillvalue=''):
+    if args.verbose:
+        print('{0} available currencies:'.format(len(currencies)))
+        for group in grouper(currencies, 10, fillvalue=''):
             print(' '.join(group))
+        print()
 
-    else:
-        currencies = sorted(c.currencies)
         currencies.sort(key=lambda u: c.bounds[u].last_date, reverse=True)
         currencies.sort(key=lambda u: c.bounds[u].first_date)
         for currency in currencies:
@@ -346,7 +346,7 @@ def main():
                            new_currency=args.to,
                            date=date)
 
-    print('\n"{0:.3f} {1}" is "{2:.3f} {3}" on {4}'.format(
+    print('{0:.3f} {1} = {2:.3f} {3} on {4}'.format(
         args.amount,
         args.currency,
         new_amount,
