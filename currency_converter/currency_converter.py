@@ -335,6 +335,13 @@ def main():
             print('{0}: from {1} to {2} ({3} days)'.format(
                 currency, first_date, last_date,
                 1 + (last_date - first_date).days))
+        print()
+
+    if args.currency not in c.currencies:
+        print(r'/!\ "{0}" is not in available currencies:'.format(args.currency))
+        for group in grouper(currencies, 10, fillvalue=''):
+            print(' '.join(group))
+        exit(1)
 
     if args.date is not None:
         date = parse_date(args.date)
