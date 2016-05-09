@@ -33,14 +33,7 @@ After installation, you should have ``currency_converter`` in your ``$PATH``:
 .. code-block:: bash
 
  $ currency_converter 100 USD --to EUR
- Available currencies [42]:
- AUD BGN BRL CAD CHF CNY CYP CZK DKK EEK
- EUR GBP HKD HRK HUF IDR ILS INR ISK JPY
- KRW LTL LVL MTL MXN MYR NOK NZD PHP PLN
- ROL RON RUB SEK SGD SIT SKK THB TRL TRY
- USD ZAR
-
- "100.000 USD" is "87.881 EUR" on 2016-04-20
+ 100.000 USD = 87.512 EUR on 2016-05-06
 
 Python API
 ----------
