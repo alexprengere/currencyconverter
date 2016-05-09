@@ -5,6 +5,7 @@ from __future__ import with_statement, print_function, division
 
 import sys
 import os.path as op
+from functools import wraps
 import datetime
 from datetime import timedelta
 from collections import defaultdict, namedtuple
@@ -39,6 +40,7 @@ __all__ = ['CurrencyConverter',
 
 def memoize(function):
     memo = {}
+    @wraps(function)
     def wrapper(*args):
         if args not in memo:
             memo[args] = function(*args)
