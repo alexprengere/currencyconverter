@@ -17,6 +17,7 @@ if sys.version_info[0] < 3:
 
     def iteritems(d):
         return d.iteritems()
+
     def itervalues(d):
         return d.itervalues()
 else:
@@ -24,6 +25,7 @@ else:
 
     def iteritems(d):
         return d.items()
+
     def itervalues(d):
         return d.values()
 
@@ -40,6 +42,7 @@ __all__ = ['CurrencyConverter',
 
 def memoize(function):
     memo = {}
+
     @wraps(function)
     def wrapper(*args):
         if args not in memo:
@@ -93,8 +96,8 @@ class CurrencyConverter(object):
         # Global options
         self.fallback_on_wrong_date = fallback_on_wrong_date
         self.fallback_on_missing_rate = fallback_on_missing_rate
-        self.ref_currency = ref_currency # reference currency of rates
-        self.na_values = na_values       # missing values
+        self.ref_currency = ref_currency  # reference currency of rates
+        self.na_values = na_values        # missing values
         self.verbose = verbose
 
         # Will be filled once the file is loaded
@@ -120,7 +123,7 @@ class CurrencyConverter(object):
             line = line.strip().split(',')
             date = parse_date(line[0])
             for currency, rate in zip(header, line[1:]):
-                if rate not in na_values and currency: # skip empty currency
+                if rate not in na_values and currency:  # skip empty currency
                     _rates[currency][date] = float(rate)
 
         self.currencies = set(self._rates) | set([self.ref_currency])
@@ -251,7 +254,7 @@ class CurrencyConverter(object):
             date = self.bounds[currency].last_date
         else:
             try:
-                date = date.date() # Fallback if input was a datetime object
+                date = date.date()  # fallback if input was a datetime object
             except AttributeError:
                 pass
 
