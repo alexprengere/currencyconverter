@@ -78,7 +78,7 @@ class TestAttributes(object):
 
     @pytest.mark.parametrize('c', converters)
     def test_bounds(self, c):
-        last_working_day = date(2016, 7, 8)
+        last_working_day = date(2016, 7, 27)
         assert c.bounds['USD'] == (date(1999, 1, 4), last_working_day)
         assert c.bounds['BGN'] == (date(2000, 7, 19), last_working_day)
         assert c.bounds['EUR'] == (date(1999, 1, 4), last_working_day)
