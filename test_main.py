@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 try:
     from StringIO import StringIO
 except ImportError:
@@ -74,11 +74,20 @@ class TestErrorCases(object):
         assert equals(c.convert(10, 'EUR', 'USD', date=date(1986, 2, 2)), 11.789)
 
 
+def get_last_working_day():
+    today = datetime.today().date()
+    if today.isoweekday() == 7:  # Sunday
+        return today - timedelta(days=2)
+    if today.isoweekday() == 1:  # Monday
+        return today - timedelta(days=3)
+    return today - timedelta(days=1)
+
+
 class TestAttributes(object):
 
     @pytest.mark.parametrize('c', converters)
     def test_bounds(self, c):
-        last_working_day = date(2016, 7, 27)
+        last_working_day = get_last_working_day()
         assert c.bounds['USD'] == (date(1999, 1, 4), last_working_day)
         assert c.bounds['BGN'] == (date(2000, 7, 19), last_working_day)
         assert c.bounds['EUR'] == (date(1999, 1, 4), last_working_day)
