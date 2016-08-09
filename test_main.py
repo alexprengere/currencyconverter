@@ -74,20 +74,21 @@ class TestErrorCases(object):
         assert equals(c.convert(10, 'EUR', 'USD', date=date(1986, 2, 2)), 11.789)
 
 
-def get_last_working_day():
-    today = datetime.today().date()
-    if today.isoweekday() == 7:  # Sunday
-        return today - timedelta(days=2)
-    if today.isoweekday() == 1:  # Monday
-        return today - timedelta(days=3)
-    return today - timedelta(days=1)
+DAY = timedelta(days=1)
+
+def get_previous_working_day():
+    yesterday = datetime.today().date() - 1 * DAY
+    dow = yesterday.isoweekday()
+    if dow < 6:  # yesterday is a weekday
+        return yesterday
+    return yesterday - (dow - 5) * DAY
 
 
 class TestAttributes(object):
 
     @pytest.mark.parametrize('c', converters)
     def test_bounds(self, c):
-        last_working_day = get_last_working_day()
+        last_working_day = get_previous_working_day()
         assert c.bounds['USD'] == (date(1999, 1, 4), last_working_day)
         assert c.bounds['BGN'] == (date(2000, 7, 19), last_working_day)
         assert c.bounds['EUR'] == (date(1999, 1, 4), last_working_day)
