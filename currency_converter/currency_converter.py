@@ -38,7 +38,7 @@ else:
 
 
 _DIRNAME = op.realpath(op.dirname(__file__))
-CURRENCY_FILE = op.join(_DIRNAME, 'eurofxref-hist.csv')
+CURRENCY_FILE = op.join(_DIRNAME, 'eurofxref-hist.zip')
 
 Bounds = namedtuple('Bounds', 'first_date last_date')
 

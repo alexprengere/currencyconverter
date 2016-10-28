@@ -15,7 +15,7 @@ c0 = CurrencyConverter()
 c1 = CurrencyConverter(fallback_on_missing_rate=True)
 c2 = CurrencyConverter(fallback_on_wrong_date=True)
 c3 = CurrencyConverter(fallback_on_missing_rate=True, fallback_on_wrong_date=True)
-c4 = CurrencyConverter('./currency_converter/eurofxref-hist.csv')
+c4 = CurrencyConverter('./currency_converter/eurofxref-hist.zip')
 
 converters = [c0, c1, c2, c3, c4]
 converters_with_missing_rate_fallback = [c1, c3]
@@ -146,7 +146,7 @@ class TestCustomObject(object):
 
 class TestCustomSource(object):
 
-    def test_local_clear_file(self):
+    def test_local_zip_file(self):
         c = CurrencyConverter()
         assert equals(c.convert(10, 'EUR', 'USD', date(2013, 3, 21)), 12.91)
 
