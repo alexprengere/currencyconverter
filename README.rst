@@ -131,6 +131,12 @@ Finally, you can use your own currency file, as long as it has the same format (
 
 .. code-block:: python
 
-    >>> c = CurrencyConverter('./path/to/currency/file.csv') # doctest: +SKIP
-    >>> c = CurrencyConverter('http://www.ecb.int/stats/eurofxref/eurofxref-hist.zip') # doctest: +SKIP
+    # The full history
+    c = CurrencyConverter('http://www.ecb.int/stats/eurofxref/eurofxref-hist.zip') # doctest: +SKIP
+
+    # The single day data source
+    c = CurrencyConverter('http://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip') # doctest: +SKIP
+
+    # Your custom file
+    c = CurrencyConverter('./path/to/currency/file.csv') # doctest: +SKIP
 

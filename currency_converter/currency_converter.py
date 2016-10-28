@@ -68,7 +68,10 @@ def list_dates_between(first_date, last_date):
 @memoize
 def parse_date(s):
     """Fast %Y-%m-%d parsing."""
-    return datetime.date(int(s[:4]), int(s[5:7]), int(s[8:10]))
+    try:
+        return datetime.date(int(s[:4]), int(s[5:7]), int(s[8:10]))
+    except ValueError:  # other accepted format used in one-day data set
+        return datetime.datetime.strptime(s, '%d %B %Y').date()
 
 
 def get_lines_from_zip(zip_str):
@@ -146,6 +149,7 @@ class CurrencyConverter(object):
             line = line.strip().split(',')
             date = parse_date(line[0])
             for currency, rate in zip(header, line[1:]):
+                currency = currency.strip()
                 if rate not in na_values and currency:  # skip empty currency
                     _rates[currency][date] = float(rate)
 
