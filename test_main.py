@@ -144,6 +144,22 @@ class TestCustomObject(object):
         }
 
 
+class TestCustomSource(object):
+
+    def test_local_clear_file(self):
+        c = CurrencyConverter()
+        assert equals(c.convert(10, 'EUR', 'USD', date(2013, 3, 21)), 12.91)
+
+    def test_remote_zip_file(self):
+        c = CurrencyConverter('http://www.ecb.int/stats/eurofxref/eurofxref-hist.zip')
+        assert equals(c.convert(10, 'EUR', 'USD', date(2013, 3, 21)), 12.91)
+
+    def test_remote_clear_file(self):
+        c = CurrencyConverter('https://raw.githubusercontent.com/alexprengere/'
+                              'currencyconverter/master/currency_converter/eurofxref-hist.csv')
+        assert equals(c.convert(10, 'EUR', 'USD', date(2013, 3, 21)), 12.91)
+
+
 class TestS3(object):
 
     def test_S3_currency_file_required(self):

@@ -113,7 +113,7 @@ Other attributes
     >>> first_date
     datetime.date(1999, 1, 4)
     >>> last_date
-    datetime.date(2016, 10, 21)
+    datetime.date(2016, 10, 27)
 
 + ``currencies`` is a set containing all available currencies
 
@@ -132,4 +132,5 @@ Finally, you can use your own currency file, as long as it has the same format (
 .. code-block:: python
 
     >>> c = CurrencyConverter('./path/to/currency/file.csv') # doctest: +SKIP
+    >>> c = CurrencyConverter('http://www.ecb.int/stats/eurofxref/eurofxref-hist.zip') # doctest: +SKIP
 

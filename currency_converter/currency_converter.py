@@ -9,19 +9,26 @@ from functools import wraps
 import datetime
 from datetime import timedelta
 from collections import defaultdict, namedtuple
+from zipfile import ZipFile
 
 # We could have used "six", but like this we have no dependency
 if sys.version_info[0] < 3:
     range = xrange
     from itertools import izip as zip, izip_longest as zip_longest
+    from StringIO import StringIO
+    from urllib2 import urlopen
 
     def iteritems(d):
         return d.iteritems()
 
     def itervalues(d):
         return d.itervalues()
+
+
 else:
     from itertools import zip_longest
+    from io import BytesIO as StringIO
+    from urllib.request import urlopen
 
     def iteritems(d):
         return d.items()
@@ -62,6 +69,13 @@ def list_dates_between(first_date, last_date):
 def parse_date(s):
     """Fast %Y-%m-%d parsing."""
     return datetime.date(int(s[:4]), int(s[5:7]), int(s[8:10]))
+
+
+def get_lines_from_zip(zip_str):
+    zip_file = ZipFile(StringIO(zip_str))
+    for name in zip_file.namelist():
+        for line in zip_file.read(name).decode('utf-8').splitlines():
+            yield line
 
 
 class RateNotFoundError(Exception):
@@ -109,9 +123,18 @@ class CurrencyConverter(object):
             self._load_file(currency_file)
 
     def _load_file(self, currency_file):
-        """To be subclassed if alternate methods of loading data."""
-        with open(currency_file) as lines:
-            self._load_lines(lines)
+        """To be subclassed if alternate methods of loading data.
+        """
+        if currency_file.startswith(('http://', 'https://')):
+            content = urlopen(currency_file).read()
+        else:
+            with open(currency_file, 'rb') as f:
+                content = f.read()
+
+        if currency_file.endswith('.zip'):
+            self._load_lines(get_lines_from_zip(content))
+        else:
+            self._load_lines(iter(content.decode('utf-8').splitlines()))
 
     def _load_lines(self, lines):
         _rates = self._rates = defaultdict(dict)
