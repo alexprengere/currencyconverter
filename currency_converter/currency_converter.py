@@ -10,12 +10,12 @@ import datetime
 from datetime import timedelta
 from collections import defaultdict, namedtuple
 from zipfile import ZipFile
+from io import BytesIO
 
 # We could have used "six", but like this we have no dependency
 if sys.version_info[0] < 3:
     range = xrange
     from itertools import izip as zip, izip_longest as zip_longest
-    from StringIO import StringIO
     from urllib2 import urlopen
 
     def iteritems(d):
@@ -27,7 +27,6 @@ if sys.version_info[0] < 3:
 
 else:
     from itertools import zip_longest
-    from io import BytesIO as StringIO
     from urllib.request import urlopen
 
     def iteritems(d):
@@ -75,7 +74,7 @@ def parse_date(s):
 
 
 def get_lines_from_zip(zip_str):
-    zip_file = ZipFile(StringIO(zip_str))
+    zip_file = ZipFile(BytesIO(zip_str))
     for name in zip_file.namelist():
         for line in zip_file.read(name).decode('utf-8').splitlines():
             yield line

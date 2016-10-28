@@ -152,7 +152,12 @@ def test_single_day_file():
 class TestCustomSource(object):
 
     def test_local_zip_file(self):
-        c = CurrencyConverter()
+        c = CurrencyConverter('./currency_converter/eurofxref-hist.zip')
+        assert len(c.currencies) == 42
+        assert equals(c.convert(10, 'EUR', 'USD', date(2013, 3, 21)), 12.91)
+
+    def test_remote_zip_file(self):
+        c = CurrencyConverter('http://www.ecb.int/stats/eurofxref/eurofxref-hist.zip')
         assert len(c.currencies) == 42
         assert equals(c.convert(10, 'EUR', 'USD', date(2013, 3, 21)), 12.91)
 
@@ -160,16 +165,10 @@ class TestCustomSource(object):
         c = CurrencyConverter('./currency_converter/test_single_day.csv')
         assert len(c.currencies) == 32
 
-    def test_remote_zip_file(self):
-        c = CurrencyConverter('http://www.ecb.int/stats/eurofxref/eurofxref-hist.zip')
-        assert len(c.currencies) == 42
-        assert equals(c.convert(10, 'EUR', 'USD', date(2013, 3, 21)), 12.91)
-
     def test_remote_clear_file(self):
-        c = CurrencyConverter('https://raw.githubusercontent.com/alexprengere/'
-                              'currencyconverter/master/currency_converter/eurofxref-hist.csv')
-        assert len(c.currencies) == 42
-        assert equals(c.convert(10, 'EUR', 'USD', date(2013, 3, 21)), 12.91)
+        c = CurrencyConverter('https://raw.githubusercontent.com/alexprengere'
+                              '/currencyconverter/master/currency_converter/test_single_day.csv')
+        assert len(c.currencies) == 32
 
 
 class TestS3(object):
