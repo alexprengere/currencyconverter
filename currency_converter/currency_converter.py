@@ -310,8 +310,11 @@ class S3CurrencyConverter(CurrencyConverter):
 def grouper(iterable, n, fillvalue=None):
     """Group iterable by n elements.
 
-    >>> grouper('abcdefg', 3, fillvalue='x')
-    [('a', 'b', 'c'), ('d', 'e', 'f'), ('g', 'x', 'x')]
+    >>> for t in grouper('abcdefg', 3, fillvalue='x'):
+    ...     print(''.join(t))
+    abc
+    def
+    gxx
     """
     return list(zip_longest(*[iter(iterable)] * n, fillvalue=fillvalue))
 
