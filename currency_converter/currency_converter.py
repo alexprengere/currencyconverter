@@ -122,9 +122,9 @@ class CurrencyConverter(object):
         self.currencies = None
 
         if currency_file is not None:
-            self._load_file(currency_file)
+            self.load_file(currency_file)
 
-    def _load_file(self, currency_file):
+    def load_file(self, currency_file):
         """To be subclassed if alternate methods of loading data.
         """
         if currency_file.startswith(('http://', 'https://')):
@@ -134,14 +134,15 @@ class CurrencyConverter(object):
                 content = f.read()
 
         if currency_file.endswith('.zip'):
-            self._load_lines(get_lines_from_zip(content))
+            self.load_lines(get_lines_from_zip(content))
         else:
-            self._load_lines(iter(content.decode('utf-8').splitlines()))
+            self.load_lines(content.decode('utf-8').splitlines())
 
-    def _load_lines(self, lines):
+    def load_lines(self, lines):
         _rates = self._rates = defaultdict(dict)
         na_values = self.na_values
 
+        lines = iter(lines)
         header = next(lines).strip().split(',')[1:]
 
         for line in lines:
@@ -301,9 +302,9 @@ class S3CurrencyConverter(CurrencyConverter):
         """Make currency_file a required attribute"""
         super(S3CurrencyConverter, self).__init__(currency_file, **kwargs)
 
-    def _load_file(self, currency_file):
+    def load_file(self, currency_file):
         lines = currency_file.get_contents_as_string().splitlines()
-        self._load_lines(lines)
+        self.load_lines(lines)
 
 
 def grouper(iterable, n, fillvalue=None):

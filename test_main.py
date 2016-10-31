@@ -105,7 +105,7 @@ class TestCustomObject(object):
                           fallback_on_wrong_date=True,
                           fallback_on_missing_rate=True)
 
-    c._load_lines(StringIO('''\
+    c.load_lines(StringIO('''\
     Date,USD,AAA,
     2014-03-29,2,N/A
     2014-03-27,6,0
