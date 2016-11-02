@@ -154,13 +154,16 @@ Traceback (most recent call last):
 <p>Finally, you can use your own currency file, as long as it has the same
 format (ECB):</p>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-c"># The full history</span>
+<div class="highlight highlight-source-python"><pre><span class="pl-c"># Load the packaged data (might not be up to date)</span>
+c <span class="pl-k">=</span> CurrencyConverter()
+
+<span class="pl-c"># Load the up to date full history</span>
 c <span class="pl-k">=</span> CurrencyConverter(<span class="pl-s"><span class="pl-pds">'</span>http://www.ecb.int/stats/eurofxref/eurofxref-hist.zip<span class="pl-pds">'</span></span>)
 
-<span class="pl-c"># The single day data source</span>
+<span class="pl-c"># Load only the latest rates (single day data source)</span>
 c <span class="pl-k">=</span> CurrencyConverter(<span class="pl-s"><span class="pl-pds">'</span>http://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip<span class="pl-pds">'</span></span>)
 
-<span class="pl-c"># Your custom file</span>
+<span class="pl-c"># Load your custom file</span>
 c <span class="pl-k">=</span> CurrencyConverter(<span class="pl-s"><span class="pl-pds">'</span>./path/to/currency/file.csv<span class="pl-pds">'</span></span>)</pre></div>
       </section>
 
