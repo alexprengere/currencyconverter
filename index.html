@@ -137,7 +137,7 @@ currency</li>
 <span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> first_date
 datetime.date(<span class="pl-c1">1999</span>, <span class="pl-c1">1</span>, <span class="pl-c1">4</span>)
 <span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> last_date
-datetime.date(<span class="pl-c1">2016</span>, <span class="pl-c1">4</span>, <span class="pl-c1">20</span>)</pre></div>
+datetime.date(<span class="pl-c1">2016</span>, <span class="pl-c1">11</span>, <span class="pl-c1">1</span>)</pre></div>
 
 <ul>
 <li>  <code>currencies</code> is a set containing all available currencies</li>
@@ -154,7 +154,14 @@ Traceback (most recent call last):
 <p>Finally, you can use your own currency file, as long as it has the same
 format (ECB):</p>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">&gt;&gt;</span><span class="pl-k">&gt;</span> c <span class="pl-k">=</span> CurrencyConverter(<span class="pl-s"><span class="pl-pds">'</span>./path/to/currency/file.csv<span class="pl-pds">'</span></span>)</pre></div>
+<div class="highlight highlight-source-python"><pre><span class="pl-c"># The full history</span>
+c <span class="pl-k">=</span> CurrencyConverter(<span class="pl-s"><span class="pl-pds">'</span>http://www.ecb.int/stats/eurofxref/eurofxref-hist.zip<span class="pl-pds">'</span></span>)
+
+<span class="pl-c"># The single day data source</span>
+c <span class="pl-k">=</span> CurrencyConverter(<span class="pl-s"><span class="pl-pds">'</span>http://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip<span class="pl-pds">'</span></span>)
+
+<span class="pl-c"># Your custom file</span>
+c <span class="pl-k">=</span> CurrencyConverter(<span class="pl-s"><span class="pl-pds">'</span>./path/to/currency/file.csv<span class="pl-pds">'</span></span>)</pre></div>
       </section>
 
     </div>
