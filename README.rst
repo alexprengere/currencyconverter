@@ -139,3 +139,6 @@ Finally, you can use your own currency file, as long as it has the same format (
 
     # Load only the latest rates (single day data source)
     c = CurrencyConverter('http://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip')
+
+    # Load your custom file
+    c = CurrencyConverter('./path/to/currency/file.csv')
