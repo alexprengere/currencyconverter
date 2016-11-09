@@ -113,7 +113,7 @@ Other attributes
     >>> first_date
     datetime.date(1999, 1, 4)
     >>> last_date
-    datetime.date(2016, 11, 1)
+    datetime.date(2016, 11, 9)
 
 + ``currencies`` is a set containing all available currencies
 
