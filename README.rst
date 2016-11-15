@@ -112,8 +112,8 @@ Other attributes
     >>> first_date, last_date = c.bounds['USD']
     >>> first_date
     datetime.date(1999, 1, 4)
-    >>> last_date
-    datetime.date(2016, 11, 9)
+    >>> last_date # doctest: +SKIP
+    datetime.date(2016, 11, 14)
 
 + ``currencies`` is a set containing all available currencies
 
