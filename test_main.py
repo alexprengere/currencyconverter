@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from datetime import datetime, date, timedelta
+from datetime import datetime, date
 try:
     from StringIO import StringIO
 except ImportError:
@@ -74,24 +74,14 @@ class TestErrorCases(object):
         assert equals(c.convert(10, 'EUR', 'USD', date=date(1986, 2, 2)), 11.789)
 
 
-DAY = timedelta(days=1)
-
-def get_previous_working_day():
-    yesterday = datetime.today().date() - 1 * DAY
-    dow = yesterday.isoweekday()
-    if dow < 6:  # yesterday is a weekday
-        return yesterday
-    return yesterday - (dow - 5) * DAY
-
-
 class TestAttributes(object):
 
     @pytest.mark.parametrize('c', converters)
     def test_bounds(self, c):
-        last_working_day = get_previous_working_day()
-        assert c.bounds['USD'] == (date(1999, 1, 4), last_working_day)
-        assert c.bounds['BGN'] == (date(2000, 7, 19), last_working_day)
-        assert c.bounds['EUR'] == (date(1999, 1, 4), last_working_day)
+        today = date.today()
+        assert c.bounds['USD'] == (date(1999, 1, 4), today)
+        assert c.bounds['BGN'] == (date(2000, 7, 19), today)
+        assert c.bounds['EUR'] == (date(1999, 1, 4), today)
 
     @pytest.mark.parametrize('c', converters)
     def test_currencies(self, c):
