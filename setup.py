@@ -31,7 +31,7 @@ setup(
     install_requires=[],
     entry_points={
         'console_scripts' : [
-            'currency_converter=currency_converter.currency_converter:main'
+            'currency_converter=currency_converter.__main__:main'
         ]
     },
 )
