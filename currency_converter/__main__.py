@@ -64,7 +64,7 @@ def main():
         print('{0} available currencies:'.format(len(currencies)))
         for group in grouper(currencies, 10, fillvalue=''):
             print(' '.join(group))
-        print()
+        print('')
 
         currencies.sort(key=lambda u: c.bounds[u].last_date, reverse=True)
         currencies.sort(key=lambda u: c.bounds[u].first_date)
@@ -73,7 +73,7 @@ def main():
             print('{0}: from {1} to {2} ({3} days)'.format(
                 currency, first_date, last_date,
                 1 + (last_date - first_date).days))
-        print()
+        print('')
 
     if args.currency not in c.currencies:
         print(r'/!\ "{0}" is not in available currencies:'.format(args.currency))
