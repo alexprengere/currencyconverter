@@ -74,8 +74,7 @@ class TestErrorCases(object):
         assert equals(c.convert(10, 'EUR', 'USD', date=date(1986, 2, 2)), 11.789)
 
 
-TODAY = date.today()
-YESTERDAY = TODAY - timedelta(days=1)
+LAST_DAYS = [date.today() - timedelta(days=d) for d in (2, 1, 0)]
 
 class TestAttributes(object):
 
@@ -85,9 +84,9 @@ class TestAttributes(object):
         assert c.bounds['BGN'][0] == date(2000, 7, 19)
         assert c.bounds['EUR'][0] == date(1999, 1, 4)
 
-        assert c.bounds['USD'][1] in (YESTERDAY, TODAY)
-        assert c.bounds['BGN'][1] in (YESTERDAY, TODAY)
-        assert c.bounds['EUR'][1] in (YESTERDAY, TODAY)
+        assert c.bounds['USD'][1] in LAST_DAYS
+        assert c.bounds['BGN'][1] in LAST_DAYS
+        assert c.bounds['EUR'][1] in LAST_DAYS
 
     @pytest.mark.parametrize('c', converters)
     def test_currencies(self, c):
