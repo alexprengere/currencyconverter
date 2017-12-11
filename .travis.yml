@@ -1,0 +1,28 @@
+language: python
+python:
+  - "2.6"
+  - "2.7"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+  - "3.6"
+  - "pypy"
+  - "pypy3"
+
+cache: pip
+
+# new travis infrastructure
+sudo: false
+
+git:
+  depth: 1
+
+notifications:
+  email:
+      - alexprengere@gmail.com
+
+install:
+    - "python setup.py install"
+    - "pip install tox-travis"
+
+script: "tox -r"
