@@ -1,0 +1,8 @@
+title: Currency Converter
+description: A Python currency converter using the European Central Bank data.
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-midnight
+
+gems:
+  - jekyll-mentions
