@@ -144,7 +144,7 @@ class TestCustomObject(object):
 
 def test_single_day_file():
     c = CurrencyConverter('http://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip')
-    assert len(c.currencies) == 32
+    assert len(c.currencies) == 33
 
 
 class TestCustomSource(object):
