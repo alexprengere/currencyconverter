@@ -107,7 +107,27 @@ class CurrencyConverter(object):
                  ref_currency='EUR',
                  na_values=frozenset(['', 'N/A']),
                  verbose=False):
+        """Instantiate a CurrencyConverter.
 
+        :param str currency_file: Path to the source data. Can be a local path,
+            or an URL starting with 'http://' or 'https://'. Defaults to the
+            European Central Bank historical rates file included in the package.
+        :param bool fallback_on_wrong_date: Set to False (default) to raise a
+            RateNotFoundError when dates are requested outside the data's range.
+            Set to True to extrapolate rates for dates outside the source data's
+            range. The extrapolation is done by falling back to the first or
+            last data point, for dates before and after the data's range,
+            respectively.
+        :param bool fallback_on_missing_rate: Set to True to linearly
+            interpolate missing rates by their two closest valid rates. This
+            only affects dates within the source data's range. Default False.
+        :param str ref_currency: Three-letter currency code for the currency
+            that the source data is oriented towards. This is EUR for the
+            default European Central Bank data, and so the default is 'EUR'.
+        :param iterable na_values: What to interpret as missing values in the
+            source data.
+        :param verbose: Set to True to print what is going on under the hood.
+        """
         # Global options
         self.fallback_on_wrong_date = fallback_on_wrong_date
         self.fallback_on_missing_rate = fallback_on_missing_rate
