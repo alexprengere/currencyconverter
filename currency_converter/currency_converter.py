@@ -285,7 +285,14 @@ class CurrencyConverter(object):
     def convert(self, amount, currency, new_currency='EUR', date=None):
         """Convert amount from a currency to another one.
 
-        :type date: datetime.date
+        :param float amount: The amount of `currency` to convert.
+        :param str currency: The currency to convert from.
+        :param str new_currency: The currency to convert to.
+        :param datetime.date date: Use the conversion rate of this date. If this
+            is not given, the most recent rate is used.
+
+        :return: The value of `amount` in `new_currency`.
+        :rtype: float
 
         >>> from datetime import date
         >>> c = CurrencyConverter()
