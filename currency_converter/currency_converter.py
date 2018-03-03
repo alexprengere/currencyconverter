@@ -205,7 +205,12 @@ class CurrencyConverter(object):
                     1 + (last_date - first_date).days))
 
     def _compute_missing_rates(self, currency):
-        """Fill missing rates of a currency with the closest available ones."""
+        """Fill missing rates of a currency.
+
+        This is done by linear interpolation of the two closest available rates.
+
+        :param str currency: The currency to fill missing rates for.
+        """
         rates = self._rates[currency]
 
         # tmp will store the closest rates forward and backward
