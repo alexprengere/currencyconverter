@@ -94,8 +94,9 @@ class CurrencyConverter(object):
     2014-03-27,1.3758,...
 
     ``_rates`` is a dictionary with:
-    + currencies as keys
-    + {date: rate, ...} as values.
+
+    - currencies as keys
+    - {date: rate, ...} as values.
 
     ``currencies`` is a set of all available currencies.
     ``bounds`` is a dict if first and last date available per currency.
