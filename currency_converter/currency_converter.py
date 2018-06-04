@@ -305,9 +305,9 @@ class CurrencyConverter(object):
         Traceback (most recent call last):
         RateNotFoundError: BGN has no rate for 2010-11-21
         """
-        # ref_currency is in self.currencies
-        if currency not in self.currencies:
-            raise ValueError('{0} is not a supported currency'.format(currency))
+        for c in currency, new_currency:
+            if c not in self.currencies:
+                raise ValueError('{0} is not a supported currency'.format(c))
 
         if date is None:
             date = self.bounds[currency].last_date
