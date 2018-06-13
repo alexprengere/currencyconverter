@@ -6,9 +6,6 @@ from __future__ import with_statement
 from setuptools import setup, find_packages
 
 
-with open('VERSION') as fl:
-    VERSION = fl.read().rstrip()
-
 with open('README.rst') as fl:
     LONG_DESCRIPTION = fl.read()
 
@@ -18,7 +15,7 @@ with open('LICENSE') as fl:
 
 setup(
     name='CurrencyConverter',
-    version=VERSION,
+    version='0.13.3',
     author='Alex Prengère',
     author_email='alexprengere@gmail.com',
     url='https://github.com/alexprengere/currencyconverter',
