@@ -1,6 +1,3 @@
-This is a currency converter that uses historical rates against a
-reference currency (Euro).
-
 Currency data sources
 ---------------------
 
