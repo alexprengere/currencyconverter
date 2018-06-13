@@ -1,5 +1,4 @@
-Currency converter
-==================
+.. image:: https://raw.githubusercontent.com/alexprengere/currencyconverter/master/logo/cc3.png
 
 This is a currency converter that uses historical rates against a reference currency (Euro).
 
