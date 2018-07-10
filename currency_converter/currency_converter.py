@@ -315,7 +315,7 @@ class CurrencyConverter(object):
         if not found_currencies or not result_amount:
             raise ValueError('XE Currency Converter HTML cannot be parsed')
 
-        if currency != found_currencies[0][0] or new_currency != found_currencies[0][1]:
+        if (currency, new_currency) != found_currencies[0]:
             raise ValueError(
                 '{0} to {1} is not supported by XE Currency Converter'.format(
                     currency, new_currency))
