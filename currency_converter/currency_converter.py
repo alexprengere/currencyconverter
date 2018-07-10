@@ -305,7 +305,7 @@ class CurrencyConverter(object):
         """
         xe_url = 'https://www.xe.com/currencyconverter/convert/?' \
                  'Amount={0}&From={1}&To={2}'.format(amount, currency, new_currency)
-        xe_html = urlopen(xe_url).read().decode()
+        xe_html = urlopen(xe_url).read().decode('utf-8')
 
         found_currencies = re.findall(
             r'XE Currency Converter: ([A-Z]{3}) to ([A-Z]{3})', xe_html)
