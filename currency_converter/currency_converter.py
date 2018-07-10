@@ -297,25 +297,29 @@ class CurrencyConverter(object):
         :rtype: float
 
         >>> c = CurrencyConverter()
-        >>> c._convert_real_time(100, 'EUR', 'EUR', date='now')
+        >>> c._convert_real_time(100, 'EUR', 'EUR')
         100.0...
-        >>> c._convert_real_time(100, 'AAA', 'EUR', date='now')
+        >>> c._convert_real_time(100, 'AAA', 'EUR')
         Traceback (most recent call last):
         ValueError: AAA to EUR is not supported by XE Currency Converter
         """
         xe_url = 'https://www.xe.com/currencyconverter/convert/?' \
                  'Amount={0}&From={1}&To={2}'.format(amount, currency, new_currency)
         xe_html = urlopen(xe_url).read().decode()
+
         found_currencies = re.findall(
             r'XE Currency Converter: ([A-Z]{3}) to ([A-Z]{3})', xe_html)
         result_amount = re.findall(
             r"<span class='uccResultAmount'>([0-9]*\.?[0-9]+)</span>", xe_html)
+
         if not found_currencies or not result_amount:
             raise ValueError('XE Currency Converter HTML cannot be parsed')
+
         if currency != found_currencies[0][0] or new_currency != found_currencies[0][1]:
             raise ValueError(
                 '{0} to {1} is not supported by XE Currency Converter'.format(
                     currency, new_currency))
+
         return float(result_amount[0])
 
     def convert(self, amount, currency, new_currency='EUR', date=None):
