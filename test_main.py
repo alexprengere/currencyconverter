@@ -47,6 +47,12 @@ class TestRates(object):
         assert c.convert(10, 'EUR') == 10.
         assert c.convert(10, 'EUR', 'EUR') == 10.
 
+    @pytest.mark.parametrize('c', converters)
+    def test_real_time_convert(self, c):
+        assert c.convert(10, 'EUR', date='now') == 10.
+        assert c.convert(10, 'USD', 'GBP', 'now') > 0.
+        assert c.convert(10, 'USD', 'GBP', 'now') < 10.
+
 
 class TestErrorCases(object):
 
@@ -54,6 +60,13 @@ class TestErrorCases(object):
     def test_wrong_currency(self, c):
         with pytest.raises(ValueError):
             c.convert(1, 'AAA')
+
+    @pytest.mark.parametrize('c', converters)
+    def test_wrong_real_time_currency(self, c):
+        with pytest.raises(ValueError):
+            c.convert(1, 'AAA', 'EUR', date='now')
+        with pytest.raises(ValueError):
+            c.convert(1, 'EUR', 'AAA', date='now')
 
     @pytest.mark.parametrize('c', converters_without_missing_rate_fallback)
     def test_convert_with_missing_rate(self, c):
