@@ -11,6 +11,7 @@ from datetime import timedelta
 from collections import defaultdict, namedtuple
 from zipfile import ZipFile
 from io import BytesIO
+import re
 
 # We could have used "six", but like this we have no dependency
 if sys.version_info[0] < 3:
@@ -283,14 +284,53 @@ class CurrencyConverter(object):
             raise RateNotFoundError('{0} has no rate for {1}'.format(currency, date))
         return rate
 
+    def _convert_real_time(self, amount, currency, new_currency):
+        """
+        Convert amount from a currency to another one based on real-time
+        XE Currency Converter.
+
+        :param float amount: The amount of `currency` to convert.
+        :param str currency: The currency to convert from.
+        :param str new_currency: The currency to convert to.
+
+        :return: The value of `amount` in `new_currency`.
+        :rtype: float
+
+        >>> c = CurrencyConverter()
+        >>> c._convert_real_time(100, 'EUR', 'EUR')
+        100.0...
+        >>> c._convert_real_time(100, 'AAA', 'EUR')
+        Traceback (most recent call last):
+        ValueError: AAA to EUR is not supported by XE Currency Converter
+        """
+        xe_url = 'https://www.xe.com/currencyconverter/convert/?' \
+                 'Amount={0}&From={1}&To={2}'.format(amount, currency, new_currency)
+        xe_html = urlopen(xe_url).read().decode('utf-8')
+
+        found_currencies = re.findall(
+            r'XE Currency Converter: ([A-Z]{3}) to ([A-Z]{3})', xe_html)
+        result_amount = re.findall(
+            r"<span class='uccResultAmount'>([0-9]*\.?[0-9]+)</span>", xe_html)
+
+        if not found_currencies or not result_amount:
+            raise ValueError('XE Currency Converter HTML cannot be parsed')
+
+        if (currency, new_currency) != found_currencies[0]:
+            raise ValueError(
+                '{0} to {1} is not supported by XE Currency Converter'.format(
+                    currency, new_currency))
+
+        return float(result_amount[0])
+
     def convert(self, amount, currency, new_currency='EUR', date=None):
         """Convert amount from a currency to another one.
 
         :param float amount: The amount of `currency` to convert.
         :param str currency: The currency to convert from.
         :param str new_currency: The currency to convert to.
-        :param datetime.date date: Use the conversion rate of this date. If this
-            is not given, the most recent rate is used.
+        :param datetime.date/str date: Use the conversion rate of this date. If date
+            equals 'now', the real-time XE Currency Converter is used. If this is
+            not given, the most recent rate is used.
 
         :return: The value of `amount` in `new_currency`.
         :rtype: float
@@ -301,10 +341,15 @@ class CurrencyConverter(object):
         137.5...
         >>> c.convert(100, 'USD', date=date(2014, 3, 28))
         72.67...
+        >>> c.convert(100, 'EUR', date='now')
+        100.0...
         >>> c.convert(100, 'BGN', date=date(2010, 11, 21))
         Traceback (most recent call last):
         RateNotFoundError: BGN has no rate for 2010-11-21
         """
+        if date == 'now':
+            return self._convert_real_time(amount, currency, new_currency)
+
         for c in currency, new_currency:
             if c not in self.currencies:
                 raise ValueError('{0} is not a supported currency'.format(c))
