@@ -3,15 +3,17 @@
 
 from __future__ import with_statement, print_function, division, unicode_literals
 
+import requests
 import sys
 import os.path as op
 from functools import wraps
 import datetime
+from datetime import date
 from datetime import timedelta
 from collections import defaultdict, namedtuple
 from zipfile import ZipFile
 from io import BytesIO
-
+import csv
 # We could have used "six", but like this we have no dependency
 if sys.version_info[0] < 3:
     range = xrange
@@ -42,7 +44,8 @@ Bounds = namedtuple('Bounds', 'first_date last_date')
 
 __all__ = ['CurrencyConverter',
            'S3CurrencyConverter',
-           'RateNotFoundError', ]
+           'RateNotFoundError',
+           'EcbCurrencyConverter', ]
 
 
 def memoize(function):
@@ -141,6 +144,8 @@ class CurrencyConverter(object):
         self.bounds = None
         self.currencies = None
 
+        #Automatically wants to load data
+        #Adjust for ECB API Usage somehow
         if currency_file is not None:
             self.load_file(currency_file)
 
@@ -152,22 +157,25 @@ class CurrencyConverter(object):
         else:
             with open(currency_file, 'rb') as f:
                 content = f.read()
+                self.content = content
 
         if currency_file.endswith('.zip'):
             self.load_lines(get_lines_from_zip(content))
+            self.lines = get_lines_from_zip(content)
         else:
             self.load_lines(content.decode('utf-8').splitlines())
 
     def load_lines(self, lines):
         _rates = self._rates = defaultdict(dict)
         na_values = self.na_values
-
+        self.testingvar = []
         lines = iter(lines)
         header = next(lines).strip().split(',')[1:]
 
         for line in lines:
             line = line.strip().split(',')
             date = parse_date(line[0])
+            self.testingvar.append(list(zip(header, line[1:])))
             for currency, rate in zip(header, line[1:]):
                 currency = currency.strip()
                 if rate not in na_values and currency:  # skip empty currency
@@ -305,18 +313,18 @@ class CurrencyConverter(object):
         Traceback (most recent call last):
         RateNotFoundError: BGN has no rate for 2010-11-21
         """
-        for c in currency, new_currency:
-            if c not in self.currencies:
-                raise ValueError('{0} is not a supported currency'.format(c))
-
-        if date is None:
-            date = self.bounds[currency].last_date
-        else:
-            try:
-                date = date.date()  # fallback if input was a datetime object
-            except AttributeError:
-                pass
-
+#        for c in currency, new_currency:
+#            if c not in self.currencies:
+#                raise ValueError('{0} is not a supported currency'.format(c))
+#
+#        if date is None:
+#            date = self.bounds[currency].last_date
+#        else:
+#            try:
+#                date = date.date()  # fallback if input was a datetime object
+#            except AttributeError:
+#                pass
+#
         r0 = self._get_rate(currency, date)
         r1 = self._get_rate(new_currency, date)
 
@@ -337,3 +345,144 @@ class S3CurrencyConverter(CurrencyConverter):
     def load_file(self, currency_file):
         lines = currency_file.get_contents_as_string().splitlines()
         self.load_lines(lines)
+
+class EcbCurrencyConverter(CurrencyConverter):
+    #Add proper __init__
+    ## Get rid of a fixed file
+    ## May add a functionality of storing previously used data?
+    #Add memoization
+    #Add further loading of files when requesting new currencies
+    import requests
+
+    def __init__(self,
+                currency_file=CURRENCY_FILE,
+                fallback_on_wrong_date=False,
+                fallback_on_missing_rate=False,
+                ref_currency='EUR',
+                na_values=frozenset(['', 'N/A']),
+                verbose=False):
+
+         # Global options
+        self.fallback_on_wrong_date = fallback_on_wrong_date
+        self.fallback_on_missing_rate = fallback_on_missing_rate
+        self.ref_currency = ref_currency  # reference currency of rates
+        self.na_values = na_values        # missing values
+        self.verbose = verbose
+
+        # Will be filled once the file is loaded
+        self._rates = None
+        self.bounds = None
+        self.currencies = None
+
+        #Automatically wants to load data
+        #Adjust for ECB API Usage somehow
+        if currency_file is not None:
+            self.load_file(currency_file)
+
+    def load_file(self, currency_file):
+        pass
+
+    def ecb_request(self,currency,flowRef='EXR',*pargs, **kargs):
+        """makes a http request to the ECB API using the ECB typical key"""
+        print('Downloading...')
+        currency = currency
+        key = 'D.'+currency+'.'+self.ref_currency+'.SP00.A'
+        url = 'https://sdw-wsrest.ecb.europa.eu/service/data/'+flowRef+'/'+key
+        if kargs:
+            url = url+'?'+self.param_url(kargs)
+        if self.verbose:
+            print('Requested URL: '+url)
+        self.request = requests.get(url,headers={'Accept':'text/csv'})
+        self.ecb_read(self.request, currency)
+
+    def param_url(self, dict):
+        if self.verbose:
+            print('param_url uses following kargs:')
+            print(dict)
+        param = ''
+        for k,v in dict.items():
+            if type(v) is datetime.date:
+                param = param+k+'='+v.__str__()+'&'
+            else:
+                param = param+k+'='+v+'&'
+        param = param[:-1] #removes the last '&' sign
+        return param
+
+    def ecb_read(self, ecb_request, currency=None):
+        currency = currency
+        r = ecb_request.content.decode().splitlines()
+        c = csv.reader(r)
+        date_rate = []
+        for row in c:
+            date_rate.append(row[6:8])
+        self.lines = date_rate
+        self.load_lines(date_rate, currency)
+
+    def load_lines(self, lines, currency=None):
+        _rates = self._rates = defaultdict(dict)
+        na_values = self.na_values
+        self.testingvar = []
+        lines[0][1] = currency
+        lines = iter(lines)
+        header = next(lines)[1:]
+
+        for line in lines:
+            date = parse_date(line[0])
+            for curr, rate in zip(header, line[1:]):
+                if rate not in na_values and curr:  # skip empty currency
+                    _rates[curr][date] = float(rate)
+
+        self.currencies = set(self._rates) | set([self.ref_currency])
+        self._compute_bounds()
+
+        for curr in sorted(self._rates):
+            self._set_missing_to_none(curr)
+            if self.fallback_on_missing_rate:
+                self._compute_missing_rates(curr)
+
+    @memoize
+    def _get_rate(self, currency, date):
+        """Get a rate for a given currency and date.
+
+        :type date: datetime.date
+
+        >>> from datetime import date
+        >>> c = CurrencyConverter()
+        >>> c._get_rate('USD', date=date(2014, 3, 28))
+        1.375...
+        >>> c._get_rate('BGN', date=date(2010, 11, 21))
+        Traceback (most recent call last):
+        RateNotFoundError: BGN has no rate for 2010-11-21
+        """
+        if currency == self.ref_currency:
+            return 1.0
+
+        # Run ecb_request here
+        self.ecb_request(currency,startPeriod=date,endPeriod=date)
+
+        if date not in self._rates[currency]:
+            first_date, last_date = self.bounds[currency]
+
+            if not self.fallback_on_wrong_date:
+                raise RateNotFoundError('{0} not in {1} bounds {2}/{3}'.format(
+                    date, currency, first_date, last_date))
+
+            if date < first_date:
+                fallback_date = first_date
+            elif date > last_date:
+                fallback_date = last_date
+            else:
+                raise AssertionError('Should never happen, bug in the code!')
+
+            if self.verbose:
+                print(r'/!\ {0} not in {1} bounds {2}/{3}, falling back to {4}'.format(
+                    date, currency, first_date, last_date, fallback_date))
+
+            date = fallback_date
+
+        rate = self._rates[currency][date]
+        if rate is None:
+            raise RateNotFoundError('{0} has no rate for {1}'.format(currency, date))
+        return rate
+
+
