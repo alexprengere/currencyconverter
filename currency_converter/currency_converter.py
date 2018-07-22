@@ -144,8 +144,6 @@ class CurrencyConverter(object):
         self.bounds = None
         self.currencies = None
 
-        #Automatically wants to load data
-        #Adjust for ECB API Usage somehow
         if currency_file is not None:
             self.load_file(currency_file)
 
@@ -157,25 +155,21 @@ class CurrencyConverter(object):
         else:
             with open(currency_file, 'rb') as f:
                 content = f.read()
-                self.content = content
 
         if currency_file.endswith('.zip'):
             self.load_lines(get_lines_from_zip(content))
-            self.lines = get_lines_from_zip(content)
         else:
             self.load_lines(content.decode('utf-8').splitlines())
 
     def load_lines(self, lines):
         _rates = self._rates = defaultdict(dict)
         na_values = self.na_values
-        self.testingvar = []
         lines = iter(lines)
         header = next(lines).strip().split(',')[1:]
 
         for line in lines:
             line = line.strip().split(',')
             date = parse_date(line[0])
-            self.testingvar.append(list(zip(header, line[1:])))
             for currency, rate in zip(header, line[1:]):
                 currency = currency.strip()
                 if rate not in na_values and currency:  # skip empty currency
