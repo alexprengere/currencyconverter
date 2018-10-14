@@ -41,7 +41,7 @@ Create once the currency converter object:
 
 .. code-block:: python
 
-    >>> from currency_converter import CurrencyConverter
+    >>> from CurrencyConverter import CurrencyConverter
     >>> c = CurrencyConverter()
 
 Convert from ``EUR`` to ``USD`` using the last available rate:
