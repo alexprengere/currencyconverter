@@ -14,14 +14,27 @@ from currency_converter import (CurrencyConverter, S3CurrencyConverter,
 c0 = CurrencyConverter()
 c1 = CurrencyConverter(fallback_on_missing_rate=True)
 c2 = CurrencyConverter(fallback_on_wrong_date=True)
-c3 = CurrencyConverter(fallback_on_missing_rate=True, fallback_on_wrong_date=True)
-c4 = CurrencyConverter('./currency_converter/eurofxref-hist.zip')
+c3 = CurrencyConverter(fallback_on_missing_rate=True, fallback_on_wrong_date=True,
+                       fallback_on_missing_rate_method="linear_interpolation")
+c4 = CurrencyConverter(fallback_on_missing_rate=True, fallback_on_wrong_date=True,
+                       fallback_on_missing_rate_method="last_known")
+c5 = CurrencyConverter('./currency_converter/eurofxref-hist.zip')
 
-converters = [c0, c1, c2, c3, c4]
-converters_with_missing_rate_fallback = [c1, c3]
-converters_with_wrong_date_fallback = [c2, c3]
-converters_without_missing_rate_fallback = [c0, c2, c4]
-converters_without_wrong_date_fallback = [c0, c1, c4]
+converters = [c0, c1, c2, c3, c5, c4]
+converters_with_missing_rate_fallback = [c1, c3, c4]
+converters_with_wrong_date_fallback = [c2, c3, c4]
+converters_without_missing_rate_fallback = [c0, c2, c5]
+converters_without_wrong_date_fallback = [c0, c1, c5]
+
+
+@pytest.fixture
+def fallback_with_linear_interpolation():
+    return c3
+
+
+@pytest.fixture
+def fallback_with_last_known():
+    return c4
 
 
 def equals(a, b):
@@ -72,6 +85,14 @@ class TestErrorCases(object):
     @pytest.mark.parametrize('c', converters_with_wrong_date_fallback)
     def test_convert_fallback_on_wrong_date(self, c):
         assert equals(c.convert(10, 'EUR', 'USD', date=date(1986, 2, 2)), 11.789)
+
+    def test_fallback_methds(self,
+                             fallback_with_linear_interpolation,
+                             fallback_with_last_known):
+        li = fallback_with_linear_interpolation
+        ln = fallback_with_last_known
+        assert equals(li.convert(10, 'USD', date=date(2019, 12, 8)), 9.02418)
+        assert equals(ln.convert(10, 'USD', date=date(2019, 12, 8)), 9.01388)
 
 
 def last_n_days(n):
