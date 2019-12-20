@@ -105,6 +105,7 @@ class CurrencyConverter(object):
                  currency_file=CURRENCY_FILE,
                  fallback_on_wrong_date=False,
                  fallback_on_missing_rate=False,
+                 fallback_on_missing_rate_method="linear_interpolation",
                  ref_currency='EUR',
                  na_values=frozenset(['', 'N/A']),
                  verbose=False):
@@ -132,6 +133,7 @@ class CurrencyConverter(object):
         # Global options
         self.fallback_on_wrong_date = fallback_on_wrong_date
         self.fallback_on_missing_rate = fallback_on_missing_rate
+        self.fallback_on_missing_rate_method = fallback_on_missing_rate_method
         self.ref_currency = ref_currency  # reference currency of rates
         self.na_values = na_values        # missing values
         self.verbose = verbose
@@ -179,7 +181,13 @@ class CurrencyConverter(object):
         for currency in sorted(self._rates):
             self._set_missing_to_none(currency)
             if self.fallback_on_missing_rate:
-                self._compute_missing_rates(currency)
+                method = self.fallback_on_missing_rate_method
+                if method == "linear_interpolation":
+                    self._use_linear_interpolation(currency)
+                elif method == "last_known":
+                    self._use_last_known(currency)
+                else:
+                    raise ValueError("Unknown fallback method {0!r}".format(method))
 
     def _compute_bounds(self):
         self.bounds = dict((currency, Bounds(min(r), max(r)))
@@ -205,7 +213,7 @@ class CurrencyConverter(object):
                     currency, missing, first_date, last_date,
                     1 + (last_date - first_date).days))
 
-    def _compute_missing_rates(self, currency):
+    def _use_linear_interpolation(self, currency):
         """Fill missing rates of a currency.
 
         This is done by linear interpolation of the two closest available rates.
@@ -241,6 +249,25 @@ class CurrencyConverter(object):
             if self.verbose:
                 print(('{0}: filling {1} missing rate using {2} ({3}d old) and '
                        '{4} ({5}d later)').format(currency, date, r0, d0, r1, d1))
+
+    def _use_last_known(self, currency):
+        """Fill missing rates of a currency.
+
+        This is done by using the last known rate.
+
+        :param str currency: The currency to fill missing rates for.
+        """
+        rates = self._rates[currency]
+
+        for date in sorted(rates):
+            rate = rates[date]
+            if rate is not None:
+                last_rate, last_date = rate, date
+            else:
+                rates[date] = last_rate
+                if self.verbose:
+                    print('{0}: filling {1} missing rate using {2} from {3}'.format(
+                        currency, date, last_rate, last_date))
 
     def _get_rate(self, currency, date):
         """Get a rate for a given currency and date.
