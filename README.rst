@@ -141,3 +141,15 @@ Finally, you can use your own currency file, as long as it has the same format (
 
     # Load your custom file
     c = CurrencyConverter('./path/to/currency/file.csv')
+
+Decimal
+~~~~~~~
+
+If you need exact conversions, you can use the ``decimal`` option to use ``decimal.Decimal`` internally when parsing rates.
+This will slow down the load time by a factor 10 though.
+
+.. code-block:: python
+
+    >>> c = CurrencyConverter(decimal=True)
+    >>> c.convert(100, 'EUR', 'USD', date=date(2013, 3, 21))
+    Decimal('129.100')
