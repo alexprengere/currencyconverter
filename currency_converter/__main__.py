@@ -48,6 +48,11 @@ def main():
         default=0)
 
     parser.add_argument(
+        '--decimal',
+        help='use decimal.Decimal internally',
+        action='store_true')
+
+    parser.add_argument(
         '-f', '--file',
         help='change currency file used, default is %(default)s',
         default=CURRENCY_FILE)
@@ -57,6 +62,7 @@ def main():
     c = CurrencyConverter(currency_file=args.file,
                           fallback_on_wrong_date=True,
                           fallback_on_missing_rate=True,
+                          decimal=args.decimal,
                           verbose=args.verbose > 1)
     currencies = sorted(c.currencies)
 

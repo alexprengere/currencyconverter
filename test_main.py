@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from decimal import Decimal
 from datetime import datetime, date, timedelta
 try:
     from StringIO import StringIO
@@ -37,6 +38,11 @@ def fallback_with_last_known():
     return c4
 
 
+@pytest.fixture
+def decimal_converter():
+    return CurrencyConverter(decimal=True)
+
+
 def equals(a, b):
     return abs(b - a) < 1e-5
 
@@ -59,6 +65,15 @@ class TestRates(object):
     def test_convert_to_ref_currency(self, c):
         assert c.convert(10, 'EUR') == 10.
         assert c.convert(10, 'EUR', 'EUR') == 10.
+
+    def test_decimal_converter(self, decimal_converter):
+        dc = decimal_converter
+        assert dc.convert(10, 'EUR', 'USD', date(2013, 3, 21)) == Decimal('12.910')
+        assert dc.convert(10, 'EUR', 'USD', date(2014, 3, 28)) == Decimal('13.7590')
+        assert dc.convert(10, 'USD', 'EUR', date(2014, 3, 28)) == Decimal('7.2679700559'
+                                                                          '63369430917944618')
+        assert dc.convert(10, 'EUR') == Decimal('10')
+        assert dc.convert(10, 'EUR', 'EUR') == Decimal('10')
 
 
 class TestErrorCases(object):

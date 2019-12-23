@@ -11,6 +11,7 @@ from datetime import timedelta
 from collections import defaultdict, namedtuple
 from zipfile import ZipFile
 from io import BytesIO
+from decimal import Decimal
 
 # We could have used "six", but like this we have no dependency
 if sys.version_info[0] < 3:
@@ -108,6 +109,7 @@ class CurrencyConverter(object):
                  fallback_on_missing_rate_method="linear_interpolation",
                  ref_currency='EUR',
                  na_values=frozenset(['', 'N/A']),
+                 decimal=False,
                  verbose=False):
         """Instantiate a CurrencyConverter.
 
@@ -123,13 +125,15 @@ class CurrencyConverter(object):
         :param bool fallback_on_missing_rate: Set to True to linearly
             interpolate missing rates by their two closest valid rates. This
             only affects dates within the source data's range. Default False.
-        :param bool fallback_on_missing_rate_method: choose the fallback on missing
+        :param bool fallback_on_missing_rate_method: Choose the fallback on missing
             rate method. Default is "linear_interpolation", also available is "last_known".
         :param str ref_currency: Three-letter currency code for the currency
             that the source data is oriented towards. This is EUR for the
             default European Central Bank data, and so the default is 'EUR'.
         :param iterable na_values: What to interpret as missing values in the
             source data.
+        :param decimal: Set to True to use decimal.Decimal internally, this will
+            slow the loading time but will allow exact conversions
         :param verbose: Set to True to print what is going on under the hood.
         """
         # Global options
@@ -138,6 +142,7 @@ class CurrencyConverter(object):
         self.fallback_on_missing_rate_method = fallback_on_missing_rate_method
         self.ref_currency = ref_currency  # reference currency of rates
         self.na_values = na_values        # missing values
+        self.cast = Decimal if decimal else float
         self.verbose = verbose
 
         # Will be filled once the file is loaded
@@ -165,6 +170,7 @@ class CurrencyConverter(object):
     def load_lines(self, lines):
         _rates = self._rates = defaultdict(dict)
         na_values = self.na_values
+        cast = self.cast
 
         lines = iter(lines)
         header = next(lines).strip().split(',')[1:]
@@ -175,7 +181,7 @@ class CurrencyConverter(object):
             for currency, rate in zip(header, line[1:]):
                 currency = currency.strip()
                 if rate not in na_values and currency:  # skip empty currency
-                    _rates[currency][date] = float(rate)
+                    _rates[currency][date] = cast(rate)
 
         self.currencies = set(self._rates) | set([self.ref_currency])
         self._compute_bounds()
@@ -285,7 +291,7 @@ class CurrencyConverter(object):
         RateNotFoundError: BGN has no rate for 2010-11-21
         """
         if currency == self.ref_currency:
-            return 1.0
+            return self.cast('1')
 
         if date not in self._rates[currency]:
             first_date, last_date = self.bounds[currency]
@@ -349,7 +355,7 @@ class CurrencyConverter(object):
         r0 = self._get_rate(currency, date)
         r1 = self._get_rate(new_currency, date)
 
-        return float(amount) / r0 * r1
+        return self.cast(amount) / r0 * r1
 
 
 class S3CurrencyConverter(CurrencyConverter):
