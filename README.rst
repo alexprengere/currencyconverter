@@ -88,6 +88,8 @@ closest known rates, as long as you ask for a date within the currency date boun
     >>> c.convert(100, 'BGN', date=date(2010, 11, 21))
     51.12...
 
+The fallback method can be configured with the ``fallback_on_missing_rate_method`` parameter, which currently supports ``"linear_interpolation"`` and ``"last_known"`` values.
+
 We also have a fallback mode for dates outside the currency bounds:
 
 .. code-block:: python
