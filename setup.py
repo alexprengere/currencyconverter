@@ -15,7 +15,7 @@ with open('LICENSE') as fl:
 
 setup(
     name='CurrencyConverter',
-    version='0.14',
+    version='0.14.1',
     author='Alex Prengère',
     author_email='alexprengere@gmail.com',
     url='https://github.com/alexprengere/currencyconverter',
