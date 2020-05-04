@@ -123,9 +123,9 @@ class TestAttributes(object):
         assert c.bounds['BGN'][0] == date(2000, 7, 19)
         assert c.bounds['EUR'][0] == date(1999, 1, 4)
 
-        assert c.bounds['USD'][1] in last_n_days(3)
-        assert c.bounds['BGN'][1] in last_n_days(3)
-        assert c.bounds['EUR'][1] in last_n_days(3)
+        assert c.bounds['USD'][1] in last_n_days(7)
+        assert c.bounds['BGN'][1] in last_n_days(7)
+        assert c.bounds['EUR'][1] in last_n_days(7)
 
     @pytest.mark.parametrize('c', converters)
     def test_currencies(self, c):
