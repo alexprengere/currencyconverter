@@ -33,6 +33,10 @@ After installation, you should have ``currency_converter`` in your ``$PATH``:
 
  $ currency_converter 100 USD --to EUR
  100.000 USD = 87.512 EUR on 2016-05-06
+ 
+Documentation
+-------------
+https://docs.contour.so/alexprengere/currencyconverter/getting-started
 
 Python API
 ----------
