@@ -36,7 +36,7 @@ After installation, you should have ``currency_converter`` in your ``$PATH``:
  
 Documentation
 -------------
-https://docs.contour.so/alexprengere/currencyconverter/getting-started
+https://docs.contour.so/alexprengere/currencyconverter/README
 
 Python API
 ----------
