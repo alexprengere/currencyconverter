@@ -179,7 +179,7 @@ class TestCustomObject(object):
 
 
 def test_single_day_file():
-    c = CurrencyConverter('http://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip')
+    c = CurrencyConverter('https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip')
     assert len(c.currencies) == 33
 
 
@@ -205,7 +205,7 @@ class TestCustomSource(object):
         assert equals(c.convert(10, 'EUR', 'USD', date(2013, 3, 21)), 12.91)
 
     def test_remote_zip_file(self):
-        c = CurrencyConverter('http://www.ecb.int/stats/eurofxref/eurofxref-hist.zip')
+        c = CurrencyConverter('https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip')
         assert len(c.currencies) == 42
         assert equals(c.convert(10, 'EUR', 'USD', date(2013, 3, 21)), 12.91)
 

@@ -5,8 +5,8 @@ This is a currency converter that uses historical rates against a reference curr
 Currency data sources
 ---------------------
 
-The default source is the `European Central Bank <http://www.ecb.int/>`_. This is the ECB historical rates for 42 currencies against the Euro since 1999.
-It can be downloaded here: `eurofxref-hist.zip <http://www.ecb.int/stats/eurofxref/eurofxref-hist.zip>`_.
+The default source is the `European Central Bank <https://www.ecb.europa.eu>`_. This is the ECB historical rates for 42 currencies against the Euro since 1999.
+It can be downloaded here: `eurofxref-hist.zip <https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip>`_.
 The converter can use different sources as long as the format is the same.
 
 Installation
@@ -140,10 +140,10 @@ Finally, you can use your own currency file, as long as it has the same format (
     c = CurrencyConverter()
 
     # Load the up to date full history
-    c = CurrencyConverter('http://www.ecb.int/stats/eurofxref/eurofxref-hist.zip')
+    c = CurrencyConverter('https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip')
 
     # Load only the latest rates (single day data source)
-    c = CurrencyConverter('http://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip')
+    c = CurrencyConverter('https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip')
 
     # Load your custom file
     c = CurrencyConverter('./path/to/currency/file.csv')
