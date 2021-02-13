@@ -38,12 +38,16 @@ else:
 
 _DIRNAME = op.realpath(op.dirname(__file__))
 CURRENCY_FILE = op.join(_DIRNAME, 'eurofxref-hist.zip')
+ECB_URL = 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip'
+SINGLE_DAY_ECB_URL = 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip'
 
 Bounds = namedtuple('Bounds', 'first_date last_date')
 
 __all__ = ['CurrencyConverter',
            'S3CurrencyConverter',
-           'RateNotFoundError', ]
+           'RateNotFoundError',
+           'ECB_URL',
+           'SINGLE_DAY_ECB_URL',]
 
 
 def memoize(function):
