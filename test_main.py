@@ -10,7 +10,8 @@ except ImportError:
 
 import pytest
 from currency_converter import (CurrencyConverter, S3CurrencyConverter,
-                                RateNotFoundError)
+                                RateNotFoundError, ECB_URL,
+                                SINGLE_DAY_ECB_URL)
 
 c0 = CurrencyConverter()
 c1 = CurrencyConverter(fallback_on_missing_rate=True)
@@ -179,7 +180,7 @@ class TestCustomObject(object):
 
 
 def test_single_day_file():
-    c = CurrencyConverter('https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip')
+    c = CurrencyConverter(SINGLE_DAY_ECB_URL)
     assert len(c.currencies) == 33
 
 
@@ -205,7 +206,7 @@ class TestCustomSource(object):
         assert equals(c.convert(10, 'EUR', 'USD', date(2013, 3, 21)), 12.91)
 
     def test_remote_zip_file(self):
-        c = CurrencyConverter('https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip')
+        c = CurrencyConverter(ECB_URL)
         assert len(c.currencies) == 42
         assert equals(c.convert(10, 'EUR', 'USD', date(2013, 3, 21)), 12.91)
 
