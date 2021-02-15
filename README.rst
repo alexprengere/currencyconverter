@@ -135,6 +135,7 @@ Other attributes
 Finally, you can use your own currency file, as long as it has the same format (ECB):
 
 .. code-block:: python
+
     from currency_converter import ECB_URL, SINGLE_DAY_ECB_URL
 
     # Load the packaged data (might not be up to date)
