@@ -1,3 +1,2 @@
-include *.rst
-include LICENSE
+include update_data.sh
 recursive-include currency_converter *.csv *.zip

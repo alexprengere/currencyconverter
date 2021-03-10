@@ -15,7 +15,7 @@ from decimal import Decimal
 
 # We could have used "six", but like this we have no dependency
 if sys.version_info[0] < 3:
-    range = xrange
+    range = xrange  # noqa
     from itertools import izip as zip
     from urllib2 import urlopen
 
@@ -47,7 +47,7 @@ __all__ = ['CurrencyConverter',
            'S3CurrencyConverter',
            'RateNotFoundError',
            'ECB_URL',
-           'SINGLE_DAY_ECB_URL',]
+           'SINGLE_DAY_ECB_URL', ]
 
 
 def memoize(function):
