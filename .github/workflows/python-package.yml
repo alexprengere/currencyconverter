@@ -4,10 +4,12 @@
 name: Python package
 
 on:
-  push:
-    branches: [ master ]
   pull_request:
-    branches: [ master ]
+  push:
+    branches:
+    - master
+    tags:
+    - "v*"
 
 jobs:
   test:
@@ -79,6 +81,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
     needs: [dist_check]
+    name: PyPI upload
     steps:
     - uses: actions/download-artifact@v2
       with:
