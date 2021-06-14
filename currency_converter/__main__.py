@@ -97,7 +97,7 @@ def main():
                            new_currency=args.to,
                            date=date)
 
-    print('{0:.3f} {1} = {2:.3f} {3} on {4}'.format(
+    print('{0:,.3f} {1} = {2:,.3f} {3} on {4}'.format(
         args.amount,
         args.currency,
         new_amount,
