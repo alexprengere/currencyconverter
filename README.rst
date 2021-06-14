@@ -1,5 +1,16 @@
 .. image:: https://raw.githubusercontent.com/alexprengere/currencyconverter/master/logo/cc3.png
 
+|actions|_ |cratev|_ |crated|_
+
+.. _actions : https://github.com/alexprengere/currencyconverter/actions/workflows/python-package.yml
+.. |actions| image:: https://github.com/alexprengere/currencyconverter/actions/workflows/python-package.yml/badge.svg
+
+.. _cratev : https://pypi.org/project/CurrencyConverter/
+.. |cratev| image:: https://pypip.in/v/CurrencyConverter/badge.png
+
+.. _crated : https://pypi.org/project/CurrencyConverter/
+.. |crated| image:: https://pypip.in/d/CurrencyConverter/badge.png
+
 This is a currency converter that uses historical rates against a reference currency (Euro).
 
 Currency data sources
