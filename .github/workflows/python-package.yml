@@ -21,6 +21,10 @@ jobs:
     name: ${{ matrix.os }} - Python ${{ matrix.python-version }}
     steps:
     - uses: actions/checkout@v2
+    - name: Get history and tags for SCM versioning to work
+      run: |
+        git fetch --prune --unshallow
+        git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
@@ -37,6 +41,10 @@ jobs:
     name: Build Python packages
     steps:
     - uses: actions/checkout@v2
+    - name: Get history and tags for SCM versioning to work
+      run: |
+        git fetch --prune --unshallow
+        git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - uses: actions/setup-python@v2
       with:
         python-version: "3.8"
