@@ -20,6 +20,9 @@ The default source is the `European Central Bank <https://www.ecb.europa.eu>`_. 
 It can be downloaded here: `eurofxref-hist.zip <https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip>`_.
 The converter can use different sources as long as the format is the same.
 
+Note that the currency converter does not query the API in real time, to avoid the overhead of the HTTP request. It uses embedded data in the library, which might not be up to date.
+If you need the latest data, please refer to the last section.
+
 Installation
 ------------
 
@@ -45,10 +48,6 @@ After installation, you should have ``currency_converter`` in your ``$PATH``:
  $ currency_converter 100 USD --to EUR
  100.000 USD = 87.512 EUR on 2016-05-06
  
-Documentation
--------------
-https://docs.contour.so/alexprengere/currencyconverter/README
-
 Python API
 ----------
 
@@ -82,6 +81,27 @@ You can change the date of the rate:
     >>> from datetime import date # datetime works too
     >>> c.convert(100, 'EUR', 'USD', date=date(2013, 3, 21))
     129...
+
+Data
+~~~~
+
+You can use your own currency file, as long as it has the same format (ECB):
+
+.. code-block:: python
+
+    from currency_converter import ECB_URL, SINGLE_DAY_ECB_URL
+
+    # Load the packaged data (might not be up to date)
+    c = CurrencyConverter()
+
+    # Download the full history, this will be up to date
+    c = CurrencyConverter(ECB_URL)
+
+    # Dowload only the latest available day
+    c = CurrencyConverter(SINGLE_DAY_ECB_URL)
+
+    # Load your custom file
+    c = CurrencyConverter('./path/to/currency/file.csv')
 
 Fallbacks
 ~~~~~~~~~
@@ -118,6 +138,18 @@ We also have a fallback mode for dates outside the currency bounds:
     >>> c.convert(100, 'EUR', 'USD', date=date(1986, 2, 2)) # fallback to 1999-01-04
     117.89...
 
+Decimal
+~~~~~~~
+
+If you need exact conversions, you can use the ``decimal`` option to use ``decimal.Decimal`` internally when parsing rates.
+This will slow down the load time by a factor 10 though.
+
+.. code-block:: python
+
+    >>> c = CurrencyConverter(decimal=True)
+    >>> c.convert(100, 'EUR', 'USD', date=date(2013, 3, 21))
+    Decimal('129.100')
+
 Other attributes
 ~~~~~~~~~~~~~~~~
 
@@ -142,33 +174,3 @@ Other attributes
     >>> c.convert(100, 'AAA')
     Traceback (most recent call last):
     ValueError: AAA is not a supported currency
-
-Finally, you can use your own currency file, as long as it has the same format (ECB):
-
-.. code-block:: python
-
-    from currency_converter import ECB_URL, SINGLE_DAY_ECB_URL
-
-    # Load the packaged data (might not be up to date)
-    c = CurrencyConverter()
-
-    # Load the up to date full history
-    c = CurrencyConverter(ECB_URL)
-
-    # Load only the latest rates (single day data source)
-    c = CurrencyConverter(SINGLE_DAY_ECB_URL)
-
-    # Load your custom file
-    c = CurrencyConverter('./path/to/currency/file.csv')
-
-Decimal
-~~~~~~~
-
-If you need exact conversions, you can use the ``decimal`` option to use ``decimal.Decimal`` internally when parsing rates.
-This will slow down the load time by a factor 10 though.
-
-.. code-block:: python
-
-    >>> c = CurrencyConverter(decimal=True)
-    >>> c.convert(100, 'EUR', 'USD', date=date(2013, 3, 21))
-    Decimal('129.100')
