@@ -21,7 +21,7 @@ It can be downloaded here: `eurofxref-hist.zip <https://www.ecb.europa.eu/stats/
 The converter can use different sources as long as the format is the same.
 
 Note that the currency converter does not query the API in real time, to avoid the overhead of the HTTP request. It uses embedded data in the library, which might not be up to date.
-If you need the latest data, please refer to the last section.
+If you need the latest data, please refer to the *data* section.
 
 Installation
 ------------
@@ -94,10 +94,12 @@ You can use your own currency file, as long as it has the same format (ECB):
     # Load the packaged data (might not be up to date)
     c = CurrencyConverter()
 
-    # Download the full history, this will be up to date
+    # Download the full history, this will be up to date. Current value is:
+    # https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip
     c = CurrencyConverter(ECB_URL)
 
-    # Dowload only the latest available day
+    # Dowload only the latest available day. Current value is:
+    # https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip
     c = CurrencyConverter(SINGLE_DAY_ECB_URL)
 
     # Load your custom file
