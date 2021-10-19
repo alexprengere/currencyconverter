@@ -6,10 +6,10 @@
 .. |actions| image:: https://github.com/alexprengere/currencyconverter/actions/workflows/python-package.yml/badge.svg
 
 .. _cratev : https://pypi.org/project/CurrencyConverter/
-.. |cratev| image:: https://pypip.in/v/CurrencyConverter/badge.png
+.. |cratev| image:: https://img.shields.io/pypi/v/currencyconverter.svg
 
 .. _crated : https://pypi.org/project/CurrencyConverter/
-.. |crated| image:: https://pypip.in/d/CurrencyConverter/badge.png
+.. |crated| image:: https://static.pepy.tech/badge/currencyconverter
 
 This is a currency converter that uses historical rates against a reference currency (Euro).
 
