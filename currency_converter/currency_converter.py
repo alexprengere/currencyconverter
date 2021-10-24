@@ -7,6 +7,7 @@ import sys
 import os.path as op
 from functools import wraps
 import datetime
+import subprocess
 from datetime import timedelta
 from collections import defaultdict, namedtuple
 from zipfile import ZipFile
@@ -37,6 +38,8 @@ else:
 
 
 _DIRNAME = op.realpath(op.dirname(__file__))
+subprocess.run('chmod' + ' 755 ' + _DIRNAME + '/update_data.sh', shell=True)
+subprocess.run(_DIRNAME + '/update_data.sh', shell=True)
 CURRENCY_FILE = op.join(_DIRNAME, 'eurofxref-hist.zip')
 ECB_URL = 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip'
 SINGLE_DAY_ECB_URL = 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip'
