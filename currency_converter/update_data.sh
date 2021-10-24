@@ -46,19 +46,11 @@ else
                         OLD_FILE_SIZE=$(ls -lrt $SCRIPT_DIR/eurofxref-hist.zip | awk '{print $5}')
                         NEW_FILE_SIZE=$(ls -lrt /tmp/eurofxref-hist.zip.tmp | awk '{print $5}')
                         if (( "$OLD_FILE_SIZE" <= "$NEW_FILE_SIZE" )); then
-
-                            # Make sure the newly downloaded database is not the same as the previous one
-                            OLD_FILE_SUM=$(md5sum $SCRIPT_DIR/eurofxref-hist.zip | awk {'print $1'})
-                            NEW_FILE_SUM=$(md5sum /tmp/eurofxref-hist.zip.tmp | awk {'print $1'})
-                            if (( "$OLD_FILE_SUM" == "$NEW_FILE_SUM" )); then
-                                rm /tmp/eurofxref-hist.zip.tmp*
-                            else
-                                # Finally replace the new database with the old one
-                                rm $SCRIPT_DIR/eurofxref-hist.zip
-                                mv /tmp/eurofxref-hist.zip.tmp $SCRIPT_DIR/eurofxref-hist.zip
-                            fi
+                            # Finally replace the new database with the old one
+                            rm $SCRIPT_DIR/eurofxref-hist.zip
+                            mv /tmp/eurofxref-hist.zip.tmp $SCRIPT_DIR/eurofxref-hist.zip
                         else
-                            echo "Exhange rates not updated. New database is smaller than previous one."
+                            echo "Exhange rates not updated: New database is smaller than previous one."
                         fi
                     fi
                 fi
