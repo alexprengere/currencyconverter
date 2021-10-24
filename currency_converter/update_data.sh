@@ -15,6 +15,13 @@ function get-data {
     fi
 }
 
+# Check if database exists
+if [ ! -f "$SCRIPT_DIR/eurofxref-hist.zip" ]; then
+    get-data
+    mv /tmp/eurofxref-hist.zip.tmp $SCRIPT_DIR/eurofxref-hist.zip
+    exit 0
+fi
+
 # Not updating exchange rates on weekends
 if [ "$(date '+%u')" = "6" ] || [ "$(date '+%u')" = "7" ]; then
     :
@@ -25,38 +32,32 @@ else
         :
     else
         # Not updating exchange rates on moveable holidays
-        checkHoliday=$(tail -n 8 $SCRIPT_DIR/update_data.sh | grep -o "$(date '+%y-%m-%d')") #check
+        checkHoliday=$(tail -n 8 $SCRIPT_DIR/update_data.sh | grep -o "$(date '+%y-%m-%d')")
         if [ "$checkHoliday" = "$(date "+%y-%m-%d")" ]; then
             :
         else
-            # Check if database already exists
-            if [ -f "$SCRIPT_DIR/eurofxref-hist.zip" ]; then
-                # Check if database has already been updated
-                OLD_FILE_DATE=$(ls -al --time-style=long-iso $SCRIPT_DIR/eurofxref-hist.zip | awk '{print $6}')
-                if [ "$(date '+%Y-%m-%d')" == "$OLD_FILE_DATE" ]; then
+            # Check if database has already been updated
+            OLD_FILE_DATE=$(ls -al --time-style=long-iso $SCRIPT_DIR/eurofxref-hist.zip | awk '{print $6}')
+            if [ "$(date '+%Y-%m-%d')" == "$OLD_FILE_DATE" ]; then
+                :
+            else
+                # Exchange rates are not updated by ECB before 16:00 CET (15 UTC without DST)
+                # After 15 UTC the database should be updated and ready
+                if (( "$(date -u '+%H')" < "15" )); then
                     :
                 else
-                    # Exchange rates are not updated by ECB before 16:00 CET (15 UTC without DST)
-                    # After 15 UTC the database should be updated and ready
-                    if (( "$(date -u '+%H')" < "15" )); then
-                        :
+                    get-data
+                    # Make sure the new database is equal or bigger in filesize
+                    OLD_FILE_SIZE=$(ls -lrt $SCRIPT_DIR/eurofxref-hist.zip | awk '{print $5}')
+                    NEW_FILE_SIZE=$(ls -lrt /tmp/eurofxref-hist.zip.tmp | awk '{print $5}')
+                    if (( "$OLD_FILE_SIZE" <= "$NEW_FILE_SIZE" )); then
+                        # Finally replace the new database with the old one
+                        rm $SCRIPT_DIR/eurofxref-hist.zip
+                        mv /tmp/eurofxref-hist.zip.tmp $SCRIPT_DIR/eurofxref-hist.zip
                     else
-                        get-data
-                        # Make sure the new database is equal or bigger in filesize
-                        OLD_FILE_SIZE=$(ls -lrt $SCRIPT_DIR/eurofxref-hist.zip | awk '{print $5}')
-                        NEW_FILE_SIZE=$(ls -lrt /tmp/eurofxref-hist.zip.tmp | awk '{print $5}')
-                        if (( "$OLD_FILE_SIZE" <= "$NEW_FILE_SIZE" )); then
-                            # Finally replace the new database with the old one
-                            rm $SCRIPT_DIR/eurofxref-hist.zip
-                            mv /tmp/eurofxref-hist.zip.tmp $SCRIPT_DIR/eurofxref-hist.zip
-                        else
-                            echo "Exhange rates not updated: New database is smaller than previous one."
-                        fi
+                        echo "Exhange rates not updated: New database is smaller than previous one."
                     fi
                 fi
-            else
-                get-data
-                mv /tmp/eurofxref-hist.zip.tmp $SCRIPT_DIR/eurofxref-hist.zip
             fi
         fi
     fi
