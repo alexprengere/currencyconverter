@@ -2,6 +2,19 @@
 
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
+function get-data {
+    # Check if there is internet connectivity
+    wget -q --spider http://google.com &> /dev/null
+    if [ $? -eq 0 ]; then
+
+        # Download new exchange rate database
+        wget -q -O /tmp/eurofxref-hist.zip.tmp https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip &> /dev/null
+
+    else
+        :
+    fi
+}
+
 # Not updating exchange rates on weekends
 if [ "$(date '+%u')" = "6" ] || [ "$(date '+%u')" = "7" ]; then
     :
@@ -12,27 +25,23 @@ else
         :
     else
         # Not updating exchange rates on moveable holidays
-        checkHoliday=$(tail -n 8 $SCRIPT_DIR/update_data.sh | grep -o "$(date '+%y-%m-%d')")
+        checkHoliday=$(tail -n 8 $SCRIPT_DIR/update_data.sh | grep -o "$(date '+%y-%m-%d')") #check
         if [ "$checkHoliday" = "$(date "+%y-%m-%d")" ]; then
             :
         else
-            # Check if database has already been updated
-            OLD_FILE_DATE=$(ls -al --time-style=long-iso $SCRIPT_DIR/eurofxref-hist.zip | awk '{print $6}')
-            if [ "$(date '+%Y-%m-%d')" == "$OLD_FILE_DATE" ]; then
-                :
-            else
-                # Exchange rates are not updated by ECB before 16:00 CET (15 UTC without DST)
-                # After 17 CET (16 UTC) the database should most certainly be ready
-                if (( "$(date -u '+%H')" < "16" )); then
+            # Check if database already exists
+            if [ -f "$SCRIPT_DIR/eurofxref-hist.zip" ]; then
+                # Check if database has already been updated
+                OLD_FILE_DATE=$(ls -al --time-style=long-iso $SCRIPT_DIR/eurofxref-hist.zip | awk '{print $6}')
+                if [ "$(date '+%Y-%m-%d')" == "$OLD_FILE_DATE" ]; then
                     :
                 else
-                    # Check if there is internet connectivity
-                    wget -q --spider http://google.com &> /dev/null
-                    if [ $? -eq 0 ]; then
-
-                        # Download new exchange rate database
-                        wget -q -O /tmp/eurofxref-hist.zip.tmp https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip &> /dev/null
-
+                    # Exchange rates are not updated by ECB before 16:00 CET (15 UTC without DST)
+                    # After 15 UTC the database should be updated and ready
+                    if (( "$(date -u '+%H')" < "15" )); then
+                        :
+                    else
+                        get-data
                         # Make sure the new database is equal or bigger in filesize
                         OLD_FILE_SIZE=$(ls -lrt $SCRIPT_DIR/eurofxref-hist.zip | awk '{print $5}')
                         NEW_FILE_SIZE=$(ls -lrt /tmp/eurofxref-hist.zip.tmp | awk '{print $5}')
@@ -53,6 +62,9 @@ else
                         fi
                     fi
                 fi
+            else
+                get-data
+                mv /tmp/eurofxref-hist.zip.tmp $SCRIPT_DIR/eurofxref-hist.zip
             fi
         fi
     fi
