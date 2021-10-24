@@ -43,7 +43,7 @@ else
             else
                 # Exchange rates are not updated by ECB before 16:00 CET (15 UTC without DST)
                 # After 15 UTC the database should be updated and ready
-                if (( "$(date -u '+%H')" < "15" )); then
+                if (( "$(date -u '+%H')" >= "15" )); then
                     :
                 else
                     get-data
