@@ -45,6 +45,7 @@ if [ "$currentVersion" != "$(date '+%Y-%m-%d')" ]; then
                 # Last available database date should not be equal to the current database version date
                 checkDate=$(date --date="$i days ago" +"%Y-%m-%d")
                 if [ "$checkDate" != "$currentVersion" ]; then
+
                     if [ $i = 0 ]; then
 
                         # Exchange rates are not updated by ECB before 16:00 CET (15 UTC without DST)
@@ -52,13 +53,14 @@ if [ "$currentVersion" != "$(date '+%Y-%m-%d')" ]; then
                         if (( "$(date -u '+%H')" < "15" )); then
                             break
                         else
-                            update
+                            get-data
                             break
                         fi
 
                     else
-                        update
+                        get-data
                     fi
+
                 fi
             fi
         fi
