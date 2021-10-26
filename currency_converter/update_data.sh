@@ -23,7 +23,7 @@ fi
 
 # Check if there is a more recent version available than the currently active database
 currentVersion=$(ls -al --time-style=long-iso $SCRIPT_DIR/eurofxref-hist.zip | awk '{print $6}')
-if [ "$currentVersion" != "$(date '+%Y-%m-%d')" ]; then
+if [ "$currentVersion" != "$(date -u '+%Y-%m-%d')" ]; then
 
     # Count how many days have passed since current active version
     days_since_update=$(( ($(date +%s) - $(date --date="$currentVersion" +%s) )/(60*60*24) ))
