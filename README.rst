@@ -105,6 +105,21 @@ You can use your own currency file, as long as it has the same format (ECB):
     # Load your custom file
     c = CurrencyConverter('./path/to/currency/file.csv')
 
+Since the raw data is updated only once a day, it might be better to only download it once a day:
+
+.. code-block:: python
+
+    import os.path as op
+    import urllib.request
+    from datetime import date
+
+    from currency_converter import ECB_URL, CurrencyConverter
+
+    filename = f"ecb_{date.today():%Y%m%d}.zip"
+    if not op.isfile(filename):
+        urllib.request.urlretrieve(ECB_URL, filename)
+    c = CurrencyConverter(filename)
+
 Fallbacks
 ~~~~~~~~~
 
