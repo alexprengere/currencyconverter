@@ -9,20 +9,26 @@ except ImportError:
     from io import StringIO
 
 import pytest
-from currency_converter import (CurrencyConverter, S3CurrencyConverter,
-                                RateNotFoundError, ECB_URL,
-                                SINGLE_DAY_ECB_URL)
+from currency_converter import (CurrencyConverter,
+                                S3CurrencyConverter,
+                                RateNotFoundError,
+                                ECB_URL,
+                                CURRENCY_FILE,
+                                SINGLE_DAY_ECB_URL,
+                                SINGLE_DAY_CURRENCY_FILE, )
 
 c0 = CurrencyConverter()
 c1 = CurrencyConverter(fallback_on_missing_rate=True)
 c2 = CurrencyConverter(fallback_on_wrong_date=True)
-c3 = CurrencyConverter(fallback_on_missing_rate=True, fallback_on_wrong_date=True,
+c3 = CurrencyConverter(fallback_on_missing_rate=True,
+                       fallback_on_wrong_date=True,
                        fallback_on_missing_rate_method="linear_interpolation")
-c4 = CurrencyConverter(fallback_on_missing_rate=True, fallback_on_wrong_date=True,
+c4 = CurrencyConverter(fallback_on_missing_rate=True,
+                       fallback_on_wrong_date=True,
                        fallback_on_missing_rate_method="last_known")
-c5 = CurrencyConverter('./currency_converter/eurofxref-hist.zip')
+c5 = CurrencyConverter(CURRENCY_FILE)
 
-converters = [c0, c1, c2, c3, c5, c4]
+converters = [c0, c1, c2, c3, c4, c5]
 converters_with_missing_rate_fallback = [c1, c3, c4]
 converters_with_wrong_date_fallback = [c2, c3, c4]
 converters_without_missing_rate_fallback = [c0, c2, c5]
@@ -42,6 +48,22 @@ def fallback_with_last_known():
 @pytest.fixture
 def decimal_converter():
     return CurrencyConverter(decimal=True)
+
+
+HISTORY_CURRENCIES = {
+    'HUF', 'LVL', 'RON', 'ISK', 'SIT', 'CHF', 'DKK', 'MYR', 'PHP', 'KRW',
+    'HKD', 'IDR', 'HRK', 'MTL', 'LTL', 'CZK', 'CYP', 'NZD', 'ZAR', 'NOK',
+    'AUD', 'SGD', 'THB', 'CNY', 'SKK', 'GBP', 'TRL', 'TRY', 'JPY', 'BGN',
+    'USD', 'CAD', 'RUB', 'SEK', 'EUR', 'BRL', 'ROL', 'PLN', 'EEK', 'ILS',
+    'MXN', 'INR',
+}
+
+SINGLE_DAY_CURRENCIES = {
+    'BRL', 'CZK', 'PHP', 'THB', 'NOK', 'PLN', 'SGD', 'BGN', 'HKD', 'MYR',
+    'ISK', 'CAD', 'KRW', 'JPY', 'DKK', 'ZAR', 'RON', 'IDR', 'NZD', 'INR',
+    'MXN', 'TRY', 'USD', 'HRK', 'CNY', 'HUF', 'EUR', 'GBP', 'SEK', 'AUD',
+    'ILS', 'CHF',
+}
 
 
 def equals(a, b):
@@ -130,8 +152,8 @@ class TestAttributes(object):
 
     @pytest.mark.parametrize('c', converters)
     def test_currencies(self, c):
-        assert len(c.currencies) == 42
         assert 'EUR' in c.currencies
+        assert c.currencies == HISTORY_CURRENCIES
 
 
 class TestCustomObject(object):
@@ -179,9 +201,14 @@ class TestCustomObject(object):
         }
 
 
-def test_single_day_file():
-    c = CurrencyConverter(SINGLE_DAY_ECB_URL)
-    assert len(c.currencies) == 33
+@pytest.mark.parametrize('c', [
+    CurrencyConverter(SINGLE_DAY_ECB_URL),
+    CurrencyConverter(SINGLE_DAY_CURRENCY_FILE),
+])
+def test_single_day_sources(c):
+    assert c.currencies == SINGLE_DAY_CURRENCIES
+    assert c.bounds['USD'][0] == c.bounds['USD'][1]
+    assert c.bounds['USD'][0] in last_n_days(7)
 
 
 def skip_test_on_error(msg):
@@ -201,24 +228,24 @@ def skip_test_on_error(msg):
 class TestCustomSource(object):
 
     def test_local_zip_file(self):
-        c = CurrencyConverter('./currency_converter/eurofxref-hist.zip')
-        assert len(c.currencies) == 42
+        c = CurrencyConverter(CURRENCY_FILE)
+        assert c.currencies == HISTORY_CURRENCIES
         assert equals(c.convert(10, 'EUR', 'USD', date(2013, 3, 21)), 12.91)
 
     def test_remote_zip_file(self):
         c = CurrencyConverter(ECB_URL)
-        assert len(c.currencies) == 42
+        assert c.currencies == HISTORY_CURRENCIES
         assert equals(c.convert(10, 'EUR', 'USD', date(2013, 3, 21)), 12.91)
 
     def test_local_clear_file(self):
-        c = CurrencyConverter('./currency_converter/test_single_day.csv')
-        assert len(c.currencies) == 32
+        c = CurrencyConverter(SINGLE_DAY_CURRENCY_FILE)
+        assert c.currencies == SINGLE_DAY_CURRENCIES
 
     @skip_test_on_error('CERTIFICATE_VERIFY_FAILED')
     def test_remote_clear_file(self):
         c = CurrencyConverter('https://raw.githubusercontent.com/alexprengere'
-                              '/currencyconverter/master/currency_converter/test_single_day.csv')
-        assert len(c.currencies) == 32
+                              '/currencyconverter/master/currency_converter/eurofxref.csv')
+        assert c.currencies == SINGLE_DAY_CURRENCIES
 
 
 class TestS3(object):
