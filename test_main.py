@@ -9,6 +9,7 @@ except ImportError:
     from io import StringIO
 
 import pytest
+from pytest import approx
 from currency_converter import (CurrencyConverter,
                                 S3CurrencyConverter,
                                 RateNotFoundError,
@@ -66,23 +67,19 @@ SINGLE_DAY_CURRENCIES = {
 }
 
 
-def equals(a, b):
-    return abs(b - a) < 1e-5
-
-
 class TestRates(object):
 
     @pytest.mark.parametrize('c', converters)
     def test_convert(self, c):
-        assert equals(c.convert(10, 'EUR', 'USD', date(2013, 3, 21)), 12.91)
-        assert equals(c.convert(10, 'EUR', 'USD', date(2014, 3, 28)), 13.758999)
-        assert equals(c.convert(10, 'USD', 'EUR', date(2014, 3, 28)), 7.26797)
+        assert c.convert(10, 'EUR', 'USD', date(2013, 3, 21)) == approx(12.91)
+        assert c.convert(10, 'EUR', 'USD', date(2014, 3, 28)) == approx(13.758999)
+        assert c.convert(10, 'USD', 'EUR', date(2014, 3, 28)) == approx(7.26797)
 
     @pytest.mark.parametrize('c', converters)
     def test_convert_with_datetime(self, c):
-        assert equals(c.convert(10, 'EUR', 'USD', datetime(2013, 3, 21)), 12.91)
-        assert equals(c.convert(10, 'EUR', 'USD', datetime(2014, 3, 28)), 13.758999)
-        assert equals(c.convert(10, 'USD', 'EUR', datetime(2014, 3, 28)), 7.26797)
+        assert c.convert(10, 'EUR', 'USD', datetime(2013, 3, 21)) == approx(12.91)
+        assert c.convert(10, 'EUR', 'USD', datetime(2014, 3, 28)) == approx(13.758999)
+        assert c.convert(10, 'USD', 'EUR', datetime(2014, 3, 28)) == approx(7.26797)
 
     @pytest.mark.parametrize('c', converters)
     def test_convert_to_ref_currency(self, c):
@@ -113,7 +110,7 @@ class TestErrorCases(object):
 
     @pytest.mark.parametrize('c', converters_with_missing_rate_fallback)
     def test_convert_fallback_on_missing_rate(self, c):
-        assert equals(c1.convert(10, 'BGN', date=date(2010, 11, 21)), 5.11299)
+        assert c1.convert(10, 'BGN', date=date(2010, 11, 21)) == approx(5.112997238)
 
     @pytest.mark.parametrize('c', converters_without_wrong_date_fallback)
     def test_convert_with_wrong_date(self, c):
@@ -122,15 +119,15 @@ class TestErrorCases(object):
 
     @pytest.mark.parametrize('c', converters_with_wrong_date_fallback)
     def test_convert_fallback_on_wrong_date(self, c):
-        assert equals(c.convert(10, 'EUR', 'USD', date=date(1986, 2, 2)), 11.789)
+        assert c.convert(10, 'EUR', 'USD', date=date(1986, 2, 2)) == approx(11.789)
 
     def test_fallback_methds(self,
                              fallback_with_linear_interpolation,
                              fallback_with_last_known):
         li = fallback_with_linear_interpolation
         ln = fallback_with_last_known
-        assert equals(li.convert(10, 'USD', date=date(2019, 12, 8)), 9.02418)
-        assert equals(ln.convert(10, 'USD', date=date(2019, 12, 8)), 9.01388)
+        assert li.convert(10, 'USD', date=date(2019, 12, 8)) == approx(9.02418)
+        assert ln.convert(10, 'USD', date=date(2019, 12, 8)) == approx(9.01388)
 
 
 def last_n_days(n):
@@ -170,26 +167,26 @@ class TestCustomObject(object):
     2014-03-22,N/A,0'''))
 
     def test_convert(self):
-        assert equals(self.c.convert(10, 'EUR', 'USD'), 20)
-        assert equals(self.c.convert(10, 'USD', 'EUR'), 5)
+        assert self.c.convert(10, 'EUR', 'USD') == approx(20)
+        assert self.c.convert(10, 'USD', 'EUR') == approx(5)
 
     def test_fallback_date(self):
         # Fallback to 2014-03-29 rate of 2
-        assert equals(self.c.convert(10, 'EUR', 'USD', date(2015, 1, 1)), 20)
-        assert equals(self.c.convert(10, 'USD', 'EUR', date(2015, 1, 1)), 5)
+        assert self.c.convert(10, 'EUR', 'USD', date(2015, 1, 1)) == approx(20)
+        assert self.c.convert(10, 'USD', 'EUR', date(2015, 1, 1)) == approx(5)
 
         # Fallback to 2014-03-23 rate of 18
-        assert equals(self.c.convert(10, 'EUR', 'USD', date(2012, 1, 1)), 180)
-        assert equals(self.c.convert(10, 'USD', 'EUR', date(2012, 1, 1)), 0.555555)
+        assert self.c.convert(10, 'EUR', 'USD', date(2012, 1, 1)) == approx(180)
+        assert self.c.convert(10, 'USD', 'EUR', date(2012, 1, 1)) == approx(0.55555555)
 
     def test_fallback_rate(self):
         # Fallback rate is the average between 2 and 6, so 4
-        assert equals(self.c.convert(10, 'EUR', 'USD', date(2014, 3, 28)), 40)
-        assert equals(self.c.convert(10, 'USD', 'EUR', date(2014, 3, 28)), 2.5)
+        assert self.c.convert(10, 'EUR', 'USD', date(2014, 3, 28)) == approx(40)
+        assert self.c.convert(10, 'USD', 'EUR', date(2014, 3, 28)) == approx(2.5)
 
         # Fallback rate is the weighted mean between 6 (d:1) and 18 (d:3), so 9
-        assert equals(self.c.convert(10, 'EUR', 'USD', date(2014, 3, 26)), 90)
-        assert equals(self.c.convert(10, 'USD', 'EUR', date(2014, 3, 26)), 1.11111)
+        assert self.c.convert(10, 'EUR', 'USD', date(2014, 3, 26)) == approx(90)
+        assert self.c.convert(10, 'USD', 'EUR', date(2014, 3, 26)) == approx(1.11111111)
 
     def test_attributes(self):
         assert self.c.currencies == set(['EUR', 'USD', 'AAA'])
@@ -216,12 +213,12 @@ class TestCustomSource(object):
     def test_local_zip_file(self):
         c = CurrencyConverter(CURRENCY_FILE)
         assert c.currencies == HISTORY_CURRENCIES
-        assert equals(c.convert(10, 'EUR', 'USD', date(2013, 3, 21)), 12.91)
+        assert c.convert(10, 'EUR', 'USD', date(2013, 3, 21)) == approx(12.91)
 
     def test_remote_zip_file(self):
         c = CurrencyConverter(ECB_URL)
         assert c.currencies == HISTORY_CURRENCIES
-        assert equals(c.convert(10, 'EUR', 'USD', date(2013, 3, 21)), 12.91)
+        assert c.convert(10, 'EUR', 'USD', date(2013, 3, 21)) == approx(12.91)
 
     def test_local_clear_file(self):
         c = CurrencyConverter(SINGLE_DAY_CURRENCY_FILE)
