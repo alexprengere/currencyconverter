@@ -211,20 +211,6 @@ def test_single_day_sources(c):
     assert c.bounds['USD'][0] in last_n_days(7)
 
 
-def skip_test_on_error(msg):
-    def decorator(test_function):
-        def wrapped_test_function(*args, **kwargs):
-            try:
-                test_function(*args, **kwargs)
-            except Exception as e:  # will not catch AssertionError
-                if msg in str(e):
-                    pytest.skip("Skipped because {0!r} found".format(msg))
-                else:
-                    raise
-        return wrapped_test_function
-    return decorator
-
-
 class TestCustomSource(object):
 
     def test_local_zip_file(self):
@@ -241,7 +227,6 @@ class TestCustomSource(object):
         c = CurrencyConverter(SINGLE_DAY_CURRENCY_FILE)
         assert c.currencies == SINGLE_DAY_CURRENCIES
 
-    @skip_test_on_error('CERTIFICATE_VERIFY_FAILED')
     def test_remote_clear_file(self):
         c = CurrencyConverter('https://raw.githubusercontent.com/alexprengere'
                               '/currencyconverter/master/currency_converter/eurofxref.csv')
