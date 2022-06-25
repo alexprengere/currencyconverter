@@ -26,7 +26,7 @@ def grouper(iterable, n, fillvalue=None):
 
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(prog='currency_converter')
     parser.add_argument('amount', type=float)
     parser.add_argument('currency')
 
