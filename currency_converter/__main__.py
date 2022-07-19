@@ -5,6 +5,7 @@ import sys
 import argparse
 
 from .currency_converter import CurrencyConverter, CURRENCY_FILE, parse_date
+from ._version import __version__
 
 
 if sys.version_info[0] < 3:
@@ -27,6 +28,11 @@ def grouper(iterable, n, fillvalue=None):
 
 def main():
     parser = argparse.ArgumentParser(prog='currency_converter')
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s, version {__version__}",
+    )
     parser.add_argument('amount', type=float)
     parser.add_argument('currency')
 
