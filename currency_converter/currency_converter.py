@@ -1,9 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-from __future__ import with_statement, print_function, division, unicode_literals
-
-import sys
 import os.path as op
 from functools import wraps
 import datetime
@@ -12,29 +8,7 @@ from collections import defaultdict, namedtuple
 from zipfile import ZipFile
 from io import BytesIO
 from decimal import Decimal
-
-# We could have used "six", but like this we have no dependency
-if sys.version_info[0] < 3:
-    range = xrange  # noqa
-    from itertools import izip as zip
-    from urllib2 import urlopen
-
-    def iteritems(d):
-        return d.iteritems()
-
-    def itervalues(d):
-        return d.itervalues()
-
-
-else:
-    from urllib.request import urlopen
-
-    def iteritems(d):
-        return d.items()
-
-    def itervalues(d):
-        return d.values()
-
+from urllib.request import urlopen
 
 _DIRNAME = op.realpath(op.dirname(__file__))
 CURRENCY_FILE = op.join(_DIRNAME, 'eurofxref-hist.zip')
@@ -83,8 +57,7 @@ def parse_date(s):
 def get_lines_from_zip(zip_str):
     zip_file = ZipFile(BytesIO(zip_str))
     for name in zip_file.namelist():
-        for line in zip_file.read(name).decode('utf-8').splitlines():
-            yield line
+        yield from zip_file.read(name).decode('utf-8').splitlines()
 
 
 class RateNotFoundError(Exception):
@@ -92,7 +65,7 @@ class RateNotFoundError(Exception):
     pass
 
 
-class CurrencyConverter(object):
+class CurrencyConverter:
     """
     At init, load the historic currencies (since 1999) from the ECB.
     The rates are EUR foreign exchange reference rates:
@@ -190,7 +163,7 @@ class CurrencyConverter(object):
                 if rate not in na_values and currency:  # skip empty currency
                     _rates[currency][date] = cast(rate)
 
-        self.currencies = set(self._rates) | set([self.ref_currency])
+        self.currencies = set(self._rates) | {self.ref_currency}
         self._compute_bounds()
 
         for currency in sorted(self._rates):
@@ -202,15 +175,16 @@ class CurrencyConverter(object):
                 elif method == "last_known":
                     self._use_last_known(currency)
                 else:
-                    raise ValueError("Unknown fallback method {0!r}".format(method))
+                    raise ValueError(f"Unknown fallback method {method!r}")
 
     def _compute_bounds(self):
-        self.bounds = dict((currency, Bounds(min(r), max(r)))
-                           for currency, r in iteritems(self._rates))
+        self.bounds = {currency: Bounds(min(r), max(r))
+                           for currency, r in self._rates.items()}
 
         self.bounds[self.ref_currency] = Bounds(
-            min(b.first_date for b in itervalues(self.bounds)),
-            max(b.last_date for b in itervalues(self.bounds)))
+            min(b.first_date for b in self.bounds.values()),
+            max(b.last_date for b in self.bounds.values()),
+        )
 
     def _set_missing_to_none(self, currency):
         """Fill missing rates of a currency with the closest available ones."""
@@ -222,9 +196,9 @@ class CurrencyConverter(object):
                 rates[date] = None
 
         if self.verbose:
-            missing = len([r for r in itervalues(rates) if r is None])
+            missing = len([r for r in rates.values() if r is None])
             if missing:
-                print('{0}: {1} missing rates from {2} to {3} ({4} days)'.format(
+                print('{}: {} missing rates from {} to {} ({} days)'.format(
                     currency, missing, first_date, last_date,
                     1 + (last_date - first_date).days))
 
@@ -262,8 +236,8 @@ class CurrencyConverter(object):
             (r0, d0), (r1, d1) = tmp[date]
             rates[date] = (r0 * d1 + r1 * d0) / (d0 + d1)
             if self.verbose:
-                print(('{0}: filling {1} missing rate using {2} ({3}d old) and '
-                       '{4} ({5}d later)').format(currency, date, r0, d0, r1, d1))
+                print(('{}: filling {} missing rate using {} ({}d old) and '
+                       '{} ({}d later)').format(currency, date, r0, d0, r1, d1))
 
     def _use_last_known(self, currency):
         """Fill missing rates of a currency.
@@ -281,7 +255,7 @@ class CurrencyConverter(object):
             else:
                 rates[date] = last_rate
                 if self.verbose:
-                    print('{0}: filling {1} missing rate using {2} from {3}'.format(
+                    print('{}: filling {} missing rate using {} from {}'.format(
                         currency, date, last_rate, last_date))
 
     def _get_rate(self, currency, date):
@@ -304,7 +278,7 @@ class CurrencyConverter(object):
             first_date, last_date = self.bounds[currency]
 
             if not self.fallback_on_wrong_date:
-                raise RateNotFoundError('{0} not in {1} bounds {2}/{3}'.format(
+                raise RateNotFoundError('{} not in {} bounds {}/{}'.format(
                     date, currency, first_date, last_date))
 
             if date < first_date:
@@ -315,14 +289,14 @@ class CurrencyConverter(object):
                 raise AssertionError('Should never happen, bug in the code!')
 
             if self.verbose:
-                print(r'/!\ {0} not in {1} bounds {2}/{3}, falling back to {4}'.format(
+                print(r'/!\ {} not in {} bounds {}/{}, falling back to {}'.format(
                     date, currency, first_date, last_date, fallback_date))
 
             date = fallback_date
 
         rate = self._rates[currency][date]
         if rate is None:
-            raise RateNotFoundError('{0} has no rate for {1}'.format(currency, date))
+            raise RateNotFoundError(f'{currency} has no rate for {date}')
         return rate
 
     def convert(self, amount, currency, new_currency='EUR', date=None):
@@ -349,7 +323,7 @@ class CurrencyConverter(object):
         """
         for c in currency, new_currency:
             if c not in self.currencies:
-                raise ValueError('{0} is not a supported currency'.format(c))
+                raise ValueError(f'{c} is not a supported currency')
 
         if date is None:
             date = self.bounds[currency].last_date
@@ -374,7 +348,7 @@ class S3CurrencyConverter(CurrencyConverter):
     """
     def __init__(self, currency_file, **kwargs):
         """Make currency_file a required attribute"""
-        super(S3CurrencyConverter, self).__init__(currency_file, **kwargs)
+        super().__init__(currency_file, **kwargs)
 
     def load_file(self, currency_file):
         lines = currency_file.get_contents_as_string().splitlines()

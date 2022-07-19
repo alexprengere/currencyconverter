@@ -1,17 +1,9 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-import sys
-import argparse
+from itertools import zip_longest
 
 from .currency_converter import CurrencyConverter, CURRENCY_FILE, parse_date
 from ._version import __version__
-
-
-if sys.version_info[0] < 3:
-    from itertools import izip_longest as zip_longest
-else:
-    from itertools import zip_longest
 
 
 def grouper(iterable, n, fillvalue=None):
@@ -27,6 +19,7 @@ def grouper(iterable, n, fillvalue=None):
 
 
 def main():
+    import argparse
     parser = argparse.ArgumentParser(prog='currency_converter')
     parser.add_argument(
         "--version",
@@ -73,7 +66,7 @@ def main():
     currencies = sorted(c.currencies)
 
     if args.verbose:
-        print('{0} available currencies:'.format(len(currencies)))
+        print(f'{len(currencies)} available currencies:')
         for group in grouper(currencies, 10, fillvalue=''):
             print(' '.join(group))
         print('')
@@ -82,13 +75,13 @@ def main():
         currencies.sort(key=lambda u: c.bounds[u].first_date)
         for currency in currencies:
             first_date, last_date = c.bounds[currency]
-            print('{0}: from {1} to {2} ({3} days)'.format(
+            print('{}: from {} to {} ({} days)'.format(
                 currency, first_date, last_date,
                 1 + (last_date - first_date).days))
         print('')
 
     if args.currency not in c.currencies:
-        print(r'/!\ "{0}" is not in available currencies:'.format(args.currency))
+        print(fr'/!\ "{args.currency}" is not in available currencies:')
         for group in grouper(currencies, 10, fillvalue=''):
             print(' '.join(group))
         exit(1)
@@ -103,7 +96,7 @@ def main():
                            new_currency=args.to,
                            date=date)
 
-    print('{0:,.3f} {1} = {2:,.3f} {3} on {4}'.format(
+    print('{:,.3f} {} = {:,.3f} {} on {}'.format(
         args.amount,
         args.currency,
         new_amount,
