@@ -11,7 +11,7 @@
 .. _crated : https://pypi.org/project/CurrencyConverter/
 .. |crated| image:: https://static.pepy.tech/badge/currencyconverter
 
-This is a currency converter that uses historical rates against a reference currency (Euro).
+This is a currency converter that uses historical rates against a reference currency (Euro). It is compatible with Python3.6+.
 
 Currency data sources
 ---------------------
