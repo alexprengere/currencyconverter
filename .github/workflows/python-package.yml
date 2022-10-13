@@ -22,13 +22,13 @@ jobs:
 
     name: ${{ matrix.os }} - Python ${{ matrix.python-version }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Get history and tags for SCM versioning to work
       run: |
         git fetch --prune --unshallow
         git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
@@ -42,12 +42,12 @@ jobs:
     needs: [test]
     name: Build Python packages
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Get history and tags for SCM versioning to work
       run: |
         git fetch --prune --unshallow
         git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-    - uses: actions/setup-python@v2
+    - uses: actions/setup-python@v4
       with:
         python-version: "3.8"
     - name: Install dependencies
@@ -56,7 +56,7 @@ jobs:
         pip install --upgrade wheel setuptools build
     - name: Build package
       run: python -m build -s -w -o dist/
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: dist
         path: dist
@@ -66,12 +66,12 @@ jobs:
     needs: [dist]
     name: Twine check
     steps:
-    - uses: actions/setup-python@v2
+    - uses: actions/setup-python@v4
       with:
         python-version: "3.8"
     - name: Install dependencies
       run: pip install twine
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: dist
         path: dist
@@ -83,12 +83,12 @@ jobs:
     needs: [dist_check]
     name: PyPI upload
     steps:
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: dist
         path: dist
     - name: Publish package to PyPI
-      uses: pypa/gh-action-pypi-publish@master
+      uses: pypa/gh-action-pypi-publish@release/v1
       with:
         user: __token__
         password: ${{ secrets.PYPI_TOKEN }}
