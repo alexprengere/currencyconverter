@@ -162,7 +162,7 @@ class TestRates(object):
         assert dc.convert(10, "EUR", "USD", date(2013, 3, 21)) == Decimal("12.910")
         assert dc.convert(10, "EUR", "USD", date(2014, 3, 28)) == Decimal("13.7590")
         assert dc.convert(10, "USD", "EUR", date(2014, 3, 28)) == Decimal(
-            "7.2679700559" "63369430917944618"
+            "7.267970055963369430917944618"
         )
         assert dc.convert(10, "EUR") == Decimal("10")
         assert dc.convert(10, "EUR", "EUR") == Decimal("10")
@@ -262,7 +262,7 @@ class TestCustomObject(object):
         assert self.c.convert(10, "USD", "EUR", date(2014, 3, 26)) == approx(1.11111111)
 
     def test_attributes(self):
-        assert self.c.currencies == set(["EUR", "USD", "AAA"])
+        assert self.c.currencies == {"EUR", "USD", "AAA"}
         assert self.c.bounds == {
             "USD": (date(2014, 3, 23), date(2014, 3, 29)),
             "AAA": (date(2014, 3, 22), date(2014, 3, 27)),
