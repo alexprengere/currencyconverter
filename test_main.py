@@ -127,7 +127,6 @@ SINGLE_DAY_CURRENCIES = {
     "MXN",
     "TRY",
     "USD",
-    "HRK",
     "CNY",
     "HUF",
     "EUR",
