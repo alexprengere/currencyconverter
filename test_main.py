@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 from decimal import Decimal
 from datetime import datetime, date, timedelta
@@ -138,7 +137,7 @@ SINGLE_DAY_CURRENCIES = {
 }
 
 
-class TestRates(object):
+class TestRates:
     @pytest.mark.parametrize("c", converters)
     def test_convert(self, c):
         assert c.convert(10, "EUR", "USD", date(2013, 3, 21)) == approx(12.91)
@@ -167,7 +166,7 @@ class TestRates(object):
         assert dc.convert(10, "EUR", "EUR") == Decimal("10")
 
 
-class TestErrorCases(object):
+class TestErrorCases:
     @pytest.mark.parametrize("c", converters)
     def test_wrong_currency(self, c):
         with pytest.raises(ValueError):
@@ -204,7 +203,7 @@ def last_n_days(n):
     return [date.today() - timedelta(days=d) for d in reversed(range(n + 1))]
 
 
-class TestAttributes(object):
+class TestAttributes:
     @pytest.mark.parametrize("c", converters)
     def test_bounds(self, c):
         assert c.bounds["USD"][0] == date(1999, 1, 4)
@@ -221,7 +220,7 @@ class TestAttributes(object):
         assert c.currencies == HISTORY_CURRENCIES
 
 
-class TestCustomObject(object):
+class TestCustomObject:
 
     c = CurrencyConverter(
         currency_file=None, fallback_on_wrong_date=True, fallback_on_missing_rate=True
@@ -283,7 +282,7 @@ def test_single_day_sources(c):
     assert c.bounds["USD"][0] in last_n_days(7)
 
 
-class TestCustomSource(object):
+class TestCustomSource:
     def test_local_zip_file(self):
         c = CurrencyConverter(CURRENCY_FILE)
         assert c.currencies == HISTORY_CURRENCIES
@@ -306,7 +305,7 @@ class TestCustomSource(object):
         assert c.currencies == SINGLE_DAY_CURRENCIES
 
 
-class TestS3(object):
+class TestS3:
     def test_S3_currency_file_required(self):
         with pytest.raises(TypeError):
             S3CurrencyConverter()
