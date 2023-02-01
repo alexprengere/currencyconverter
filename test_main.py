@@ -221,7 +221,6 @@ class TestAttributes:
 
 
 class TestCustomObject:
-
     c = CurrencyConverter(
         currency_file=None, fallback_on_wrong_date=True, fallback_on_missing_rate=True
     )

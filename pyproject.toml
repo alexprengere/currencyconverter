@@ -5,3 +5,50 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools_scm]
 write_to = "currency_converter/_version.py"
 write_to_template = "__version__ = \"{version}\"\n"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--strict-markers --doctest-modules --doctest-glob='*.rst' --ignore=setup.py"
+doctest_optionflags = [
+    "NORMALIZE_WHITESPACE",
+    "IGNORE_EXCEPTION_DETAIL",
+    "ELLIPSIS",
+]
+norecursedirs = [
+    ".*",
+    "__pycache__",
+    "build",
+    "dist",
+    "*.egg-info",
+    "htmlcov",
+    "doc",
+]
+filterwarnings = [
+    "ignore:open_text is deprecated:DeprecationWarning",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py37"
+extend-exclude = ["doc"]
+select = [
+    "F",  # pyflakes
+    "E",  # pycodestyle
+    "W",  # pycodestyle
+    "UP",  # pyupgrade
+    "YTT",  # flake8-2020
+    "B",  # flake8-bugbear
+    "T10",  # flake8-debugger
+    "C4",  # flake8-comprehensions
+    "G",  # flake8-logging-format
+    "ISC",  # flake8-implicit-str-concat
+    "ICN",  # flake8-import-conventions
+]
+ignore = [
+    "E402",  # module-import-not-at-top-of-file
+]
+
+[tool.black]
+line-length = 88
+target-version = ["py36"]
+extend-exclude = "doc"
