@@ -113,6 +113,8 @@ class CurrencyConverter:
         :param bool fallback_on_missing_rate: Set to True to linearly
             interpolate missing rates by their two closest valid rates. This
             only affects dates within the source data's range. Default False.
+            Set to False to raise RateNotFoundError when hitting a missing rate,
+            e.g. on weekends or banking holidays.
         :param bool fallback_on_missing_rate_method: Choose the fallback on missing
             rate method. Default is "linear_interpolation", also available is "last_known".
         :param str ref_currency: Three-letter currency code for the currency
