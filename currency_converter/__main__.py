@@ -114,11 +114,7 @@ def main():
         date=date,
     )
 
-    print(
-        "{:,.3f} {} = {:,.3f} {} on {}".format(
-            args.amount, args.currency, new_amount, args.to, date
-        )
-    )
+    print(f"{args.amount:,.3f} {args.currency} = {new_amount:,.3f} {args.to} on {date}")
 
 
 if __name__ == "__main__":

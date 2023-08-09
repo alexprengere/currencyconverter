@@ -253,10 +253,8 @@ class CurrencyConverter:
             rates[date] = (r0 * d1 + r1 * d0) / (d0 + d1)
             if self.verbose:
                 print(
-                    (
-                        "{}: filling {} missing rate using {} ({}d old) and "
-                        "{} ({}d later)"
-                    ).format(currency, date, r0, d0, r1, d1)
+                    f"{currency}: filling {date} missing rate using {r0} ({d0}d old) and "
+                    f"{r1} ({d1}d later)"
                 )
 
     def _use_last_known(self, currency):
@@ -302,9 +300,7 @@ class CurrencyConverter:
 
             if not self.fallback_on_wrong_date:
                 raise RateNotFoundError(
-                    "{} not in {} bounds {}/{}".format(
-                        date, currency, first_date, last_date
-                    )
+                    f"{date} not in {currency} bounds {first_date}/{last_date}"
                 )
 
             if date < first_date:
