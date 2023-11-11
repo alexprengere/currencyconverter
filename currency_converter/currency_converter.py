@@ -363,7 +363,9 @@ class CurrencyConverter:
 
         return self.cast(amount) / r0 * r1
 
-    def get_exchange_rate(self, currency: str, new_currency: str, date: datetime.date = None) -> float:
+    def get_exchange_rate(
+        self, currency: str, new_currency: str, date: datetime.date = None
+    ) -> float:
         """Get the exchange rate between two currencies.
 
         :param str currency: The currency to convert from.
