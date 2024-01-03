@@ -23,9 +23,7 @@ norecursedirs = [
     "htmlcov",
     "doc",
 ]
-filterwarnings = [
-    "ignore:open_text is deprecated:DeprecationWarning",
-]
+filterwarnings = []
 
 [tool.ruff]
 line-length = 100
