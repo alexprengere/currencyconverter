@@ -29,6 +29,8 @@ filterwarnings = []
 line-length = 100
 target-version = "py37"
 extend-exclude = ["doc"]
+
+[tool.ruff.lint]
 select = [
     "F",  # pyflakes
     "E",  # pycodestyle
