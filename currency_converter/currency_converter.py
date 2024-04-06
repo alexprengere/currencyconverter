@@ -4,6 +4,7 @@ import os.path as op
 from functools import wraps
 import datetime
 from datetime import timedelta
+from dateutil import parser
 from collections import defaultdict, namedtuple
 from zipfile import ZipFile
 from io import BytesIO
@@ -55,7 +56,10 @@ def parse_date(s):
     try:
         return datetime.date(int(s[:4]), int(s[5:7]), int(s[8:10]))
     except ValueError:  # other accepted format used in one-day data set
-        return datetime.datetime.strptime(s, "%d %B %Y").date()
+        try:
+            return datetime.datetime.strptime(s, "%d %B %Y").date()
+        except ValueError:
+            return parser.parse(s)
 
 
 def get_lines_from_zip(zip_str):
