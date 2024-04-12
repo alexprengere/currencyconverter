@@ -83,7 +83,7 @@ def main():
         print(f"{len(currencies)} available currencies:")
         for group in grouper(currencies, 10, fillvalue=""):
             print(" ".join(group))
-        print("")
+        print()
 
         currencies.sort(key=lambda u: c.bounds[u].last_date, reverse=True)
         currencies.sort(key=lambda u: c.bounds[u].first_date)
@@ -94,7 +94,7 @@ def main():
                     currency, first_date, last_date, 1 + (last_date - first_date).days
                 )
             )
-        print("")
+        print()
 
     if args.currency not in c.currencies:
         print(rf'/!\ "{args.currency}" is not in available currencies:')

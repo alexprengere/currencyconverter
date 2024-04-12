@@ -162,8 +162,8 @@ class TestRates:
         assert dc.convert(10, "USD", "EUR", date(2014, 3, 28)) == Decimal(
             "7.267970055963369430917944618"
         )
-        assert dc.convert(10, "EUR") == Decimal("10")
-        assert dc.convert(10, "EUR", "EUR") == Decimal("10")
+        assert dc.convert(10, "EUR") == Decimal(10)
+        assert dc.convert(10, "EUR", "EUR") == Decimal(10)
 
 
 class TestErrorCases:
