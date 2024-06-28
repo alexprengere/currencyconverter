@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import sys
 from itertools import zip_longest
 
 from .currency_converter import CurrencyConverter, CURRENCY_FILE, parse_date
@@ -96,11 +97,12 @@ def main():
             )
         print()
 
-    if args.currency not in c.currencies:
-        print(rf'/!\ "{args.currency}" is not in available currencies:')
-        for group in grouper(currencies, 10, fillvalue=""):
-            print(" ".join(group))
-        exit(1)
+    for currency in (args.currency, args.to):
+        if currency not in c.currencies:
+            print(rf'/!\ "{currency}" is not in available currencies:')
+            for group in grouper(currencies, 10, fillvalue=""):
+                print(" ".join(group))
+            return 1
 
     if args.date is not None:
         date = parse_date(args.date)
@@ -118,4 +120,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
