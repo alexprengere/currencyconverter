@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=42", "wheel", "setuptools_scm[toml]<8"]
+requires = ["setuptools>=71", "setuptools-scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
@@ -27,7 +27,7 @@ filterwarnings = []
 
 [tool.ruff]
 line-length = 100
-target-version = "py37"
+target-version = "py39"
 extend-exclude = ["doc"]
 
 [tool.ruff.lint]
@@ -50,5 +50,5 @@ ignore = [
 
 [tool.black]
 line-length = 88
-target-version = ["py36"]
+target-version = ["py39"]
 extend-exclude = "doc"
