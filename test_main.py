@@ -2,11 +2,7 @@
 
 from decimal import Decimal
 from datetime import datetime, date, timedelta
-
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
+from io import StringIO
 
 import pytest
 from pytest import approx
