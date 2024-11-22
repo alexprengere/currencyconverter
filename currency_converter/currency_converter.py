@@ -209,13 +209,8 @@ class CurrencyConverter:
             missing = len([r for r in rates.values() if r is None])
             if missing:
                 print(
-                    "{}: {} missing rates from {} to {} ({} days)".format(
-                        currency,
-                        missing,
-                        first_date,
-                        last_date,
-                        1 + (last_date - first_date).days,
-                    )
+                    f"{currency}: {missing} missing rates from {first_date} to {last_date}"
+                    f" ({1 + (last_date - first_date).days} days)"
                 )
 
     def _use_linear_interpolation(self, currency):
@@ -253,8 +248,8 @@ class CurrencyConverter:
             rates[date] = (r0 * d1 + r1 * d0) / (d0 + d1)
             if self.verbose:
                 print(
-                    f"{currency}: filling {date} missing rate using {r0} ({d0}d old) and "
-                    f"{r1} ({d1}d later)"
+                    f"{currency}: filling {date} missing rate using"
+                    f" {r0} ({d0}d old) and {r1} ({d1}d later)"
                 )
 
     def _use_last_known(self, currency):
@@ -274,9 +269,8 @@ class CurrencyConverter:
                 rates[date] = last_rate
                 if self.verbose:
                     print(
-                        "{}: filling {} missing rate using {} from {}".format(
-                            currency, date, last_rate, last_date
-                        )
+                        f"{currency}: filling {date} missing rate using"
+                        f" {last_rate} from {last_date}"
                     )
 
     def _get_rate(self, currency, date):
@@ -312,9 +306,8 @@ class CurrencyConverter:
 
             if self.verbose:
                 print(
-                    r"/!\ {} not in {} bounds {}/{}, falling back to {}".format(
-                        date, currency, first_date, last_date, fallback_date
-                    )
+                    rf"/!\ {date} not in {currency} bounds {first_date}/{last_date},"
+                    f" falling back to {fallback_date}"
                 )
 
             date = fallback_date

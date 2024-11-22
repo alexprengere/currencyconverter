@@ -91,9 +91,8 @@ def main():
         for currency in currencies:
             first_date, last_date = c.bounds[currency]
             print(
-                "{}: from {} to {} ({} days)".format(
-                    currency, first_date, last_date, 1 + (last_date - first_date).days
-                )
+                f"{currency}: from {first_date} to {last_date}"
+                f" ({1 + (last_date - first_date).days} days)"
             )
         print()
 
