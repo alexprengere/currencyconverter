@@ -115,7 +115,7 @@ class CurrencyConverter:
             only affects dates within the source data's range. Default False.
             Set to False to raise RateNotFoundError when hitting a missing rate,
             e.g. on weekends or banking holidays.
-        :param bool fallback_on_missing_rate_method: Choose the fallback on missing
+        :param str fallback_on_missing_rate_method: Choose the fallback on missing
             rate method. Default is "linear_interpolation", also available is "last_known".
         :param str ref_currency: Three-letter currency code for the currency
             that the source data is oriented towards. This is EUR for the
