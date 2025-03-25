@@ -19,13 +19,13 @@ SINGLE_DAY_ECB_URL = "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip"
 Bounds = namedtuple("Bounds", "first_date last_date")
 
 __all__ = [
-    "CurrencyConverter",
-    "S3CurrencyConverter",
-    "RateNotFoundError",
-    "ECB_URL",
-    "SINGLE_DAY_ECB_URL",
     "CURRENCY_FILE",
+    "ECB_URL",
     "SINGLE_DAY_CURRENCY_FILE",
+    "SINGLE_DAY_ECB_URL",
+    "CurrencyConverter",
+    "RateNotFoundError",
+    "S3CurrencyConverter",
 ]
 
 
@@ -66,8 +66,6 @@ def get_lines_from_zip(zip_str):
 
 class RateNotFoundError(Exception):
     """Custom exception when data is missing in the rates file."""
-
-    pass
 
 
 class CurrencyConverter:

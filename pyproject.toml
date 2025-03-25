@@ -8,7 +8,11 @@ write_to_template = "__version__ = \"{version}\"\n"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "--strict-markers --doctest-modules --doctest-glob='*.rst' --ignore=setup.py"
+addopts = """\
+  --strict-markers \
+  --doctest-modules --doctest-glob='*.rst' \
+  --ignore=setup.py \
+"""
 doctest_optionflags = [
     "NORMALIZE_WHITESPACE",
     "IGNORE_EXCEPTION_DETAIL",
@@ -25,6 +29,29 @@ norecursedirs = [
 ]
 filterwarnings = []
 
+[tool.coverage.run]
+branch = true
+omit = [
+    "setup.py",
+    "*/__main__.py",
+]
+
+[tool.coverage.report]
+fail_under = 90
+skip_covered = true
+exclude_lines = [
+    '\# pragma: no cover\b',
+    '^\s*raise AssertionError\b',
+    '^\s*raise NotImplementedError\b',
+    '^\s*return NotImplemented\b',
+    '^\s*pytest.fail\b',
+    "if __name__ == ['\"]__main__['\"]:$",
+    '^def main\(\):$',
+]
+
+[tool.coverage.html]
+show_contexts = true
+
 [tool.ruff]
 line-length = 100
 target-version = "py39"
@@ -37,18 +64,33 @@ select = [
     "W",  # pycodestyle
     "UP",  # pyupgrade
     "YTT",  # flake8-2020
+    "ASYNC",  # flake8-async
     "B",  # flake8-bugbear
-    "T10",  # flake8-debugger
     "C4",  # flake8-comprehensions
-    "G",  # flake8-logging-format
+    "T10",  # flake8-debugger
     "ISC",  # flake8-implicit-str-concat
     "ICN",  # flake8-import-conventions
+    "G",  # flake8-logging-format
+    "PIE",  # flake8-pie
+    "PYI",  # flake8-pyi
+    "RSE",  # flake8-raise
+    "TCH",  # flake8-type-checking
+    "INT",  # flake8-gettext
+    "PD",  # pandas-vet
+    "PGH",  # pygrep-hooks
+    "FLY",  # flynt
+    "NPY",  # NumPy-specific rules
+    "AIR",  # Airflow
+    "RUF",  # Ruff-specific rules
 ]
 ignore = [
     "E402",  # module-import-not-at-top-of-file
+    "RUF052",  # used-dummy-variable
+    "PYI024",  # collections-named-tuple
 ]
+preview = true
 
 [tool.black]
 line-length = 88
 target-version = ["py39"]
-extend-exclude = "doc"
+force_exclude = "doc/*"
