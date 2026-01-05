@@ -106,7 +106,6 @@ SINGLE_DAY_CURRENCIES = {
     "NOK",
     "PLN",
     "SGD",
-    "BGN",
     "HKD",
     "MYR",
     "ISK",
