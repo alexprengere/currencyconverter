@@ -220,16 +220,12 @@ class TestCustomObject:
         currency_file=None, fallback_on_wrong_date=True, fallback_on_missing_rate=True
     )
 
-    c.load_lines(
-        StringIO(
-            """\
+    c.load_lines(StringIO("""\
     Date,USD,AAA,
     2014-03-29,2,N/A
     2014-03-27,6,0
     2014-03-23,18,N/A
-    2014-03-22,N/A,0"""
-        )
-    )
+    2014-03-22,N/A,0"""))
 
     def test_convert(self):
         assert self.c.convert(10, "EUR", "USD") == approx(20)
