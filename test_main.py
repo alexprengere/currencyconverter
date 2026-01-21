@@ -206,7 +206,7 @@ class TestAttributes:
         assert c.bounds["EUR"][0] == date(1999, 1, 4)
 
         assert c.bounds["USD"][1] in last_n_days(7)
-        assert c.bounds["BGN"][1] in last_n_days(7)
+        assert c.bounds["BGN"][1] == date(2025, 12, 31)
         assert c.bounds["EUR"][1] in last_n_days(7)
 
     @pytest.mark.parametrize("c", converters)
