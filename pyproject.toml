@@ -86,6 +86,7 @@ select = [
 ignore = [
     "E402",  # module-import-not-at-top-of-file
     "RUF052",  # used-dummy-variable
+    "RUF069",  # float-equality-comparison
     "PYI024",  # collections-named-tuple
 ]
 preview = true
