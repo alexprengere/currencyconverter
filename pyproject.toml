@@ -84,10 +84,10 @@ select = [
     "RUF",  # Ruff-specific rules
 ]
 ignore = [
-    "E402",  # module-import-not-at-top-of-file
-    "RUF052",  # used-dummy-variable
-    "RUF069",  # float-equality-comparison
-    "PYI024",  # collections-named-tuple
+    "module-import-not-at-top-of-file",
+    "used-dummy-variable",
+    "float-equality-comparison",
+    "collections-named-tuple",
 ]
 preview = true
 
