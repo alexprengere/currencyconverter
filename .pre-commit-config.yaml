@@ -12,7 +12,7 @@ repos:
       - id: "check-yaml"
 
   - repo: "https://github.com/astral-sh/ruff-pre-commit"
-    rev: "39d9ac5938dadb73df0564a45f163e25ff9fa6e2"  # frozen: v0.16.1
+    rev: "e8f7d69b957a30acb2c875078d5fd012de24b64c"  # frozen: v0.16.7
     hooks:
       - id: "ruff"
         args: ["--fix"]
