@@ -354,6 +354,29 @@ class CurrencyConverter:
 
         return self.cast(amount) / r0 * r1
 
+    def get_exchange_rate(
+        self, currency: str, new_currency: str, date: datetime.date = None
+    ) -> float:
+        """Get the exchange rate between two currencies.
+
+        :param str currency: The currency to convert from.
+        :param str new_currency: The currency to convert to.
+        :param datetime.date date: Use the conversion rate of this date. If this
+            is not given, the most recent rate is used.
+
+        :return: The value of the exchange rate.
+        :rtype: float
+
+        >>> from datetime import date
+        >>> c = CurrencyConverter()
+        >>> c.get_exchange_rate('EUR', 'USD', date=date(2014, 3, 28))
+        1.3759
+        >>> c.get_exchange_rate('EUR', 'BGN', date=date(2010, 11, 21))
+        Traceback (most recent call last):
+        RateNotFoundError: BGN has no rate for 2010-11-21
+        """
+        return self.convert(1, currency, new_currency, date)
+
 
 class S3CurrencyConverter(CurrencyConverter):
     """
