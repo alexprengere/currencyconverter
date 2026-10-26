@@ -12,13 +12,13 @@ repos:
       - id: "check-yaml"
 
   - repo: "https://github.com/astral-sh/ruff-pre-commit"
-    rev: "f12be1ebaa5351c1fc76472de98db2c3446c8253"  # frozen: v0.16.10
+    rev: "f368fb366ff7f2f808dd324b83a6d32267799e19"  # frozen: v0.17.2
     hooks:
       - id: "ruff"
         args: ["--fix"]
 
   - repo: "https://github.com/psf/black-pre-commit-mirror"
-    rev: "96ae3e5802f3fe2d551e703e18f0a367d1a81ac2"  # frozen: 26.10.0
+    rev: "a5439e9af2ff9371297bb1a76a01b8ad17989b88"  # frozen: 26.10.1
     hooks:
       - id: "black"
         language_version: "python3.11"
