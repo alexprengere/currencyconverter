@@ -107,9 +107,7 @@ def main():
         try:
             date = parse_date(args.date)
         except ValueError:
-            parser.error(
-                f"invalid date {args.date!r}: expected format YYYY-MM-DD"
-            )
+            parser.error(f"invalid date {args.date!r}: expected format YYYY-MM-DD")
     else:
         date = c.bounds[args.currency].last_date
 

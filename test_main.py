@@ -322,8 +322,13 @@ class TestCli:
         from currency_converter.__main__ import main
 
         argv = [
-            "currency_converter", "10", "EUR",
-            "--date", "2014-03-28", "--to", "USD",
+            "currency_converter",
+            "10",
+            "EUR",
+            "--date",
+            "2014-03-28",
+            "--to",
+            "USD",
         ]
         with mock.patch.object(sys, "argv", argv):
             assert main() is None
