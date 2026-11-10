@@ -1,8 +1,10 @@
 #!/usr/bin/python
 
+import sys
 from decimal import Decimal
 from datetime import datetime, date, timedelta
 from io import StringIO
+from unittest import mock
 
 import pytest
 from pytest import approx
@@ -303,3 +305,26 @@ class TestS3:
     def test_S3_currency_file_needs_get_contents_as_strings(self):
         with pytest.raises(AttributeError):
             S3CurrencyConverter("simple_string")
+
+
+class TestCli:
+    def test_main_invalid_date_exits_2(self, capsys):
+        from currency_converter.__main__ import main
+
+        argv = ["currency_converter", "10", "USD", "--date", "tomorrow"]
+        with mock.patch.object(sys, "argv", argv):
+            with pytest.raises(SystemExit) as exc_info:
+                main()
+        assert exc_info.value.code == 2
+        assert "invalid date" in capsys.readouterr().err
+
+    def test_main_valid_date_converts(self, capsys):
+        from currency_converter.__main__ import main
+
+        argv = [
+            "currency_converter", "10", "EUR",
+            "--date", "2014-03-28", "--to", "USD",
+        ]
+        with mock.patch.object(sys, "argv", argv):
+            assert main() is None
+        assert "13.759" in capsys.readouterr().out
