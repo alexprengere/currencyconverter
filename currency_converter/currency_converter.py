@@ -2,7 +2,7 @@
 
 import os.path as op
 from functools import wraps
-import datetime
+import datetime as dt
 from datetime import timedelta
 from collections import defaultdict, namedtuple
 from zipfile import ZipFile
@@ -53,9 +53,9 @@ def list_dates_between(first_date, last_date):
 def parse_date(s):
     """Fast %Y-%m-%d parsing."""
     try:
-        return datetime.date(int(s[:4]), int(s[5:7]), int(s[8:10]))
+        return dt.date(int(s[:4]), int(s[5:7]), int(s[8:10]))
     except ValueError:  # other accepted format used in one-day data set
-        return datetime.datetime.strptime(s, "%d %B %Y").date()
+        return dt.datetime.strptime(s, "%d %B %Y").date()
 
 
 def get_lines_from_zip(zip_str):

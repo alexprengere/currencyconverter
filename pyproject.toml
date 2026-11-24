@@ -74,7 +74,7 @@ select = [
     "PIE",  # flake8-pie
     "PYI",  # flake8-pyi
     "RSE",  # flake8-raise
-    "TCH",  # flake8-type-checking
+    "TC",  # flake8-type-checking
     "INT",  # flake8-gettext
     "PD",  # pandas-vet
     "PGH",  # pygrep-hooks
